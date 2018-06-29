@@ -104,7 +104,15 @@
         "flags": ["NO_SALVAGE"],
         "weight": 114,
         "volume": 1,
-        "category": "spare_parts"
+        "category": "spare_parts",
+        "clothing_mod": {
+            "tag": "furred",
+            "proportion_to_thickness": false,
+            "encumber": 4,
+            "warmth": 35,
+            "bash_resist": 0,
+            "cut_resist": 0
+        }
     },
     {
         "type":"GENERIC",
@@ -120,7 +128,15 @@
         "weight": 100,
         "volume": 1,
         "category" : "spare_parts",
-        "to_hit": -1
+        "to_hit": -1,
+        "clothing_mod": {
+            "tag": "leather_padded",
+            "proportion_to_thickness": true,
+            "encumber": 2,
+            "warmth": 0,
+            "bash_resist": 1,
+            "cut_resist": 1
+        }
     },
     {
         "type":"GENERIC",
@@ -136,7 +152,15 @@
         "weight": 100,
         "volume": 1,
         "category" : "spare_parts",
-        "to_hit": -1
+        "to_hit": -1,
+        "clothing_mod": {
+            "tag": "wooled",
+            "proportion_to_thickness": false,
+            "encumber": 3,
+            "warmth": 20,
+            "bash_resist": 0,
+            "cut_resist": 0
+        }
     },
     {
         "type" : "GENERIC",

@@ -3876,7 +3876,15 @@
     "material": "kevlar",
     "symbol": ",",
     "color": "green",
-    "flags": [ "NO_SALVAGE" ]
+    "flags": [ "NO_SALVAGE" ],
+    "clothing_mod": {
+        "tag": "kevlar_padded",
+        "proportion_to_thickness": true,
+        "encumber": 2,
+        "warmth": 0,
+        "bash_resist": 1,
+        "cut_resist": 2
+    }
   },
   {
     "id": "kiln_done",

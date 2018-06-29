@@ -1242,6 +1242,27 @@ void Item_factory::load_fuel( JsonObject &jo, const std::string &src )
     }
 }
 
+void Item_factory::load( islot_clothing_mod &slot, JsonObject &jo, const std::string &src )
+{
+    bool strict = src == "dda";
+
+    assign(jo, "tag", slot.tag, strict);
+    assign(jo, "proportion_to_thickness", slot.proportion_to_thickness, strict);
+    assign(jo, "encumber", slot.encumber, strict);
+    assign(jo, "warmth", slot.warmth, strict);
+    assign(jo, "bash_resist", slot.bash_resist, strict);
+    assign(jo, "cut_resist", slot.cut_resist, strict);
+}
+
+void Item_factory::load_clothing_mod( JsonObject &jo, const std::string &src )
+{
+    itype def;
+    if (load_definition(jo, src, def)) {
+        load_slot(def.clothing_mod, jo, src);
+        load_basic_info(jo, def, src);
+    }
+}
+
 void Item_factory::load( islot_gun &slot, JsonObject &jo, const std::string &src )
 {
     bool strict = src == "dda";

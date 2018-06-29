@@ -650,6 +650,15 @@ struct islot_artifact {
     std::vector<art_effect_passive> effects_worn;
 };
 
+struct islot_clothing_mod {
+    std::string tag;
+    bool proportion_to_thickness = false;
+    int encumber;
+    int warmth;
+    int bash_resist;
+    int cut_resist;
+};
+
 struct itype {
     friend class Item_factory;
 
@@ -675,6 +684,7 @@ struct itype {
     cata::optional<islot_ammo> ammo;
     cata::optional<islot_seed> seed;
     cata::optional<islot_artifact> artifact;
+    cata::optional<islot_clothing_mod> clothing_mod;
     /*@}*/
 
 protected:
