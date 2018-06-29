@@ -213,7 +213,6 @@ void DynamicDataLoader::initialize()
     add( "MAGAZINE", []( JsonObject &jo, const std::string &src ) { item_controller->load_magazine( jo, src ); } );
     add( "GENERIC", []( JsonObject &jo, const std::string &src ) { item_controller->load_generic( jo, src ); } );
     add( "BIONIC_ITEM", []( JsonObject &jo, const std::string &src ) { item_controller->load_bionic( jo, src ); } );
-    add( "ARMORMOD", [](JsonObject &jo, const std::string &src) { item_controller->load_clothing_mod( jo, src ); } );
 
     add( "ITEM_CATEGORY", []( JsonObject &jo ) { item_controller->load_item_category( jo ); } );
     add( "MIGRATION", []( JsonObject &jo ) { item_controller->load_migration( jo ); } );

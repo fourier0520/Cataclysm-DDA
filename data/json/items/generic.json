@@ -111,7 +111,9 @@
             "encumber": 4,
             "warmth": 35,
             "bash_resist": 0,
-            "cut_resist": 0
+            "cut_resist": 0,
+            "add_msg": "Line it with fur",
+            "remove_msg": "Destroy fur lining"
         }
     },
     {
@@ -135,7 +137,9 @@
             "encumber": 2,
             "warmth": 0,
             "bash_resist": 1,
-            "cut_resist": 1
+            "cut_resist": 1,
+            "add_msg": "Pad with leather",
+            "remove_msg": "Destroy leather padding"
         }
     },
     {
@@ -159,7 +163,9 @@
             "encumber": 3,
             "warmth": 20,
             "bash_resist": 0,
-            "cut_resist": 0
+            "cut_resist": 0,
+            "add_msg": "Line it with wool",
+            "remove_msg": "Destroy wool lining"
         }
     },
     {

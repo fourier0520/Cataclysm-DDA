@@ -47,6 +47,7 @@
 #include "cata_utility.h"
 #include "map_iterator.h"
 #include "string_input_popup.h"
+#include "item_factory.h"
 
 #include <vector>
 #include <sstream>
@@ -1860,16 +1861,21 @@ int iuse::sew_advanced( player *p, item *it, bool, const tripoint & )
         return mcopy;
     };
 
-    // TODO: Wrap all the mods into structs, maybe even json-able
     // All possible mods here
-    std::array<std::string, 4> clothing_mods{
-        { "wooled", "furred", "leather_padded", "kevlar_padded" }
-    };
+    auto possible_items = Item_factory::find( []( const itype &e ) {
+        if ( e.clothing_mod ) {
+            return true;
+        } else {
+            return false;
+        }
+    } );
 
-    // Materials those mods use
-    std::array<std::string, 4> mod_materials{
-        { "felt_patch", "fur", "leather", "kevlar_plate" }
-    };
+    std::vector<std::string> mod_tags;
+    std::vector<std::string> mod_materials;
+    for( auto &possible_item : possible_items ) {
+        mod_tags.push_back( possible_item->clothing_mod->tag );
+        mod_materials.push_back ( possible_item->get_id() );
+    }
 
     // Cache available materials
     std::map< itype_id, bool > has_enough;
@@ -1880,9 +1886,10 @@ int iuse::sew_advanced( player *p, item *it, bool, const tripoint & )
         has_enough[material] = crafting_inv.has_amount( material, items_needed );
     }
 
-    const int mod_count = mod.item_tags.count( "wooled" ) + mod.item_tags.count( "furred" ) +
-                          mod.item_tags.count( "leather_padded" ) + mod.item_tags.count( "kevlar_padded" );
-
+    int mod_count = 0;
+    for (auto &tag : mod_tags) {
+        mod_count += mod.item_tags.count(tag);
+    }
     // We need extra thread to lose it on bad rolls
     const int thread_needed = mod.volume() / 125_ml + 10;
     // Returns true if the item already has the mod or if we have enough materials and thread to add it
@@ -1899,50 +1906,33 @@ int iuse::sew_advanced( player *p, item *it, bool, const tripoint & )
         tmenu.text = _( "Not enough thread to modify. Which modification do you want to remove?" );
     }
 
-    // TODO: The supremely ugly block of code below looks better than 200 line boilerplate
-    // that was there before, but it can probably be moved into a helper somehow
+    size_t i = 0;
+    for( auto &possible_item : possible_items ) {
+        auto tag = possible_item->clothing_mod->tag;
+        auto mat_item = possible_item->get_id();
+        auto add_msg = possible_item->clothing_mod->add_msg;
+        auto remove_msg = possible_item->clothing_mod->remove_msg;
+        item temp_item = modded_copy( mod, tag);
+        // Can we perform this addition or removal
+        bool enab = can_add_mod( tag, mat_item );
+        tmenu.addentry( i++, enab, MENU_AUTOASSIGN,
+                        _( "%s (Bash/Cut: %d/%d->%d/%d, Warmth: %d->%d, Encumbrance: %d->%d)" ),
+                        mod.item_tags.count( tag ) == 0 ? _( add_msg.c_str() ) : _( remove_msg.c_str() ),
+                        mod.bash_resist(), mod.cut_resist(), temp_item.bash_resist(), temp_item.cut_resist(),
+                        mod.get_warmth(), temp_item.get_warmth(), mod.get_encumber(), temp_item.get_encumber() );
+    }
 
-    // TODO 2: List how much material we have and how much we need
-    item temp_item = modded_copy( mod, "wooled" );
-    // Can we perform this addition or removal
-    bool enab = can_add_mod( "wooled", "felt_patch" );
-    tmenu.addentry( 0, enab, MENU_AUTOASSIGN, _( "%s (Warmth: %d->%d, Encumbrance: %d->%d)" ),
-                    mod.item_tags.count( "wooled" ) == 0 ? _( "Line it with wool" ) : _( "Destroy wool lining" ),
-                    mod.get_warmth(), temp_item.get_warmth(), mod.get_encumber(), temp_item.get_encumber() );
-
-    temp_item = modded_copy( mod, "furred" );
-    enab = can_add_mod( "furred", "fur" );
-    tmenu.addentry( 1, enab, MENU_AUTOASSIGN, _( "%s (Warmth: %d->%d, Encumbrance: %d->%d)" ),
-                    mod.item_tags.count( "furred" ) == 0 ? _( "Line it with fur" ) : _( "Destroy fur lining" ),
-                    mod.get_warmth(), temp_item.get_warmth(), mod.get_encumber(), temp_item.get_encumber() );
-
-    temp_item = modded_copy( mod, "leather_padded" );
-    enab = can_add_mod( "leather_padded", "leather" );
-    tmenu.addentry( 2, enab, MENU_AUTOASSIGN, _( "%s (Bash/Cut: %d/%d->%d/%d, Encumbrance: %d->%d)" ),
-                    mod.item_tags.count( "leather_padded" ) == 0 ? _( "Pad with leather" ) :
-                    _( "Destroy leather padding" ),
-                    mod.bash_resist(), mod.cut_resist(), temp_item.bash_resist(), temp_item.cut_resist(),
-                    mod.get_encumber(), temp_item.get_encumber() );
-
-    temp_item = modded_copy( mod, "kevlar_padded" );
-    enab = can_add_mod( "kevlar_padded", "kevlar_plate" );
-    tmenu.addentry( 3, enab, MENU_AUTOASSIGN, _( "%s (Bash/Cut: %d/%d->%d/%d, Encumbrance: %d->%d)" ),
-                    mod.item_tags.count( "kevlar_padded" ) == 0 ? _( "Pad with Kevlar" ) :
-                    _( "Destroy Kevlar padding" ),
-                    mod.bash_resist(), mod.cut_resist(), temp_item.bash_resist(), temp_item.cut_resist(),
-                    mod.get_encumber(), temp_item.get_encumber() );
-
-    tmenu.addentry( 4, true, 'q', _( "Cancel" ) );
+    tmenu.addentry( i, true, 'q', _( "Cancel" ) );
 
     tmenu.query();
     const int choice = tmenu.ret;
 
-    if( choice < 0 || choice > 3 ) {
+    if( choice < 0 || choice >= i ) {
         return 0;
     }
 
     // The mod player picked
-    const std::string &the_mod = clothing_mods[choice];
+    const std::string &the_mod = mod_tags[choice];
 
     // If the picked mod already exists, player wants to destroy it
     if( mod.item_tags.count( the_mod ) ) {

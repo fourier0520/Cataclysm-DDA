@@ -653,10 +653,12 @@ struct islot_artifact {
 struct islot_clothing_mod {
     std::string tag;
     bool proportion_to_thickness = false;
-    int encumber;
-    int warmth;
-    int bash_resist;
-    int cut_resist;
+    int encumber = 0;
+    int warmth = 0;
+    int bash_resist = 0;
+    int cut_resist = 0;
+    std::string add_msg;
+    std::string remove_msg;
 };
 
 struct itype {

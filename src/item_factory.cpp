@@ -1244,14 +1244,14 @@ void Item_factory::load_fuel( JsonObject &jo, const std::string &src )
 
 void Item_factory::load( islot_clothing_mod &slot, JsonObject &jo, const std::string &src )
 {
-    bool strict = src == "dda";
-
-    assign(jo, "tag", slot.tag, strict);
-    assign(jo, "proportion_to_thickness", slot.proportion_to_thickness, strict);
-    assign(jo, "encumber", slot.encumber, strict);
-    assign(jo, "warmth", slot.warmth, strict);
-    assign(jo, "bash_resist", slot.bash_resist, strict);
-    assign(jo, "cut_resist", slot.cut_resist, strict);
+    assign(jo, "tag", slot.tag);
+    assign(jo, "proportion_to_thickness", slot.proportion_to_thickness);
+    assign(jo, "encumber", slot.encumber);
+    assign(jo, "warmth", slot.warmth);
+    assign(jo, "bash_resist", slot.bash_resist);
+    assign(jo, "cut_resist", slot.cut_resist);
+    assign(jo, "add_msg", slot.add_msg);
+    assign(jo, "remove_msg", slot.remove_msg);
 }
 
 void Item_factory::load_clothing_mod( JsonObject &jo, const std::string &src )
@@ -1900,6 +1900,7 @@ void Item_factory::load_basic_info( JsonObject &jo, itype &def, const std::strin
     load_slot_optional( def.artifact, jo, "artifact_data", src );
     load_slot_optional( def.brewable, jo, "brewable", src );
     load_slot_optional( def.fuel, jo, "fuel", src );
+    load_slot_optional( def.clothing_mod, jo, "clothing_mod", src );
 
     // optional gunmod slot may also specify mod data
     load_slot_optional( def.gunmod, jo, "gunmod_data", src );

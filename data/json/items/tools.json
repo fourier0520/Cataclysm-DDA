@@ -3883,7 +3883,9 @@
         "encumber": 2,
         "warmth": 0,
         "bash_resist": 1,
-        "cut_resist": 2
+        "cut_resist": 2,
+        "add_msg": "Pad with Kevlar",
+        "remove_msg": "Destroy Kevlar padding"
     }
   },
   {
