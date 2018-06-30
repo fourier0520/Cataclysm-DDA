@@ -389,6 +389,7 @@ classes = {
             { name = "use_computer", rval = nil, args = { "tripoint" } },
             -- [LUA Extention] start
             { name = "character_at", rval = "Character&", args = { "tripoint" } },
+            { name = "player_at", rval = "player&", args = { "tripoint" } },
             { name = "time_point_from_turn", rval = "time_point", args = { "int" } },
             { name = "time_duration_from_turns", rval = "time_duration", args = { "int" } },
             -- [LUA Extention] end

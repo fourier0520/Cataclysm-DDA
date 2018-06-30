@@ -1087,9 +1087,10 @@ class game
         * Lua Extention start
         */
     public:
-        Character * character_at(const tripoint &p);
-        time_point time_point_from_turn(int turn);
-        time_duration time_duration_from_turns(int turns);
+        Character * character_at( const tripoint &p );
+        player * player_at( const tripoint &p );
+        time_point time_point_from_turn( int turn );
+        time_duration time_duration_from_turns( int turns );
         /**
         * Lua Extention end
         */
