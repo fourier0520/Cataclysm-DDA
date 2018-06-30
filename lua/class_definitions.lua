@@ -113,6 +113,9 @@ classes = {
             { name = "years", rval = "int", args = { } },
             { name = "sunset", rval = "calendar", args = { } },
             { name = "sunrise", rval = "calendar", args = { } },
+            -- [LUA Extention] start
+            { name = "get_turn", rval = "int", args = { } },
+            -- [LUA Extention] end
         }
     },
     mutation_branch = {
@@ -384,6 +387,11 @@ classes = {
             { name = "unload", rval = nil, args = { "item" } },
             { name = "unload", rval = nil, args = { } },
             { name = "use_computer", rval = nil, args = { "tripoint" } },
+            -- [LUA Extention] start
+            { name = "character_at", rval = "Character&", args = { "tripoint" } },
+            { name = "time_point_from_turn", rval = "time_point", args = { "int" } },
+            { name = "time_duration_from_turns", rval = "time_duration", args = { "int" } },
+            -- [LUA Extention] end
         }
     },
     encumbrance_data = {
@@ -1864,6 +1872,9 @@ classes = {
         attributes = {
         },
         functions = {
+            -- [LUA Extention] start
+            { name = "get_turns", rval = "int", args = { } },
+            -- [LUA Extention] end
         },
     },
     time_point = {
@@ -1871,6 +1882,9 @@ classes = {
         attributes = {
         },
         functions = {
+            -- [LUA Extention] start
+            { name = "get_turn", rval = "int", args = { } },
+            -- [LUA Extention] end
         },
     },
     itype = {

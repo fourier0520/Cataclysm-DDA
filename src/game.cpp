@@ -13832,3 +13832,29 @@ std::string game::get_world_base_save_path() const
 {
     return world_generator->active_world->folder_path();
 }
+
+/**
+* Lua Extention start
+*/
+Character * game::character_at(const tripoint &p)
+{
+    auto critter = critter_at<Creature>(p);
+    if (critter->is_npc() || critter->is_player())
+    {
+        return critter_at<Character>(p);
+    }
+    return nullptr;
+}
+
+time_point game::time_point_from_turn( int turn )
+{
+    return time_point::from_turn( turn );
+}
+
+time_duration game::time_duration_from_turns( int turns )
+{
+    return time_duration::from_turns( turns );
+}
+/**
+* Lua Extention end
+*/
