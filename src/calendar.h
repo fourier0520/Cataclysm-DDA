@@ -248,6 +248,17 @@ class calendar
          */
         //@todo: flesh out the documentation
         static const time_point time_of_cataclysm;
+
+        /**
+        * Lua Extention start
+        */
+    public:
+        int get_turn() const {
+            return turn_number;
+        }
+        /**
+        * Lua Extention end
+        */
 };
 
 template<typename T>
@@ -437,6 +448,16 @@ class time_duration
 
         /// Returns a random duration in the range [low, hi].
         friend time_duration rng( time_duration lo, time_duration hi );
+        /**
+        * Lua Extention start
+        */
+    public:
+        int get_turns() const {
+            return turns_;
+        }
+        /**
+        * Lua Extention end
+        */
 };
 
 /// @see x_in_y(int,int)
@@ -528,6 +549,16 @@ class time_point
         }
 
         //@todo: implement minutes_of_hour and so on and use it.
+        /**
+        * Lua Extention start
+        */
+    public:
+        int get_turn() const {
+            return turn_;
+        }
+        /**
+        * Lua Extention end
+        */
 };
 
 constexpr inline bool operator<( const time_point lhs, const time_point rhs )
