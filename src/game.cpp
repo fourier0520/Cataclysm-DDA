@@ -13907,7 +13907,7 @@ Character * game::character_at( const tripoint &p )
         if ( critter->is_npc() || critter->is_player() ) {
             return critter_at<Character>( p );
         }
-    } 
+    }
     return nullptr;
 }
 
