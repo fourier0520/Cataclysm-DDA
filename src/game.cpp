@@ -13903,19 +13903,21 @@ std::string game::get_world_base_save_path() const
 Character * game::character_at( const tripoint &p )
 {
     auto critter = critter_at<Creature>( p );
-    if (critter->is_npc() || critter->is_player())
-    {
-        return critter_at<Character>( p );
-    }
+    if ( critter ) {
+        if ( critter->is_npc() || critter->is_player() ) {
+            return critter_at<Character>( p );
+        }
+    } 
     return nullptr;
 }
 
 player * game::player_at( const tripoint &p )
 {
     auto critter = critter_at<Creature>( p );
-    if (critter->is_npc() || critter->is_player())
-    {
-        return critter_at<player>( p );
+    if ( critter ) {
+        if ( critter->is_npc() || critter->is_player() ) {
+            return critter_at<player>( p );
+        }
     }
     return nullptr;
 }
