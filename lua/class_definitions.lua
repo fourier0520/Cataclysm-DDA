@@ -122,9 +122,6 @@ classes = {
             { name = "years", rval = "int", args = { } },
             { name = "sunset", rval = "calendar", args = { } },
             { name = "sunrise", rval = "calendar", args = { } },
-            -- [LUA Extention] start
-            { name = "get_turn", rval = "int", args = { } },
-            -- [LUA Extention] end
         }
     },
     mutation_branch = {

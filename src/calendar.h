@@ -246,17 +246,6 @@ class calendar
          */
         //@todo: flesh out the documentation
         static const time_point time_of_cataclysm;
-
-        /**
-        * Lua Extention start
-        */
-    public:
-        int get_turn() const {
-            return turn_number;
-        }
-        /**
-        * Lua Extention end
-        */
 };
 
 template<typename T>
