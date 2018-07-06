@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "special_attack_test_mod",
+    "name": "モンスター特殊攻撃テスト",
+    "authors": [ "LISP" ],
+    "maintainers": [ "LISP" ],
+    "description": "モンスター特殊攻撃テスト用のMODです。",
+    "category": "misc_additions",
+    "dependencies": [ "dda" ]
+  }
+]
