@@ -1,0 +1,24 @@
+[
+  {
+    "type" : "item_action",
+    "id" : "IUSE_SHOW_NPC_OPINION",
+    "name" : "NPCの友好度を見る"
+  },
+  {
+    "id": "npc_opinion_tool",
+    "type": "TOOL",
+    "symbol": "N",
+    "color": "blue",
+    "name": "NPC友好度テスト",
+    "description": "NPCの友好度を見るためのテストツールです。",
+    "price": 1000,
+    "material": [ "aluminum", "plastic" ],
+    "weight": 1,
+    "volume": 1,
+    "ammo": "battery",
+    "max_charges": 100,
+    "initial_charges": 100,
+    "charges_per_use": 1,
+    "use_action" : "IUSE_SHOW_NPC_OPINION"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "npc_opinion_test_mod",
+    "name": "NPC友好度テスト",
+    "authors": [ "LISP" ],
+    "maintainers": [ "LISP" ],
+    "description": "NPC友好度テスト用のMODです。",
+    "category": "misc_additions",
+    "dependencies": [ "dda" ]
+  }
+]

@@ -38,6 +38,13 @@
 #include "filesystem.h"
 #include "string_input_popup.h"
 #include "mutation.h"
+/**
+* Lua Extention start
+*/
+#include "npc.h"
+/**
+* Lua Extention end
+*/
 extern "C" {
 #include "lua.h"
 #include "lualib.h"

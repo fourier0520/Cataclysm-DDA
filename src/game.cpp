@@ -13922,6 +13922,17 @@ player * game::player_at( const tripoint &p )
     return nullptr;
 }
 
+npc * game::npc_at( const tripoint &p )
+{
+    auto critter = critter_at<Creature>( p );
+    if ( critter ) {
+        if ( critter->is_npc() ) {
+            return critter_at<npc>( p );
+        }
+    }
+    return nullptr;
+}
+
 time_point game::time_point_from_turn( int turn )
 {
     return time_point::from_turn( turn );

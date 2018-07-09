@@ -1,0 +1,11 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "StatsThroughSkillsForNPC",
+    "name": "StatsThroughSkills for NPC",
+    "authors": [ "Ryan \"DeNarr\" Saige" ],
+    "description": "StatsThroughSkills MODをNPCに適用させます。(プレイヤーの周囲のみ)",
+    "category": "rebalance",
+    "dependencies": [ "dda" ]
+  }
+]
