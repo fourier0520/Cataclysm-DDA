@@ -820,6 +820,18 @@ classes = {
             { name = "wield_contents", rval = "bool", args = { "item", "int" } },
             { name = "wield_contents", rval = "bool", args = { "item", "int", "int" } },
             { name = "wield_contents", rval = "bool", args = { "item", "int", "int", "bool" } },
+            -- [LUA Extention] start
+            { name = "add_morale", rval = nil, args = { "morale_type", "int" } },
+            { name = "add_morale", rval = nil, args = { "morale_type", "int", "int" } },
+            { name = "add_morale", rval = nil, args = { "morale_type", "int", "int", "time_duration" } },
+            { name = "add_morale", rval = nil, args = { "morale_type", "int", "int", "time_duration", "time_duration" } },
+            { name = "add_morale", rval = nil, args = { "morale_type", "int", "int", "time_duration", "time_duration", "bool" } },
+            { name = "add_morale", rval = nil, args = { "morale_type", "int", "int", "time_duration", "time_duration", "bool", "itype" } },
+            { name = "allergy_type", rval = "morale_type", args = { "item" } },
+            { name = "has_morale", rval = "int", args = { "morale_type" } },
+            { name = "rem_morale", rval = nil, args = { "morale_type" } },
+            { name = "rem_morale", rval = nil, args = { "morale_type", "itype" } },
+            -- [LUA Extention] end
         }
     },
     item = {
@@ -1988,6 +2000,14 @@ classes = {
         }
     },
     -- [LUA Extention] start
+    morale_type_data = {
+        string_id = "morale_type",
+        attributes = {
+        },
+        functions = {
+            { name = "is_permanent", rval = "bool", args = { } },
+        }
+    },
     npc_opinion = {
         by_value = true,
         attributes = {
