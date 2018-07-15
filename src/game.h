@@ -1082,6 +1082,19 @@ class game
 
         void move_save_to_graveyard();
         bool save_player_data();
+
+        /**
+        * Lua Extention start
+        */
+    public:
+        Character * character_at( const tripoint &p );
+        player * player_at( const tripoint &p );
+        npc * npc_at( const tripoint &p );
+        time_point time_point_from_turn( int turn );
+        time_duration time_duration_from_turns( int turns );
+        /**
+        * Lua Extention end
+        */
 };
 
 #endif

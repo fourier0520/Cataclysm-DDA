@@ -118,6 +118,14 @@ class MonsterGenerator
         std::map<std::string, monster_trigger> trigger_map;
         std::map<std::string, mtype_special_attack> attack_map;
         std::map<std::string, m_flag> flag_map;
+        /**
+        * Lua Extention start
+        */
+    public:
+        void register_monattack_lua( const std::string &name, int lua_function );
+        /**
+        * Lua Extention end
+        */
 };
 
 #endif
