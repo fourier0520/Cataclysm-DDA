@@ -11,7 +11,6 @@ function MOD.worn_overlay_id_referenced(worn_item)
     local cover_other = false
 
     for i = 1, 12 do
-        game.add_msg(tostring(i))
         if worn_item:covers(enums["body_part"][i]) then
             if i == 2 then
                 cover_head = true
