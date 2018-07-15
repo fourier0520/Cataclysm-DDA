@@ -64,7 +64,7 @@ struct CallbackArgument {
         type( CallbackArgumentType::Enum_BodyPart ), value_body_part( arg_value ) {
     }
 #ifdef LUA
-    void Save( int top );
+    void Save();
 #endif //LUA
 };
 

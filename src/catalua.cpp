@@ -849,7 +849,7 @@ int call_lua( const std::string &tocall )
     return err;
 }
 
-void CallbackArgument::Save( int top )
+void CallbackArgument::Save()
 {
     lua_State * const L = lua_state;
     switch (type) {
@@ -895,9 +895,8 @@ void lua_callback_helper( const char *callback_name, const CallbackArgumentConta
     lua_getglobal( L, "mod_callback" );
     lua_pushstring( L, callback_name );
 
-    int top = lua_gettop( L );
     for (auto callback_arg : callback_args) {
-        callback_arg.Save( top );
+        callback_arg.Save();
     }
 
     int err = lua_pcall( L, callback_args.size() + 1, retsize, 0 );
@@ -908,7 +907,6 @@ void lua_callback_helper( const char *callback_name, const CallbackArgumentConta
 void lua_callback( const char *callback_name, const CallbackArgumentContainer &callback_args )
 {
     lua_callback_helper( callback_name, callback_args );
-    lua_State *L = lua_state;
 }
 
 std::string lua_callback_getstring( const char *callback_name, const CallbackArgumentContainer &callback_args )
