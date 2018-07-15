@@ -849,9 +849,82 @@ int call_lua( const std::string &tocall )
     return err;
 }
 
-void lua_callback(const char *callback_name)
+void CallbackArgument::Save( int top )
 {
-    call_lua(std::string("mod_callback(\"") + std::string(callback_name) + "\")");
+    lua_State * const L = lua_state;
+    switch (type) {
+    case CallbackArgumentType::Integer:
+        lua_pushinteger( L, value_integer );
+        break;
+    case CallbackArgumentType::Number:
+        lua_pushnumber( L, value_number );
+        break;
+    case CallbackArgumentType::Boolean:
+        lua_pushboolean( L, value_boolean );
+        break;
+    case CallbackArgumentType::String:
+        lua_pushstring( L, value_string.c_str() );
+        break;
+    case CallbackArgumentType::Tripoint:
+        LuaValue<tripoint>::push_reg( L, value_tripoint );
+        break;
+    case CallbackArgumentType::Item:
+        LuaValue<item>::push_reg( L, value_item );
+        break;
+    case CallbackArgumentType::Reference_Creature:
+        LuaReference<Creature>::push( L, value_creature );
+        break;
+    case CallbackArgumentType::Enum_BodyPart:
+        LuaEnum<body_part>::push( L, value_body_part );
+        break;
+    default:
+        lua_pushnil( L );
+        break;
+    }
+}
+
+void lua_callback_helper( const char *callback_name, const CallbackArgumentContainer &callback_args, int retsize = 0 )
+{
+    if (lua_state == nullptr) {
+        return;
+    }
+    lua_State *L = lua_state;
+
+    update_globals( L );
+
+    lua_getglobal( L, "mod_callback" );
+    lua_pushstring( L, callback_name );
+
+    int top = lua_gettop( L );
+    for (auto callback_arg : callback_args) {
+        callback_arg.Save( top );
+    }
+
+    int err = lua_pcall( L, callback_args.size() + 1, retsize, 0 );
+    std::string err_function = "mod_callback(\"" + std::string( callback_name ) + "\")";
+    lua_report_error( L, err, err_function.c_str(), true );
+}
+
+void lua_callback( const char *callback_name, const CallbackArgumentContainer &callback_args )
+{
+    lua_callback_helper( callback_name, callback_args );
+    lua_State *L = lua_state;
+}
+
+std::string lua_callback_getstring( const char *callback_name, const CallbackArgumentContainer &callback_args )
+{
+    lua_callback_helper( callback_name, callback_args, 1 );
+    lua_State *L = lua_state;
+    std::size_t len;
+    const char *tmp = lua_tolstring( L, -1, &len );
+    std::string retval = tmp ? tmp : "";
+    return retval;
+}
+
+void lua_callback( const char *callback_name )
+{
+    CallbackArgumentContainer callback_args;
+    lua_callback( callback_name, callback_args );
 }
 
 //
@@ -1365,6 +1438,12 @@ int call_lua( std::string ) {
 // Implemented in mapgen.cpp:
 // int lua_mapgen( map *, std::string, mapgendata, int, float, const std::string & )
 void lua_callback( const char * )
+{
+}
+void lua_callback( const char *callback_name, const CallbackArgumentContainer &callback_args )
+{
+}
+std::string lua_callback_getstring( const char *callback_name, const CallbackArgumentContainer &callback_args )
 {
 }
 void lua_loadmod( const std::string &, const std::string & )

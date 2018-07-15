@@ -1,0 +1,11 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "Invisible_Helm",
+    "name": "頭装備の不可視化",
+    "authors": [ "LISP" ],
+    "description": "タイル使用時、頭装備を表示しないようにします。",
+    "category": "",
+    "dependencies": [ "dda" ]
+  }
+]

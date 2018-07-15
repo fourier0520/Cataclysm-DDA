@@ -11095,7 +11095,14 @@ std::vector<std::string> player::get_overlay_ids() const
     // next clothing
     // TODO: worry about correct order of clothing overlays
     for( const item &worn_item : worn ) {
-        rval.push_back( "worn_" + worn_item.typeId() );
+        CallbackArgumentContainer lua_callback_args_info;
+        lua_callback_args_info.emplace_back( worn_item );
+        std::string lua_overlay_id = lua_callback_getstring( "worn_overlay_id_referenced", lua_callback_args_info );
+        if( !lua_overlay_id.empty() ) {
+            rval.push_back( lua_overlay_id );
+        } else {
+            rval.push_back( "worn_" + worn_item.typeId() );
+        }
     }
 
     // last weapon
