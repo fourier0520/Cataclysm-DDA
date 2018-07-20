@@ -16,25 +16,25 @@ function MOD.on_minute_passed()
         point.y = point.y + delta_y
         local npc = g:npc_at(point)
         if npc then
-          calculate_bonuses(npc)
+          MOD.calculate_bonuses(npc)
         end
       end
     end
 end
 
-function calculate_bonuses(npc)
+function MOD.calculate_bonuses(npc)
 
     local prev_str = npc.str_max
     local prev_dex = npc.dex_max
     local prev_int = npc.int_max
     local prev_per = npc.per_max
 
-    remove_existing_bonuses(npc)
+    MOD.remove_existing_bonuses(npc)
 
-    local str_bonus = calc_bonus(npc,str_skills)
-    local dex_bonus = calc_bonus(npc,dex_skills)
-    local int_bonus = calc_bonus(npc,int_skills)
-    local per_bonus = calc_bonus(npc,per_skills)
+    local str_bonus = MOD.calc_bonus(npc,str_skills)
+    local dex_bonus = MOD.calc_bonus(npc,dex_skills)
+    local int_bonus = MOD.calc_bonus(npc,int_skills)
+    local per_bonus = MOD.calc_bonus(npc,per_skills)
 
     npc:set_value("str_bonus", tostring(str_bonus))
     npc:set_value("dex_bonus", tostring(dex_bonus))
@@ -46,10 +46,10 @@ function calculate_bonuses(npc)
     npc.int_max = npc.int_max + int_bonus
     npc.per_max = npc.per_max + per_bonus
 
-    print_results(npc.str_max,npc:disp_name().."'s Str",prev_str)
-    print_results(npc.dex_max,npc:disp_name().."'s Dex",prev_dex)
-    print_results(npc.int_max,npc:disp_name().."'s Int",prev_int)
-    print_results(npc.per_max,npc:disp_name().."'s Per",prev_per)
+    MOD.print_results(npc.str_max,npc:disp_name().."'s Str",prev_str)
+    MOD.print_results(npc.dex_max,npc:disp_name().."'s Dex",prev_dex)
+    MOD.print_results(npc.int_max,npc:disp_name().."'s Int",prev_int)
+    MOD.print_results(npc.per_max,npc:disp_name().."'s Per",prev_per)
 
     local hp_prev = {}
     for k,v in pairs(enums.hp_part) do
@@ -77,7 +77,7 @@ function calculate_bonuses(npc)
 
 end
 
-function remove_existing_bonuses(npc)
+function MOD.remove_existing_bonuses(npc)
     local str_bonus = tonumber(npc:get_value("str_bonus"))
     local dex_bonus = tonumber(npc:get_value("dex_bonus"))
     local int_bonus = tonumber(npc:get_value("int_bonus"))
@@ -89,7 +89,7 @@ function remove_existing_bonuses(npc)
     if(per_bonus) then npc.per_max = npc.per_max - per_bonus end
 end
 
-function calc_bonus(npc,skills_set)
+function MOD.calc_bonus(npc,skills_set)
     local skill_total = 0
     for _,s in ipairs(skills_set) do
         skill_total = skill_total + npc:get_skill_level(skill_id(s))
@@ -98,7 +98,7 @@ function calc_bonus(npc,skills_set)
     return (skill_total > 3 and math.floor(math.pow((skill_total - 3), (1 / 2.46))) or 0)
 end
 
-function print_results(cur_stat,stat,prev_stat)
+function MOD.print_results(cur_stat,stat,prev_stat)
     if (prev_stat < cur_stat) then
         game.add_msg("Raising "..stat.." to "..tostring(cur_stat))
     elseif (prev_stat > cur_stat) then
