@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "vehicle_test_mod",
+    "name": "車輌探知テスト",
+    "authors": [ "LISP" ],
+    "maintainers": [ "LISP" ],
+    "description": "車輌テスト用のMODです。",
+    "category": "misc_additions",
+    "dependencies": [ "dda" ]
+  }
+]

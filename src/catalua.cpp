@@ -42,6 +42,10 @@
 * Lua Extention start
 */
 #include "npc.h"
+#include "vehicle.h"
+#include "veh_type.h"
+#include "fault.h"
+#include "bionics.h"
 /**
 * Lua Extention end
 */
@@ -1249,6 +1253,28 @@ static int game_register_monattack(lua_State *L)
 
     return 0; // 0 return values
 }
+
+static int game_get_vehicles(lua_State *L)
+{
+    VehicleList vehicles = g->m.get_vehicles();
+    
+    lua_createtable(L, vehicles.size(), 0);
+
+    for( size_t i = 0; i < vehicles.size(); ++i ) {
+        // The stack will look like this:
+        // 1 - t, table containing id
+        // 2 - k, index at which the next id will be inserted
+        // 3 - v, next id to insert
+        //
+        // lua_rawset then does t[k] = v and pops v and k from the stack
+
+        lua_pushnumber(L, i + 1);
+        LuaReference<vehicle>::push( L, vehicles[i].v );
+        lua_rawset(L, -3);
+    }
+
+    return 1; // 1 return values
+}
 /**
 * Lua Extention end
 */
@@ -1344,6 +1370,7 @@ static const struct luaL_Reg global_funcs [] = {
     * Lua Extention start
     */
     { "register_monattack", game_register_monattack },
+    { "get_vehicles", game_get_vehicles },
     /**
     * Lua Extention end
     */

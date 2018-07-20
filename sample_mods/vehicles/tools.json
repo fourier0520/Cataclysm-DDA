@@ -1,0 +1,24 @@
+[
+  {
+    "type" : "item_action",
+    "id" : "IUSE_SEARCH_VEHICLES",
+    "name" : "車輌を探す"
+  },
+  {
+    "id": "vehicle_search_tool",
+    "type": "TOOL",
+    "symbol": "N",
+    "color": "blue",
+    "name": "車輌探知機",
+    "description": "ローカルマップ内にある車輌を探すためのテストツールです。",
+    "price": 1000,
+    "material": [ "aluminum", "plastic" ],
+    "weight": 1,
+    "volume": 1,
+    "ammo": "battery",
+    "max_charges": 100,
+    "initial_charges": 100,
+    "charges_per_use": 1,
+    "use_action" : "IUSE_SEARCH_VEHICLES"
+  }
+]
