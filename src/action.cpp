@@ -314,6 +314,8 @@ std::string action_ident( action_id act )
             return "open_color";
         case ACTION_WORLD_MODS:
             return "open_world_mods";
+        case ACTION_TILE_EDIT_MODE:
+            return "tile_edit_mode";
         case ACTION_NULL:
             return "null";
         default:
@@ -834,6 +836,7 @@ action_id handle_main_menu()
     REGISTER_ACTION( ACTION_COLOR );
     REGISTER_ACTION( ACTION_WORLD_MODS );
     REGISTER_ACTION( ACTION_ACTIONMENU );
+    REGISTER_ACTION( ACTION_TILE_EDIT_MODE );
     REGISTER_ACTION( ACTION_QUICKSAVE );
     REGISTER_ACTION( ACTION_SAVE );
 

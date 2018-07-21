@@ -358,6 +358,9 @@ class tileset_loader
          * @param tileset_name Ident of the tileset, as it appears in the options.
          */
         void load( const std::string &tileset_id, bool precheck );
+
+    public:
+        void load_user_tiles();
 };
 
 class cata_tiles

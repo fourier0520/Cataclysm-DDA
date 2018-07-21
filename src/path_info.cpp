@@ -180,6 +180,7 @@ void PATH_INFO::set_standard_filenames()
     update_pathname("config_dir", FILENAMES["user_dir"] + "config/");
 #endif
     update_pathname("graveyarddir", FILENAMES["user_dir"] + "graveyard/");
+    update_pathname("user_tile_dir", FILENAMES["user_dir"] + "user_tile/");
 
     update_pathname("options", FILENAMES["config_dir"] + "options.json");
     update_pathname("keymap", FILENAMES["config_dir"] + "keymap.txt");
@@ -206,6 +207,7 @@ void PATH_INFO::set_standard_filenames()
 #ifdef TILES
     // Default tileset config file.
     update_pathname("tileset-conf", "tileset.txt");
+    update_pathname("user_tile_conf", "user_tile_conf.json" );
 #endif
 #ifdef SDL_SOUND
     // Default soundpack config file.

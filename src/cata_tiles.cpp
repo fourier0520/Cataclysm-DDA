@@ -35,6 +35,7 @@
 #include "cata_utility.h"
 #include "cursesport.h"
 #include "rect_range.h"
+#include "tile_edit.h"
 
 #include <cassert>
 #include <algorithm>
@@ -85,6 +86,7 @@ static const std::array<std::string, 12> TILE_CATEGORY_IDS = {{
     "weather", // C_WEATHER,
 }};
 
+std::unique_ptr<user_tile> user_tile_setting;
 
 namespace
 {
@@ -622,6 +624,10 @@ void tileset_loader::load( const std::string &tileset_id, const bool precheck )
     if( config.has_array( "overlay_ordering" ) ) {
         load_overlay_ordering_into_array( config, tileset_mutation_overlay_ordering );
     }
+
+    user_tile_setting.reset( new user_tile() );
+    user_tile_setting->load();
+    load_user_tiles();
 
     // offset should be the total number of sprites loaded from every tileset image
     // eliminate any sprite references that are too high to exist

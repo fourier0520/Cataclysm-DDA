@@ -252,6 +252,8 @@ enum action_id : int {
     ACTION_TOGGLE_PIXEL_MINIMAP,
     /** Turn auto pulp or butcher on/off */
     ACTION_TOGGLE_AUTO_PULP_BUTCHER,
+    /** User tile edit mode */
+    ACTION_TILE_EDIT_MODE,
     /** Not an action, serves as count of enumerated actions */
     NUM_ACTIONS
     /**@}*/
