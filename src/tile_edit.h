@@ -5,8 +5,7 @@
 #include "enums.h"
 #include "item.h"
 
-struct user_tile_info
-{
+struct user_tile_info {
     std::string id;
     std::string fg_file;
     std::string bg_file;
@@ -19,13 +18,15 @@ struct user_tile_info
     int offset_y = 0;
 };
 
+using user_tiles_vec = std::vector<user_tile_info>;
+
 class user_tile
 {
     public:
         user_tile();
         ~user_tile();
 
-        std::vector<user_tile_info> load();
+        void load();
         bool save();
         void serialize( JsonOut &json ) const;
         user_tile_info get_user_tile_info_from_json( JsonObject jo );
@@ -34,12 +35,14 @@ class user_tile
         void update_tile_info( user_tile_info new_ut );
         std::string get_tile_info_msg( std::string id );
 
-        std::tuple<bool, user_tile_info> set_tile_menu( std::string id, std::vector<std::string> img_files );
+        std::tuple<bool, user_tile_info> set_tile_menu( std::string id,
+                std::vector<std::string> img_files );
 
         void item_tile_edit();
 
-        std::vector<user_tile_info> info;
-        std::vector<user_tile_info> new_info;
+        user_tiles_vec info;
+        user_tiles_vec new_info;
+        bool tiles_updated = false;
 };
 
 #endif // TILE_EDIT_H

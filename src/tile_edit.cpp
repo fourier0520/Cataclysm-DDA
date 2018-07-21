@@ -23,6 +23,7 @@ user_tile::~user_tile() = default;
 user_tile::user_tile()
 {
     info.clear();
+    new_info.clear();
 }
 
 user_tile_info user_tile::get_user_tile_info_from_json( JsonObject jo )
@@ -41,7 +42,7 @@ user_tile_info user_tile::get_user_tile_info_from_json( JsonObject jo )
     return tile_info;
 }
 
-std::vector<user_tile_info> user_tile::load()
+void user_tile::load()
 {
     info.clear();
 
@@ -49,21 +50,19 @@ std::vector<user_tile_info> user_tile::load()
 
     if( !assure_dir_exist( FILENAMES["user_tile_dir"] ) ) {
         popup( _( "Unable to make config directory. Check permissions." ) );
-        return info;
+        return;
     }
     std::ifstream config_file( user_tile_conf.c_str(), std::ifstream::in | std::ifstream::binary );
-    if (!config_file.good()) {
-        return info;
+    if( !config_file.good() ) {
+        return;
     }
 
     JsonIn config_json( config_file );
     JsonArray config_array = config_json.get_array();
-    while (config_array.has_more()) {
+    while( config_array.has_more() ) {
         JsonObject config = config_array.next_object();
         info.push_back( user_tile::get_user_tile_info_from_json( config ) );
     }
-
-    return info;
 }
 
 void tileset_loader::load_user_tiles()
@@ -71,15 +70,16 @@ void tileset_loader::load_user_tiles()
     std::string img_dir = FILENAMES["user_tile_dir"];
     // Enumurate all image files
     std::vector<std::string> img_files;
-    for(auto &t : user_tile_setting->info) {
-        std::vector<std::string>::iterator iter = std::find( img_files.begin(), img_files.end(), t.fg_file );
+    for( auto &t : user_tile_setting->info ) {
+        std::vector<std::string>::iterator iter = std::find( img_files.begin(), img_files.end(),
+                t.fg_file );
         size_t index = std::distance( img_files.begin(), iter );
-        if (index == img_files.size()) {
+        if( index == img_files.size() ) {
             img_files.push_back( t.fg_file );
         }
         iter = std::find( img_files.begin(), img_files.end(), t.bg_file );
         index = std::distance( img_files.begin(), iter );
-        if (index == img_files.size()) {
+        if( index == img_files.size() ) {
             img_files.push_back( t.bg_file );
         }
     }
@@ -90,8 +90,13 @@ void tileset_loader::load_user_tiles()
         // Check image file size
         auto full_path = img_dir + img_path;
         SDL_Surface_Ptr tile_atlas( IMG_Load( full_path.c_str() ) );
-        if ( !tile_atlas ) {
-            throw std::runtime_error( "Could not load tile image \"" + full_path + "\": " + IMG_GetError() );
+        try {
+            if( !tile_atlas ) {
+                throw std::runtime_error( "Could not load tile image \"" + full_path + "\": " + IMG_GetError() );
+            }
+        } catch( const std::exception &err ) {
+            debugmsg( err.what() );
+            continue;
         }
         // @todo: allow multi tile file?
         sprite_width = tile_atlas->w;
@@ -102,9 +107,12 @@ void tileset_loader::load_user_tiles()
     }
 
     // Add user tilesets
-    for( auto &t : user_tile_setting->info) {
+    for( auto &t : user_tile_setting->info ) {
         tile_type curr_subtile;
         std::vector<int> fg, bg;
+        if( user_sprite_map.count( t.fg_file ) == 0 || user_sprite_map.count( t.bg_file ) == 0 ) {
+            continue;
+        }
         fg.push_back( user_sprite_map[t.fg_file] );
         bg.push_back( user_sprite_map[t.bg_file] );
         curr_subtile.fg.add( fg, 1 );
@@ -118,6 +126,7 @@ std::vector<std::string> user_tile::get_user_image_files()
     auto dir = FILENAMES["user_tile_dir"];
     auto files = get_files_from_path( ".png", dir, true, true );
     std::vector<std::string> ret;
+    // Romove user dir path  @todo: is there useful library?
     for( auto file : files ) {
         if( file.find( dir ) == 0 ) {
             ret.push_back( file.replace( 0, dir.size(), "" ) );
@@ -129,7 +138,7 @@ std::vector<std::string> user_tile::get_user_image_files()
 void user_tile::serialize( JsonOut &json ) const
 {
     json.start_array();
-    for ( user_tile_info t : info ) {
+    for( user_tile_info t : info ) {
         json.start_object();
 
         json.member( "id", t.id );
@@ -145,11 +154,11 @@ bool user_tile::save()
 {
     const auto savefile = FILENAMES["user_tile_dir"] + FILENAMES["user_tile_conf"];
 
-    if (!assure_dir_exist( FILENAMES["user_tile_dir"] )) {
+    if( !assure_dir_exist( FILENAMES["user_tile_dir"] ) ) {
         popup( _( "Unable to make config directory. Check permissions." ) );
         return false;
     }
-    return write_to_file( savefile, [&]( std::ostream &fout ) {
+    return write_to_file( savefile, [&]( std::ostream & fout ) {
         JsonOut jout( fout, true );
         serialize( jout );
     }, _( "user tiles" ) );
@@ -159,7 +168,7 @@ std::string user_tile::get_tile_info_msg( std::string id )
 {
     std::string msg;
     bool found = false;
-    for (auto t : new_info) {
+    for( auto t : new_info ) {
         bool ret = false;
         if( t.id == id ) {
             msg += "Normal item tile \n";
@@ -220,7 +229,8 @@ class item_tile_edit_callback: public uimenu_callback
         }
 };
 
-std::tuple<bool, user_tile_info> user_tile::set_tile_menu( std::string id, std::vector<std::string> img_files )
+std::tuple<bool, user_tile_info> user_tile::set_tile_menu( std::string id,
+        std::vector<std::string> img_files )
 {
     user_tile_info ut;
     ut.id = id;
@@ -240,11 +250,11 @@ std::tuple<bool, user_tile_info> user_tile::set_tile_menu( std::string id, std::
     ut.fg_file = img_files[filemenu.ret];
 
     filemenu.title = _( "Select background image file" );
-    for (size_t i = 0; i < img_files.size(); i++) {
+    for( size_t i = 0; i < img_files.size(); i++ ) {
         filemenu.addentry( i, true, 0, _( img_files[i].c_str() ) );
     }
     filemenu.query();
-    if (filemenu.ret < 0) {
+    if( filemenu.ret < 0 ) {
         return std::forward_as_tuple( false, ut );
     }
     ut.bg_file = img_files[filemenu.ret];
@@ -262,7 +272,7 @@ std::tuple<bool, bool, std::string> select_change_type( item ity )
     menu.return_invalid = true;
     menu.addentry( 0, true, 0, _( "Change normal tile" ) );
     menu.addentry( 1, true, 0, _( "Change wielded tile" ) );
-    if (ity.is_armor()) {
+    if( ity.is_armor() ) {
         menu.addentry( 2, true, 0, _( "Change worn tile" ) );
     }
     menu.addentry( 3, true, 0, _( "Restore default tile" ) );
@@ -291,26 +301,30 @@ std::tuple<bool, bool, std::string> select_change_type( item ity )
 
 void user_tile::remove_tile_info_by_id( std::string id )
 {
-    std::vector<user_tile_info>::iterator it = new_info.begin();
+    user_tiles_vec::iterator it = new_info.begin();
     while( it != new_info.end() ) {
-        if( id == it->id || ("overlay_wielded_" + id) == it->id
-            || ("overlay_worn_" + id) == it->id) {
+        if( id == it->id || ( "overlay_wielded_" + id ) == it->id
+            || ( "overlay_worn_" + id ) == it->id ) {
             it = new_info.erase( it );
+        } else {
+            ++it;
         }
-        else ++it;
     }
+    tiles_updated = true;
 }
 
 void user_tile::update_tile_info( user_tile_info new_ut )
 {
-    std::vector<user_tile_info>::iterator it = new_info.begin();
+    user_tiles_vec::iterator it = new_info.begin();
     while( it != new_info.end() ) {
         if( new_ut.id == it->id ) {
             it = new_info.erase( it );
+        } else {
+            ++it;
         }
-        else ++it;
     }
     new_info.push_back( new_ut );
+    tiles_updated = true;
 }
 
 void user_tile::item_tile_edit()
@@ -330,7 +344,7 @@ void user_tile::item_tile_edit()
     for( size_t i = 0; i < opts.size(); i++ ) {
         item ity( opts[i], 0 );
         menu.addentry( i, true, 0, string_format( _( "%.*s" ), menu.pad_right - 5,
-                        ity.tname( 1, false ).c_str() ) );
+                       ity.tname( 1, false ).c_str() ) );
         menu.entries[i].extratxt.txt = ity.symbol();
         menu.entries[i].extratxt.color = ity.color();
         menu.entries[i].extratxt.left = 1;
@@ -349,19 +363,19 @@ void user_tile::item_tile_edit()
         if( menu.ret >= 0 ) {
             item ity( opts[menu.ret] );
             bool ret;
-            bool clear;
+            bool remove;
             std::string prefix;
             // Check item tile type
-            std::tie( ret, clear, prefix ) = select_change_type( ity );
+            std::tie( ret, remove, prefix ) = select_change_type( ity );
             if( ret ) {
-                if( clear ) {
+                if( remove ) {
                     // Restore default tile
                     remove_tile_info_by_id( ity.typeId() );
                 } else {
                     user_tile_info ut;
                     std::string id = prefix + ity.typeId();
                     std::tie( ret, ut ) = set_tile_menu( id, img_files );
-                    if (ret) {
+                    if( ret ) {
                         update_tile_info( ut );
                     }
                 }
@@ -369,10 +383,11 @@ void user_tile::item_tile_edit()
         }
     } while( menu.ret >= 0 );
 
-    if( !new_info.empty() ) {
-        if(query_yn( _( "Save changes? (Requires restart)" ) )) {
+    if( tiles_updated ) {
+        if( query_yn( _( "Save changes? (Requires restart)" ) ) ) {
             info = new_info;
             save();
         }
     }
+    tiles_updated = false;
 }
