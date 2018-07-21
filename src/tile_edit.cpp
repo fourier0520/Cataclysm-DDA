@@ -128,6 +128,7 @@ std::vector<std::string> user_tile::get_user_image_files()
     std::vector<std::string> ret;
     // Romove user dir path  @todo: is there useful library?
     for( auto file : files ) {
+        file = native_to_utf8( file );
         if( file.find( dir ) == 0 ) {
             ret.push_back( file.replace( 0, dir.size(), "" ) );
         }
