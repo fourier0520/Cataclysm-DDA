@@ -128,15 +128,20 @@ void tileset_loader::load_user_tiles()
     // Enumurate all image files
     std::vector<std::string> img_files;
     for( auto &t : user_tile_setting->info ) {
-        std::vector<std::string>::iterator iter = std::find( img_files.begin(), img_files.end(),
-                t.fg_file );
-        size_t index = std::distance( img_files.begin(), iter );
-        if( index == img_files.size() ) {
+        bool fg_exist = false;
+        bool bg_exist = false;
+        for( auto file : img_files ) {
+            if( file == t.fg_file ) {
+                fg_exist = true;
+            }
+            if( file == t.bg_file ) {
+                bg_exist = true;
+            }
+        }
+        if( !fg_exist ) {
             img_files.push_back( t.fg_file );
         }
-        iter = std::find( img_files.begin(), img_files.end(), t.bg_file );
-        index = std::distance( img_files.begin(), iter );
-        if( index == img_files.size() ) {
+        if( !bg_exist ) {
             img_files.push_back( t.bg_file );
         }
     }
@@ -351,8 +356,6 @@ void user_tile::item_tile_edit()
 {
     const auto opts = item_controller->all();
 
-    int prev_amount = 1;
-    int amount = 1;
     uimenu menu;
     menu.w_x = 0;
     menu.w_width = TERMX;
