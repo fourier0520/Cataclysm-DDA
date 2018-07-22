@@ -1,4 +1,4 @@
-#include "tile_edit.h"
+#include "user_tiles.h"
 
 #include "json.h"
 #include "path_info.h"
@@ -17,6 +17,63 @@
 
 extern std::unique_ptr<cata_tiles> tilecontext;
 extern std::unique_ptr<user_tile> user_tile_setting;
+
+const std::string overlay_worn_prefix( "overlay_worn_" );
+const std::string overlay_wielded_prefix( "overlay_wielded_" );
+
+std::string overlay_worn_id( std::string id )
+{
+    return overlay_worn_prefix + id;
+}
+
+std::string overlay_wielded_id( std::string id )
+{
+    return overlay_wielded_prefix + id;
+}
+
+bool is_originated_id( std::string base_id, std::string target_id )
+{
+    if( base_id == target_id || overlay_wielded_id(base_id) == target_id ||
+        overlay_wielded_id(base_id) == target_id ) {
+        return true;
+    }
+
+    return false;
+}
+
+class item_tile_edit_callback: public uimenu_callback
+{
+public:
+    std::string msg;
+    const std::vector<const itype *> &standard_itype_ids;
+    item_tile_edit_callback( const std::vector<const itype *> &ids ) :
+        msg(), standard_itype_ids( ids ) {
+    }
+    void select( int entnum, uimenu *menu ) override {
+        const int starty = 3;
+        const int startx = menu->w_width - menu->pad_right;
+        const std::string padding( menu->pad_right, ' ' );
+        for( int y = 2; y < menu->w_height - 1; y++ ) {
+            mvwprintw( menu->window, y, startx - 1, padding );
+        }
+        item tmp( standard_itype_ids[entnum], calendar::turn );
+        std::string id = standard_itype_ids[entnum]->get_id();
+        mvwhline( menu->window, 1, startx, ' ', menu->pad_right - 1 );
+        const std::string header = string_format( "#%d: %s", entnum, id.c_str() );
+        mvwprintz( menu->window, 1, startx + ( menu->pad_right - 1 - header.size() ) / 2, c_cyan,
+            header );
+
+        fold_and_print( menu->window, starty, startx, menu->pad_right - 1, c_light_gray,
+            user_tile_setting->get_tile_info_msg( id ) );
+
+        mvwprintz( menu->window, menu->w_height - 3, startx, c_green, msg );
+        msg.erase();
+
+        input_context ctxt( "UIMENU" );
+        mvwprintw( menu->window, menu->w_height - 2, startx, _( "[%s] find, [%s] quit" ),
+            ctxt.get_desc( "FILTER" ).c_str(), ctxt.get_desc( "QUIT" ).c_str() );
+    }
+};
 
 user_tile::~user_tile() = default;
 
@@ -175,11 +232,11 @@ std::string user_tile::get_tile_info_msg( std::string id )
             msg += "Normal item tile \n";
             ret = true;
         }
-        if( ( "overlay_wielded_" + id ) == t.id ) {
+        if( overlay_wielded_id( id ) == t.id ) {
             msg += "Wielded item tile \n";
             ret = true;
         }
-        if( ( "overlay_worn_" + id ) == t.id ) {
+        if( overlay_worn_id( id ) == t.id ) {
             msg += "Worn item tile \n";
             ret = true;
         }
@@ -195,41 +252,6 @@ std::string user_tile::get_tile_info_msg( std::string id )
     }
     return msg;
 }
-
-class item_tile_edit_callback: public uimenu_callback
-{
-    public:
-        std::string msg;
-        const std::vector<const itype *> &standard_itype_ids;
-        item_tile_edit_callback( const std::vector<const itype *> &ids ) :
-            msg(), standard_itype_ids( ids ) {
-        }
-        void select( int entnum, uimenu *menu ) override {
-            const int starty = 3;
-            const int startx = menu->w_width - menu->pad_right;
-            const std::string padding( menu->pad_right, ' ' );
-            for( int y = 2; y < menu->w_height - 1; y++ ) {
-                mvwprintw( menu->window, y, startx - 1, padding );
-            }
-            item tmp( standard_itype_ids[entnum], calendar::turn );
-            std::string id = standard_itype_ids[entnum]->get_id();
-            mvwhline( menu->window, 1, startx, ' ', menu->pad_right - 1 );
-            const std::string header = string_format( "#%d: %s", entnum, id.c_str() );
-            mvwprintz( menu->window, 1, startx + ( menu->pad_right - 1 - header.size() ) / 2, c_cyan,
-                       header );
-
-            fold_and_print( menu->window, starty, startx, menu->pad_right - 1, c_light_gray,
-                            user_tile_setting->get_tile_info_msg( id ) );
-
-            mvwprintz( menu->window, menu->w_height - 3, startx, c_green, msg );
-            msg.erase();
-
-            input_context ctxt( "UIMENU" );
-            mvwprintw( menu->window, menu->w_height - 2, startx, _( "[%s] find, [%s] quit" ),
-                       ctxt.get_desc( "FILTER" ).c_str(), ctxt.get_desc( "QUIT" ).c_str() );
-        }
-};
-
 std::tuple<bool, user_tile_info> user_tile::set_tile_menu( std::string id,
         std::vector<std::string> img_files )
 {
@@ -237,8 +259,6 @@ std::tuple<bool, user_tile_info> user_tile::set_tile_menu( std::string id,
     ut.id = id;
 
     uimenu filemenu;
-    filemenu.w_x = 4;
-    filemenu.w_width = TERMX - 8;
     filemenu.return_invalid = true;
     filemenu.title = _( "Select forground image file" );
     for( size_t i = 0; i < img_files.size(); i++ ) {
@@ -284,10 +304,10 @@ std::tuple<bool, bool, std::string> select_change_type( item ity )
         case 0:
             break;
         case 1:
-            prefix = "overlay_wielded_";
+            prefix = overlay_wielded_prefix;
             break;
         case 2:
-            prefix = "overlay_worn_";
+            prefix = overlay_worn_prefix;
             break;
         case 3:
             clear = true;
@@ -304,8 +324,7 @@ void user_tile::remove_tile_info_by_id( std::string id )
 {
     user_tiles_vec::iterator it = new_info.begin();
     while( it != new_info.end() ) {
-        if( id == it->id || ( "overlay_wielded_" + id ) == it->id
-            || ( "overlay_worn_" + id ) == it->id ) {
+        if( is_originated_id( id, it->id ) ) {
             it = new_info.erase( it );
         } else {
             ++it;

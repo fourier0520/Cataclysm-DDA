@@ -35,7 +35,7 @@
 #include "cata_utility.h"
 #include "cursesport.h"
 #include "rect_range.h"
-#include "tile_edit.h"
+#include "user_tiles.h"
 
 #include <cassert>
 #include <algorithm>

@@ -105,7 +105,7 @@
 #include "monexamine.h"
 #include "loading_ui.h"
 #include "sidebar.h"
-#include "tile_edit.h"
+#include "user_tiles.h"
 
 #include <map>
 #include <set>
