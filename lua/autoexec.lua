@@ -13,14 +13,12 @@ outdated_metatable = {
 -- table containing our mods
 mods = { }
 
-function mod_callback(callback_name, ...)
-    rval = nil -- 
+function mod_callback(callback_name)
     for modname, mod_instance in pairs(mods) do
         if type(mod_instance[callback_name]) == "function" then
-            rval = mod_instance[callback_name](...)
+            mod_instance[callback_name]()
         end
     end
-    return rval
 end
 
 function resolve_name(name)
