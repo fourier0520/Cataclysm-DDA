@@ -195,6 +195,7 @@ static const trait_id trait_ILLITERATE( "ILLITERATE" );
 static const trait_id trait_INFIMMUNE( "INFIMMUNE" );
 static const trait_id trait_INFRESIST( "INFRESIST" );
 static const trait_id trait_LEG_TENT_BRACE( "LEG_TENT_BRACE" );
+static const trait_id trait_M_IMMUNE( "M_IMMUNE" );
 static const trait_id trait_PARKOUR( "PARKOUR" );
 static const trait_id trait_PER_SLIME_OK( "PER_SLIME_OK" );
 static const trait_id trait_PER_SLIME( "PER_SLIME" );
@@ -1465,7 +1466,7 @@ bool game::do_turn()
     if( calendar::once_every( 1_hours ) ) {
         lua_callback( "on_hour_passed" );
     }
- 
+
     if( calendar::once_every( 1_minutes ) ) {
         lua_callback("on_minute_passed");
     }
@@ -1785,7 +1786,7 @@ void game::update_weather()
 
 int game::get_temperature( const tripoint &location )
 {
-    
+
     if ( location.z < 0 ) {
         // underground temperature = average New England temperature = 43F/6C rounded to int
         return 43 + m.temperature( location );
@@ -6379,20 +6380,24 @@ void game::clear_zombies()
 }
 
 /**
- * Attempts to spawn a hallucination somewhere close to the player. Returns
- * false if the hallucination couldn't be spawned for whatever reason, such as
+ * Attempts to spawn a hallucination at given location or at random location close to the player.
+ * Returns false if the hallucination couldn't be spawned for whatever reason, such as
  * a monster already in the target square.
  * @return Whether or not a hallucination was successfully spawned.
  */
-bool game::spawn_hallucination()
+bool game::spawn_hallucination( const tripoint &p )
 {
-    monster phantasm(MonsterGenerator::generator().get_valid_hallucination());
+    monster phantasm( MonsterGenerator::generator().get_valid_hallucination() );
     phantasm.hallucination = true;
-    phantasm.spawn({u.posx() + static_cast<int>(rng(-10, 10)), u.posy() + static_cast<int>(rng(-10, 10)), u.posz()});
+    if( p == tripoint_min ) {
+        phantasm.spawn( {u.posx() + static_cast<int>( rng( -10, 10 ) ), u.posy() + static_cast<int>( rng( -10, 10 ) ), u.posz()} );
+    } else {
+        phantasm.spawn( p );
+    }
 
     //Don't attempt to place phantasms inside of other creatures
     if( !critter_at( phantasm.pos(), true ) ) {
-        return critter_tracker->add(phantasm);
+        return critter_tracker->add( phantasm );
     } else {
         return false;
     }
@@ -7596,9 +7601,9 @@ void game::print_creature_info( const Creature *creature, const catacurses::wind
 void game::print_vehicle_info( const vehicle *veh, int veh_part, const catacurses::window &w_look,
                                const int column, int &line, const int last_line )
 {
-    if (veh) {
-        mvwprintw(w_look, ++line, column, _("There is a %s there. Parts:"), veh->name.c_str());
-        line = veh->print_part_desc(w_look, ++line, last_line, getmaxx(w_look), veh_part);
+    if( veh ) {
+        mvwprintw( w_look, ++line, column, _( "There is a %s there. Parts:" ), veh->name.c_str() );
+        line = veh->print_part_list( w_look, ++line, last_line, getmaxx( w_look ), veh_part );
     }
 }
 
@@ -9840,6 +9845,10 @@ bool game::plfire()
                 return false;
             }
             reload_time += opt.moves();
+            // Character restores 50% + 7% * gun_skill, capped with 100% stability after shot for RELOAD_AND_SHOOT weapon
+            double skill_effect = 0.5 - 0.07 * u.get_skill_level( gun->gun_skill() );
+            skill_effect = std::max( skill_effect, 0.0 );
+            u.recoil = std::max( u.recoil, MAX_RECOIL * skill_effect );
             if( !gun->reload( u, std::move( opt.ammo ), 1 ) ) {
                 // Reload not allowed
                 return false;
@@ -11368,8 +11377,9 @@ bool game::walk_move( const tripoint &dest_loc )
 
     // Print a message if movement is slow
     const int mcost_to = m.move_cost( dest_loc ); //calculate this _after_ calling grabbed_move
-    const bool slowed = ( !u.has_trait( trait_id( "PARKOUR" ) ) && ( mcost_to > 2 || mcost_from > 2 ) ) ||
-                  mcost_to > 4 || mcost_from > 4;
+    const bool fungus = m.has_flag_ter_or_furn( "FUNGUS" , u.pos() ) || m.has_flag_ter_or_furn( "FUNGUS" , dest_loc ); //fungal furniture has no slowing effect on mycus characters
+    const bool slowed = ( ( !u.has_trait( trait_PARKOUR ) && ( mcost_to > 2 || mcost_from > 2 ) ) || mcost_to > 4 || mcost_from > 4 ) &&
+                        !( u.has_trait( trait_M_IMMUNE ) && fungus );
     if( slowed ) {
         // Unless u.pos() has a higher movecost than dest_loc, state that dest_loc is the cause
         if( mcost_to >= mcost_from ) {
