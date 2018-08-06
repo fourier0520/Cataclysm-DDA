@@ -58,7 +58,9 @@ void activity_type::check_consistency()
         }
         if( pair.second.based_on_ == based_on_type::NEITHER &&
             activity_handlers::do_turn_functions.find( pair.second.id_ ) ==
-            activity_handlers::do_turn_functions.end() ) {
+            activity_handlers::do_turn_functions.end() &&
+            activity_handlers::lua_do_turn_functions.find( pair.second.id_ ) ==
+            activity_handlers::lua_do_turn_functions.end() ) {
             debugmsg( "%s needs a do_turn function if it's not based on time or speed.",
                       pair.second.id_.c_str() );
         }
@@ -77,10 +79,29 @@ void activity_type::check_consistency()
                       pair.first.c_str() );
         }
     }
+
+    for( const auto &pair : activity_handlers::lua_do_turn_functions ) {
+        if( activity_type_all.find( pair.first ) == activity_type_all.end() ) {
+            debugmsg( "The do_turn function %s doesn't correspond to a valid activity_type.",
+                      pair.first.c_str() );
+        }
+    }
+
+    for( const auto &pair : activity_handlers::lua_finish_functions ) {
+        if( activity_type_all.find( pair.first ) == activity_type_all.end() ) {
+            debugmsg( "The finish_function %s doesn't correspond to a valid activity_type",
+                      pair.first.c_str() );
+        }
+    }
 }
 
 void activity_type::call_do_turn( player_activity *act, player *p ) const
 {
+    auto &lua_pair = activity_handlers::lua_do_turn_functions.find( id_ );
+    if( lua_pair != activity_handlers::lua_do_turn_functions.end() ) {
+        lua_pair->second->call( act, p );
+    }
+
     const auto &pair = activity_handlers::do_turn_functions.find( id_ );
     if( pair != activity_handlers::do_turn_functions.end() ) {
         pair->second( act, p );
@@ -89,6 +110,12 @@ void activity_type::call_do_turn( player_activity *act, player *p ) const
 
 bool activity_type::call_finish( player_activity *act, player *p ) const
 {
+    auto &lua_pair = activity_handlers::lua_finish_functions.find( id_ );
+    if( lua_pair != activity_handlers::lua_finish_functions.end() ) {
+        lua_pair->second->call( act, p );
+        return true;
+    }
+
     const auto &pair = activity_handlers::finish_functions.find( id_ );
     if( pair != activity_handlers::finish_functions.end() ) {
         pair->second( act, p );
@@ -102,3 +129,7 @@ void activity_type::reset()
     activity_type_all.clear();
 }
 
+bool string_id<activity_type>::is_valid() const
+{
+    return activity_type_all.count( *this ) > 0;
+}

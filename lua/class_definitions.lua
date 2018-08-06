@@ -828,6 +828,8 @@ classes = {
             { name = "add_morale", rval = nil, args = { "morale_type", "int", "int", "time_duration", "time_duration", "bool" } },
             { name = "add_morale", rval = nil, args = { "morale_type", "int", "int", "time_duration", "time_duration", "bool", "itype" } },
             { name = "allergy_type", rval = "morale_type", args = { "item" } },
+            { name = "assign_activity", rval = nil, args = { "activity_id", "int", "int", "int", "string" } },
+            { name = "assign_activity", rval = nil, args = { "player_activity", "bool" } },
             { name = "has_morale", rval = "int", args = { "morale_type" } },
             { name = "rem_morale", rval = nil, args = { "morale_type" } },
             { name = "rem_morale", rval = nil, args = { "morale_type", "itype" } },
@@ -2046,6 +2048,47 @@ classes = {
             { name = "requirements", rval = nil, args = { } },
             { name = "skills", rval = nil, args = { } },
             { name = "time", rval = "int", args = { } },
+        }
+    },
+    activity_type = {
+        string_id = "activity_id",
+        attributes = {
+        },
+        functions = {
+            { name = "id", rval = "activity_id&", args = { } },
+            { name = "rooted", rval = "bool", args = { } },
+            { name = "suspendable", rval = "bool", args = { } },
+            { name = "stop_phrase", rval = "string", args = { } },
+            { name = "no_resume", rval = "bool", args = { } },
+            { name = "will_refuel_fires", rval = "bool", args = { } },
+        }
+    },
+    player_activity = {
+        by_value = true,
+        attributes = {
+            moves_total = { type = "int", writable = true },
+            moves_left = { type = "int", writable = true },
+            index = { type = "int", writable = true },
+            position = { type = "int", writable = true },
+            name = { type = "string", writable = true },
+            ignore_trivial = { type = "bool", writable = true },
+            placement = { type = "tripoint", writable = true },
+            warned_of_proximity = { type = "bool", writable = true },
+            auto_resume = { type = "bool", writable = true },
+        },
+        new = {
+            { },
+            { "activity_id", "int", "int", "int", "string" },
+            { "player_activity" },
+        },
+        functions = {
+            { name = "is_null", rval = "bool", args = { } },
+            { name = "id", rval = "activity_id&", args = { } },
+            { name = "rooted", rval = "bool", args = { } },
+            { name = "get_stop_phrase", rval = "string", args = { } },
+            { name = "get_value", rval = "int", args = { "int", "int" } },
+            { name = "get_str_value", rval = "string", args = { "int", "string" } },
+            { name = "is_suspendable", rval = "bool", args = { } },
         }
     },
     npc_opinion = {
