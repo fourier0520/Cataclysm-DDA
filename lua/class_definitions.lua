@@ -2064,7 +2064,7 @@ classes = {
         }
     },
     player_activity = {
-        by_value = true,
+        by_value_and_reference = true,
         attributes = {
             moves_total = { type = "int", writable = true },
             moves_left = { type = "int", writable = true },
@@ -2083,6 +2083,7 @@ classes = {
         },
         functions = {
             { name = "is_null", rval = "bool", args = { } },
+            { name = "set_to_null", rval = nil, args = { } },
             { name = "id", rval = "activity_id&", args = { } },
             { name = "rooted", rval = "bool", args = { } },
             { name = "get_stop_phrase", rval = "string", args = { } },

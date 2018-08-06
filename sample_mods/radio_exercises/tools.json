@@ -1,0 +1,33 @@
+[
+  {
+    "id": "ACT_RADIO_EXERCISES",
+    "type": "activity_type",
+    "stop_phrase": "中断しますか？",
+    "suspendable": false,
+    "based_on": "speed"
+  },
+  {
+    "type" : "item_action",
+    "id" : "RADIO_EXERCISES",
+    "name" : "ラジオ体操をする"
+  },
+  {
+    "id": "radio",
+    "type": "TOOL",
+    "name": "radio (off)",
+    "name_plural": "radios (off)",
+    "description": "This is a portable radio.  Using this radio turns it on.  It will pick up any nearby signals being broadcast and play them audibly.",
+    "weight": 295,
+    "volume": 4,
+    "price": 1000,
+    "to_hit": -1,
+    "bashing": 4,
+    "material": [ "plastic", "aluminum" ],
+    "symbol": ";",
+    "color": "light_gray",
+    "ammo": "battery",
+    "initial_charges": 100,
+    "max_charges": 100,
+    "use_action": [ "RADIO_OFF", "RADIO_EXERCISES" ]
+  }
+]

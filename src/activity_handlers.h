@@ -27,9 +27,7 @@ class activity_function_wrapper
 protected:
     activity_function_wrapper() { }
 public:
-    void call( player_activity *act, player *p ) const {
-        return;
-    }
+    virtual void call( player_activity *act, player *p ) const = 0;
     virtual ~activity_function_wrapper() = default;
 };
 
