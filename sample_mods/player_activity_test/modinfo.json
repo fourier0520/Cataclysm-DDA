@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "player_activity_test_mod",
+    "name": "長時間行動テスト",
+    "authors": [ "LISP" ],
+    "maintainers": [ "LISP" ],
+    "description": "長時間行動テスト用のMODです。",
+    "category": "misc_additions",
+    "dependencies": [ "dda" ]
+  }
+]

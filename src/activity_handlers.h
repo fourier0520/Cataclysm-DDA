@@ -22,6 +22,15 @@ void advanced_inv();
 // veh_interact.cpp
 void complete_vehicle();
 
+class activity_function_wrapper
+{
+protected:
+    activity_function_wrapper() { }
+public:
+    virtual void call( player_activity *act, player *p ) const = 0;
+    virtual ~activity_function_wrapper() = default;
+};
+
 namespace activity_handlers
 {
 
@@ -107,6 +116,11 @@ void haircut_finish( player_activity *act, player *p );
 extern const std::map< activity_id, std::function<void( player_activity *, player * )> >
 finish_functions;
 
+extern std::map< activity_id, activity_function_wrapper * >
+lua_do_turn_functions;
+
+extern std::map< activity_id, activity_function_wrapper * >
+lua_finish_functions;
 }
 
 #endif

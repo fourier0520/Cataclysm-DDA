@@ -7,6 +7,7 @@
 
 #include "animation.h"
 #include "lightmap.h"
+#include "line.h"
 #include "game_constants.h"
 #include "weather.h"
 #include "enums.h"
@@ -363,6 +364,24 @@ class tileset_loader
         void load_user_tiles();
 };
 
+enum text_alignment {
+    TEXT_ALIGNMENT_LEFT,
+    TEXT_ALIGNMENT_CENTER,
+    TEXT_ALIGNMENT_RIGHT,
+};
+
+struct formatted_text {
+    std::string text;
+    int color;
+    text_alignment alignment;
+
+    formatted_text( const std::string text, const int color, const text_alignment alignment )
+        : text( text ), color( color ), alignment( alignment ) {
+    }
+
+    formatted_text( const std::string text, const int color, const direction direction );
+};
+
 class cata_tiles
 {
     public:
@@ -375,7 +394,8 @@ class cata_tiles
 
     public:
         /** Draw to screen */
-        void draw( int destx, int desty, const tripoint &center, int width, int height );
+        void draw( int destx, int desty, const tripoint &center, int width, int height,
+                   std::multimap<point, formatted_text> &overlay_strings );
 
         /** Minimap functionality */
         void draw_minimap( int destx, int desty, const tripoint &center, int width, int height );
@@ -464,7 +484,7 @@ class cata_tiles
         void void_weather();
 
         void init_draw_sct();
-        void draw_sct_frame();
+        void draw_sct_frame( std::multimap<point, formatted_text> &overlay_strings );
         void void_sct();
 
         void init_draw_zones( const tripoint &start, const tripoint &end, const tripoint &offset );
@@ -503,6 +523,7 @@ class cata_tiles
             return tile_ratioy;
         }
         void do_tile_loading_report();
+        point player_to_screen( int x, int y ) const;
     protected:
         template <typename maptype>
         void tile_loading_report( maptype const &tiletypemap, std::string const &label,

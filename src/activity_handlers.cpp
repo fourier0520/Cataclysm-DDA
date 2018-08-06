@@ -128,6 +128,12 @@ const std::map< activity_id, std::function<void( player_activity *, player *)> >
     { activity_id( "ACT_HAIRCUT" ), haircut_finish }
 };
 
+std::map< activity_id, activity_function_wrapper * > activity_handlers::lua_do_turn_functions =
+{ };
+
+std::map< activity_id, activity_function_wrapper * > activity_handlers::lua_finish_functions =
+{ };
+
 void messages_in_process( const player_activity &act, const player &p ) {
     if( act.moves_left <= 91000 && act.moves_left > 89000 ) {
         p.add_msg_if_player( m_info, _( "You figure it'll take about an hour and a half at this rate." ) );

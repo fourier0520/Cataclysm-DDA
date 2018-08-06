@@ -46,6 +46,9 @@
 #include "veh_type.h"
 #include "fault.h"
 #include "bionics.h"
+#include "activity_handlers.h"
+#include "activity_type.h"
+#include "player_activity.h"
 /**
 * Lua Extention end
 */
@@ -1162,6 +1165,90 @@ void MonsterGenerator::register_monattack_lua(const std::string &name, int lua_f
     add_attack( mtype_special_attack( new lua_mattack_wrapper(name, lua_function) ) );
 }
 
+class lua_activity_do_turn : public activity_function_wrapper
+{
+private:
+    int lua_function;
+public:
+    lua_activity_do_turn( const int f )
+        : lua_function( f ) { }
+
+    ~lua_activity_do_turn() override = default;
+    void call( player_activity *act, player *p ) const {
+        lua_State * const L = lua_state;
+
+        // If it's a lua function, the arguments have to be wrapped in
+        // lua userdata's and passed on the lua stack.
+        // We will now call the function f(do_turn)
+
+        update_globals( L );
+
+        // Push the lua function on top of the stack
+        lua_rawgeti( L, LUA_REGISTRYINDEX, lua_function );
+
+        // Push the player_activity on top of the stack.
+        const int activity_in_registry = LuaReference<player_activity>::push_reg( L, act );
+        // Push the player on top of the stack.
+        const int player_in_registry = LuaReference<player>::push_reg( L, p );
+
+        // Call the iuse function
+        int err = lua_pcall( L, 2, 0, 0 );
+        lua_report_error( L, err, "activity do_turn function" );
+
+        // Make sure the now outdated parameters we passed to lua aren't
+        // being used anymore by setting a metatable that will error on
+        // access.
+        luah_remove_from_registry( L, activity_in_registry );
+        luah_setmetatable( L, "outdated_metatable" );
+        luah_remove_from_registry( L, player_in_registry );
+        luah_setmetatable( L, "outdated_metatable" );
+
+        return;
+    }
+};
+
+class lua_activity_finish : public activity_function_wrapper
+{
+private:
+    int lua_function;
+public:
+    lua_activity_finish( const int f )
+        : lua_function( f ) { }
+
+    ~lua_activity_finish() override = default;
+    void call( player_activity *act, player *p ) const {
+        lua_State * const L = lua_state;
+
+        // If it's a lua function, the arguments have to be wrapped in
+        // lua userdata's and passed on the lua stack.
+        // We will now call the function f(do_turn)
+
+        update_globals( L );
+
+        // Push the lua function on top of the stack
+        lua_rawgeti( L, LUA_REGISTRYINDEX, lua_function );
+
+        // Push the player_activity on top of the stack.
+        const int activity_in_registry = LuaReference<player_activity>::push_reg( L, act );
+        // Push the player on top of the stack.
+        const int player_in_registry = LuaReference<player>::push_reg( L, p );
+
+        // Call the iuse function
+        int err = lua_pcall( L, 2, 0, 0 );
+        lua_report_error( L, err, "activity finish function" );
+
+        // Make sure the now outdated parameters we passed to lua aren't
+        // being used anymore by setting a metatable that will error on
+        // access.
+        luah_remove_from_registry( L, activity_in_registry );
+        luah_setmetatable( L, "outdated_metatable" );
+        luah_remove_from_registry( L, player_in_registry );
+        luah_setmetatable( L, "outdated_metatable" );
+
+        return;
+    }
+};
+
 static int game_register_monattack(lua_State *L)
 {
     // Make sure the first argument is a string.
@@ -1182,6 +1269,51 @@ static int game_register_monattack(lua_State *L)
 
     return 0; // 0 return values
 }
+
+static int game_register_activity_do_turn( lua_State *L )
+{
+    // Make sure the first argument is a string.
+    const char *name = luaL_checkstring( L, 1 );
+    if( !name ) {
+        return luaL_error( L, "First argument to game.register_activity_do_turn is not a string." );
+    }
+
+    // Make sure the second argument is a function
+    luaL_checktype( L, 2, LUA_TFUNCTION );
+
+    // function_object is at the top of the stack, so we can just pop
+    // it with luaL_ref
+    int function_index = luaL_ref( L, LUA_REGISTRYINDEX );
+    auto do_turn = new lua_activity_do_turn( function_index );
+
+    // Now register function_object with our activity do_turn function's
+    activity_handlers::lua_do_turn_functions.emplace( activity_id(name), do_turn );
+
+    return 0; // 0 return values
+}
+
+static int game_register_activity_finish( lua_State *L )
+{
+    // Make sure the first argument is a string.
+    const char *name = luaL_checkstring( L, 1 );
+    if( !name ) {
+        return luaL_error( L, "First argument to game.register_activity_finish is not a string." );
+    }
+
+    // Make sure the second argument is a function
+    luaL_checktype( L, 2, LUA_TFUNCTION );
+
+    // function_object is at the top of the stack, so we can just pop
+    // it with luaL_ref
+    int function_index = luaL_ref( L, LUA_REGISTRYINDEX );
+    auto finish = new lua_activity_finish( function_index );
+
+    // Now register function_object with our activity finish function's
+    activity_handlers::lua_finish_functions.emplace( activity_id(name), finish );
+
+    return 0; // 0 return values
+}
+
 
 static int game_get_vehicles(lua_State *L)
 {
@@ -1299,6 +1431,8 @@ static const struct luaL_Reg global_funcs [] = {
     * Lua Extention start
     */
     { "register_monattack", game_register_monattack },
+    { "register_activity_do_turn", game_register_activity_do_turn },
+    { "register_activity_finish", game_register_activity_finish },
     { "get_vehicles", game_get_vehicles },
     /**
     * Lua Extention end
