@@ -823,7 +823,7 @@ json-check: $(CHKJSON_BIN)
 	./$(CHKJSON_BIN)
 
 lua_binding:
-	cd $(SRC_DIR) && swig -c++ -o catabindings.cpp -lua $(LUA_DIR)/catabindings.i
+	cd $(SRC_DIR) && swig -c++ -o $(LUA_DIR)/catabindings.cpp -lua $(LUA_DIR)/catabindings.i
 
 src/action.cpp: lua_binding
 
@@ -834,7 +834,7 @@ clean: clean-tests
 	rm -rf *$(BINDIST_DIR) *cataclysmdda-*.tar.gz *cataclysmdda-*.zip
 	rm -f $(SRC_DIR)/version.h
 	rm -f $(CHKJSON_BIN)
-	rm -f $(SRC_DIR)/catabindings.cpp
+	rm -f $(LUASRC_DIR)/catabindings.cpp
 
 distclean:
 	rm -rf *$(BINDIST_DIR)

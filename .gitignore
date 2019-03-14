@@ -40,7 +40,7 @@ cataclysmdda-*
 chkjson*
 debug.log
 logg.txt
-/src/catabindings.cpp
+/src/lua/catabindings.cpp
 
 # Visual Studio files
 *.code-workspace
