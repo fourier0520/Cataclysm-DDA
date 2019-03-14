@@ -134,6 +134,11 @@ BUILD_DIR = $(CURDIR)
 SRC_DIR = src
 LOCALIZE = 1
 ASTYLE_BINARY = astyle
+LUA = 1
+LUA_DIR = lua
+LUASRC_DIR = $(SRC_DIR)/$(LUA_DIR)
+# if you have LUAJIT installed, try make LUA_BINARY=luajit for extra speed
+LUA_BINARY = lua
 
 # Enable astyle by default
 ifndef ASTYLE
@@ -493,6 +498,40 @@ ifeq ($(SOUND), 1)
   CXXFLAGS += -DSDL_SOUND
 endif
 
+ifdef LUA
+  ifeq ($(TARGETSYSTEM),WINDOWS)
+    ifeq ($(MSYS2),1)
+      LUA_USE_PKGCONFIG := 1
+    else
+      # Windows expects to have lua unpacked at a specific location
+      LUA_LIBS := -llua
+    endif
+  else
+    LUA_USE_PKGCONFIG := 1
+  endif
+
+  ifdef OSXCROSS
+    LUA_LIBS = -L$(LIBSDIR)/lua/lib -llua -lm
+    LUA_CFLAGS = -I$(LIBSDIR)/lua/include
+  else
+    ifdef LUA_USE_PKGCONFIG
+      # On unix-like systems, use pkg-config to find lua
+      LUA_CANDIDATES = lua5.3 lua5.2 lua-5.3 lua-5.2 lua5.1 lua-5.1 lua $(LUA_BINARY)
+      LUA_FOUND = $(firstword $(foreach lua,$(LUA_CANDIDATES),\
+          $(shell if $(PKG_CONFIG) --silence-errors --exists $(lua); then echo $(lua);fi)))
+      LUA_PKG = $(if $(LUA_FOUND),$(LUA_FOUND),$(error "Lua not found by $(PKG_CONFIG), install it or make without 'LUA=1'"))
+      LUA_LIBS := $(shell $(PKG_CONFIG) --silence-errors --libs $(LUA_PKG))
+      LUA_CFLAGS := $(shell $(PKG_CONFIG) --silence-errors --cflags $(LUA_PKG))
+    endif
+  endif
+
+  LDFLAGS += $(LUA_LIBS)
+  CXXFLAGS += $(LUA_CFLAGS)
+
+  CXXFLAGS += -DLUA
+  BINDIST_EXTRAS  += $(LUA_DIR)
+endif
+
 ifdef SDL
   TILES = 1
 endif
@@ -753,7 +792,7 @@ endif
 $(BUILD_PREFIX)$(TARGET_NAME).a: $(OBJS)
 	$(AR) rcs $(BUILD_PREFIX)$(TARGET_NAME).a $(filter-out $(ODIR)/main.o $(ODIR)/messages.o,$(OBJS))
 
-.PHONY: version
+.PHONY: version lua_binding
 version:
 	@( VERSION_STRING=$(VERSION) ; \
             [ -e ".git" ] && GITVERSION=$$( git describe --tags --always --dirty --match "[0-9A-Z]*.[0-9A-Z]*" ) && VERSION_STRING=$$GITVERSION ; \
@@ -783,6 +822,11 @@ $(CHKJSON_BIN): src/chkjson/chkjson.cpp src/json.cpp
 json-check: $(CHKJSON_BIN)
 	./$(CHKJSON_BIN)
 
+lua_binding:
+	cd $(SRC_DIR) && swig -c++ -o catabindings.cpp -lua $(LUA_DIR)/catabindings.i
+
+src/action.cpp: lua_binding
+
 clean: clean-tests
 	rm -rf *$(TARGET_NAME) *$(TILES_TARGET_NAME)
 	rm -rf *$(TILES_TARGET_NAME).exe *$(TARGET_NAME).exe *$(TARGET_NAME).a
@@ -790,6 +834,7 @@ clean: clean-tests
 	rm -rf *$(BINDIST_DIR) *cataclysmdda-*.tar.gz *cataclysmdda-*.zip
 	rm -f $(SRC_DIR)/version.h
 	rm -f $(CHKJSON_BIN)
+	rm -f $(SRC_DIR)/catabindings.cpp
 
 distclean:
 	rm -rf *$(BINDIST_DIR)
