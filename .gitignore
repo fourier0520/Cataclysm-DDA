@@ -18,6 +18,7 @@
 /dep/
 /doxygen_doc/html/*
 /doxygen_doc/latex/*
+/doxygen_doc/xml/*
 /graveyard/
 /memorial/
 /mods/
