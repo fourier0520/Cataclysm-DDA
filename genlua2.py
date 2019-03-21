@@ -70,15 +70,17 @@ valid_types = [
     'double',
 ]
 
-#=======================================================
+# =======================================================
 #
 # CppFunction
 #
-#=======================================================
+# =======================================================
+
+
 class CppFunction:
     def __init__(self):
         self.name = None
-        self.args  = []
+        self.args = []
         self.optional_args = []
         self.type = None
 
@@ -88,7 +90,8 @@ class CppFunction:
             if xml_memberdef.attrib['kind'] == 'function':
                 new_func = CppFunction()
                 new_func.name = xml_memberdef.find('name').text
-                new_func.type = etree.tostring(xml_memberdef.find('type'), method="text")
+                new_func.type = etree.tostring(
+                    xml_memberdef.find('type'), method="text")
                 for p in xml_memberdef.iter('param'):
                     s = etree.tostring(p.find('type'), method="text")
                     if p.find('defval') != None:
@@ -129,11 +132,13 @@ class CppFunction:
                 return False
         return True
 
-#=======================================================
+# =======================================================
 #
 # CppVariable
 #
-#=======================================================
+# =======================================================
+
+
 class CppVariable:
     def __init__(self):
         self.name = None
@@ -145,7 +150,8 @@ class CppVariable:
             if xml_memberdef.attrib['kind'] == 'variable':
                 new_var = CppVariable()
                 new_var.name = xml_memberdef.find('name').text
-                new_var.type = etree.tostring(xml_memberdef.find('type'), method="text")
+                new_var.type = etree.tostring(
+                    xml_memberdef.find('type'), method="text")
                 return new_var
         return None
 
@@ -171,11 +177,13 @@ class CppVariable:
             return False
         return True
 
-#=======================================================
+# =======================================================
 #
 # CppType
 #
-#=======================================================
+# =======================================================
+
+
 class CppType:
     lua_typemap = {
         'std::string': 'string',
@@ -231,11 +239,13 @@ class CppType:
     def isValid(self):
         return self.name in valid_types
 
-#=======================================================
+# =======================================================
 #
 # CppClass
 #
-#=======================================================
+# =======================================================
+
+
 class CppClass:
     def __init__(self):
         self.name = None
@@ -247,7 +257,7 @@ class CppClass:
     def load_from_xml(cls, xml_compounddef):
         new_class = CppClass()
         new_class.name = xml_compounddef.find('compoundname').text
-        #function
+        # function
         for member in xml_compounddef.iter('memberdef'):
             new_func = CppFunction.load_from_xml(member)
             if new_func:
@@ -290,6 +300,7 @@ class CppClass:
         s += '}, '
         return s
 
+
 def get_xml_files(path):
     xml_files = []
     if os.path.isdir(path):
@@ -298,6 +309,7 @@ def get_xml_files(path):
             if os.path.isfile(path + '/' + file):
                 xml_files.append(path + '/' + file)
     return xml_files
+
 
 xml_files = get_xml_files('doxygen_doc/xml')
 all_cpp_classes = []
@@ -323,7 +335,6 @@ for xml_file in xml_files:
         tmp2 = re.findall(r'^using\s+(\w+)\s+=\s+(.+)', tmp)
         if len(tmp2):
             typedefs[tmp2[0][0]] = tmp2[0][1]
-
 
     # string_id
     members = tree.xpath("//memberdef[@kind='typedef']")
