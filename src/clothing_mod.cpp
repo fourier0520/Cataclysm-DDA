@@ -39,6 +39,7 @@ static const std::map<std::string, clothing_mod_type> clothing_mod_type_map = {{
         { "bash", clothing_mod_type_bash },
         { "cut", clothing_mod_type_cut },
         { "encumbrance", clothing_mod_type_encumbrance },
+        { "environmental_resist", clothing_mod_type_environmental_resist },
         { "warmth", clothing_mod_type_warmth },
         { "storage", clothing_mod_type_storage },
         { "invalid", clothing_mod_type_invalid }

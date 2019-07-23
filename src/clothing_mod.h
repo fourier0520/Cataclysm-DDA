@@ -19,6 +19,7 @@ enum clothing_mod_type : int {
     clothing_mod_type_bash,
     clothing_mod_type_cut,
     clothing_mod_type_encumbrance,
+    clothing_mod_type_environmental_resist,
     clothing_mod_type_warmth,
     clothing_mod_type_storage,
     clothing_mod_type_invalid
@@ -57,6 +58,7 @@ constexpr std::array<clothing_mod_type, 8> all_clothing_mod_types = {{
         clothing_mod_type_bash,
         clothing_mod_type_cut,
         clothing_mod_type_encumbrance,
+        clothing_mod_type_environmental_resist,
         clothing_mod_type_warmth,
         clothing_mod_type_storage,
         clothing_mod_type_invalid

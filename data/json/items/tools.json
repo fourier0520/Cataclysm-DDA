@@ -5661,7 +5661,7 @@
         "type": "sew_advanced",
         "materials": [ "cotton", "leather", "fur", "nomex", "plastic", "kevlar", "wool" ],
         "skill": "tailor",
-        "clothing_mods": [ "leather_padded", "kevlar_padded", "furred", "wooled" ]
+        "clothing_mods": [ "leather_padded", "kevlar_padded", "furred", "wooled", "nomexed" ]
       }
     ],
     "flags": [ "ALLOWS_REMOTE_USE" ]

@@ -4255,6 +4255,9 @@ int item::get_env_resist( int override_base_resist ) const
     int resist_filter = get_var( "overwrite_env_resist", 0 );
     int resist = std::max( { resist_base, resist_filter, override_base_resist } );
 
+    resist += std::max(0, static_cast<int>(ceil(get_clothing_mod_val(
+        clothing_mod_type_environmental_resist))));
+
     return lround( resist * get_relative_health() );
 }
 

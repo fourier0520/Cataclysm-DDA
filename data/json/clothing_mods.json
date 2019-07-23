@@ -48,5 +48,18 @@
       { "type": "encumbrance", "value": 3, "proportion": [ "coverage" ] },
       { "type": "warmth", "value": 20, "proportion": [ "coverage" ] }
     ]
+  },
+  {
+    "type": "clothing_mod",
+    "id": "nomexed",
+    "flag": "nomexed",
+    "item": "nomex",
+    "implement_prompt": "Line it with nomex",
+    "destroy_prompt": "Destroy nomex lining",
+    "mod_value": [
+      { "type": "encumbrance", "value": 2, "proportion": [ "coverage" ] },
+      { "type": "environmental_resist", "value": 1, "proportion": [ "coverage" ] },
+      { "type": "fire", "value": 4, "proportion": [ "coverage" ] }
+    ]
   }
 ]
