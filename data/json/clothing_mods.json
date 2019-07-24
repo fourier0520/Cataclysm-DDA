@@ -30,7 +30,7 @@
     "id": "furred",
     "flag": "furred",
     "item": "fur",
-    "implement_prompt": "Line it with fur",
+    "implement_prompt": "Line with fur",
     "destroy_prompt": "Destroy fur lining",
     "mod_value": [
       { "type": "encumbrance", "value": 4, "proportion": [ "coverage" ] },
@@ -42,7 +42,7 @@
     "id": "wooled",
     "flag": "wooled",
     "item": "felt_patch",
-    "implement_prompt": "Line it with wool",
+    "implement_prompt": "Line with wool",
     "destroy_prompt": "Destroy wool lining",
     "mod_value": [
       { "type": "encumbrance", "value": 3, "proportion": [ "coverage" ] },
@@ -54,8 +54,8 @@
     "id": "nomexed",
     "flag": "nomexed",
     "item": "nomex",
-    "implement_prompt": "Line it with nomex",
-    "destroy_prompt": "Destroy nomex lining",
+    "implement_prompt": "Line with Nomex",
+    "destroy_prompt": "Destroy Nomex lining",
     "mod_value": [
       { "type": "encumbrance", "value": 2, "proportion": [ "coverage" ] },
       { "type": "environmental_resist", "value": 1, "proportion": [ "coverage" ] },
