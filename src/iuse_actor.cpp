@@ -4376,15 +4376,20 @@ int sew_advanced_actor::use( player &p, item &it, bool, const tripoint & ) const
                ( it.charges >= thread_needed && has_enough[mat_item] );
     };
 
-    const auto get_compare_color = [&](const int before, const int after, const bool higher_is_better) {
-        return before == after ? c_unset : ((after > before) == higher_is_better ? c_light_green : c_red);
+    const auto get_compare_color = [&]( const int before, const int after,
+    const bool higher_is_better ) {
+        return before == after ? c_unset : ( ( after > before ) == higher_is_better ? c_light_green :
+                                             c_red );
     };
-    const auto get_volume_compare_color = [&](const units::volume before, const units::volume after, const bool higher_is_better) {
-        return before == after ? c_unset : ((after > before) == higher_is_better ? c_light_green : c_red);
+    const auto get_volume_compare_color = [&]( const units::volume before, const units::volume after,
+    const bool higher_is_better ) {
+        return before == after ? c_unset : ( ( after > before ) == higher_is_better ? c_light_green :
+                                             c_red );
     };
     const auto format_desc_string = [&]( const std::string label, const int before, const int after,
     const bool higher_is_better ) {
-        return colorize( string_format( "%s: %d->%d\n", label, before, after ), get_compare_color(before, after, higher_is_better));
+        return colorize( string_format( "%s: %d->%d\n", label, before, after ), get_compare_color( before,
+                         after, higher_is_better ) );
     };
 
     uilist tmenu;
@@ -4420,7 +4425,7 @@ int sew_advanced_actor::use( player &p, item &it, bool, const tripoint & ) const
         auto after = temp_item.get_storage();
         desc << colorize( string_format( "%s: %s %s->%s %s\n", _( "Storage" ),
                                          format_volume( before ), volume_units_abbr(), format_volume( after ),
-                                         volume_units_abbr() ), get_volume_compare_color(before, after, true));
+                                         volume_units_abbr() ), get_volume_compare_color( before, after, true ) );
 
         tmenu.addentry_desc( index++, enab, MENU_AUTOASSIGN, string_format( "%s", _( prompt.c_str() ) ),
                              desc.str() );
