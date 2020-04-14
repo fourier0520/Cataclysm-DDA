@@ -36,7 +36,6 @@ static const efftype_id effect_was_laserlocked( "was_laserlocked" );
 
 // for hentai mod
 static const efftype_id effect_lust( "lust" );
-static const efftype_id effect_corrupt( "corrupt" );
 
 static const trait_id trait_TOXICFLESH( "TOXICFLESH" );
 
@@ -643,17 +642,6 @@ player *wife_u_actor::find_target( monster &z ) const
     return target;
 }
 
-void wife_u_actor::gain_corrupt( Creature *target, const time_duration &dur ) const
-{
-    player *foe = dynamic_cast<player *>( target );
-    if( foe == nullptr || ( dice( corrupt_dice, corrupt_dice_sides ) > foe->int_cur ) ) {
-        target->add_effect( effect_corrupt, dur );
-    } else {
-        target->add_msg_player_or_npc( _( "However you successfully resist the temptation!" ),
-                                       _( "However <npcname> successfully resists the temptation!" ) );
-    }
-}
-
 bool wife_u_actor::call( monster &z ) const
 {
     player *target = find_target( z );
@@ -699,7 +687,7 @@ bool wife_u_actor::call( monster &z ) const
         z.set_value( "dominating", std::to_string( target->getID().get_value() ) );
     }
 
-    gain_corrupt( target, 1_turns * corrupt_turns );
+    target->gain_corrupt( dice( corrupt_dice, corrupt_dice_sides ), 1_turns * corrupt_turns );
     target->add_effect( effect_lust, 8_turns + 1_turns * rng( 1, fake_dex ) );
     z.add_effect( effect_lust, 8_turns + 1_turns * rng( 1, target->dex_cur ) );
 

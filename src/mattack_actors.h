@@ -207,7 +207,6 @@ class wife_u_actor : public mattack_actor
         ~wife_u_actor() override = default;
 
         virtual player *find_target( monster &z ) const;
-        virtual void gain_corrupt( Creature *target, const time_duration &dur ) const;
 
         void load_internal( const JsonObject &obj, const std::string &src ) override;
         bool call( monster & ) const override;

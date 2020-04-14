@@ -594,6 +594,8 @@ void MonsterGenerator::init_attack()
     add_hardcoded_attack( "SHOGGOTHMAID_ACTION", mattack::shoggothmaid_action );
     add_hardcoded_attack( "MELEE_BOT", mattack::melee_bot );
     add_hardcoded_attack( "STRIP_U", mattack::stripu );
+    add_hardcoded_attack( "SEDUCE", mattack::seduce );
+    add_hardcoded_attack( "THROW_KISS", mattack::tkiss );
 }
 
 void MonsterGenerator::init_defense()

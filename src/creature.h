@@ -836,6 +836,7 @@ class Creature
     public:
         // for hentai mod
         bool has_movement_impairing() const;
+        virtual void gain_corrupt( int intensity, const time_duration &dur );
 };
 
 #endif

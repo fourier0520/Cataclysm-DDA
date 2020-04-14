@@ -137,6 +137,9 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
+// for hentai mod
+static const efftype_id effect_lust( "lust" );
+
 static const skill_id skill_gun( "gun" );
 static const skill_id skill_launcher( "launcher" );
 static const skill_id skill_melee( "melee" );
@@ -5935,28 +5938,30 @@ bool mattack::stripu( monster *z )
     }
     item &it = foe->i_at( i_pos );
 
-    z->mod_moves( 100 );
+    z->mod_moves( -100 );
 
-    if( target->uncanny_dodge() ) {
-        target->add_msg_player_or_npc( _( "The %s tries to undress you, but you dodge it with a tremendous momentum!" ),
-                                        _( "The %s tries to undress <npcname>, but <npcname> dodges it with a tremendous momentum!" ),
-                                        z->name() );
-        return true;
-    }
-    if( z->hit_roll() <= target->dodge_roll() ) {
-        target->add_msg_player_or_npc( _( "The %s tries to undress you, but you dodge it with a tremendous momentum!" ),
-                                        _( "The %s tries to undress <npcname>, but <npcname> dodges it with a tremendous momentum!" ),
-                                        z->name() );
+    bool uncanny = target->uncanny_dodge();
+    if( uncanny || dodge_check( z, target ) ) {
+        target->add_msg_player_or_npc( _( "The %s tries to undress you, but you manage to dodge it!" ),
+                                       _( "The %s tries to undress <npcname>, but <npcname> manages to dodge it!" ),
+                                       z->name() );
+        if( !uncanny ) {
+            target->on_dodge( z, z->type->melee_skill * 2 );
+        }
         return true;
     }
 
     if( it.volume() > 250_ml ) {
-        target->add_msg_player_or_npc( _( "<color_pink>The %1$s  quickly takes off your</color> %2$s <color_pink>and drops it on the ground!</color>" ),
-                                        _( "<color_pink>The %1$s  quickly takes off <npcname>'s</color> %2$s <color_pink>and drops it on the ground!</color>" ),
+        target->add_msg_player_or_npc( _( "<color_pink>The %1$s quickly takes off your</color> %2$s <color_pink>and drops it on the ground!</color>" ),
+                                       _( "<color_pink>The %1$s quickly takes off <npcname>'s</color> %2$s <color_pink>and drops it on the ground!</color>" ),
                                         z->name(),
                                         it.display_name() );
         g->m.add_item( z->pos(), it );
     } else {
+        target->add_msg_player_or_npc( _( "<color_pink>The %1$s takes off your</color> %2$s <color_pink>and steals it!</color>" ),
+                                       _( "<color_pink>The %1$s takes off <npcname>'s</color> %2$s <color_pink>and steals it!</color>" ),
+                                       z->name(),
+                                       it.display_name() );
         z->add_item( it );
     }
 
@@ -5967,3 +5972,63 @@ bool mattack::stripu( monster *z )
     return true;
 }
 
+bool mattack::seduce( monster *z )
+{
+    Creature *target = z->attack_target();
+    if( target == nullptr ) {
+        return false;
+    }
+
+    z->mod_moves( -100 );
+
+    bool uncanny = target->uncanny_dodge();
+    if( uncanny || dodge_check( z, target ) ) {
+        target->add_msg_player_or_npc( _( "The %s tries to reach for you, but you manage to dodge it!" ),
+                                       _( "The %s tries to reach for <npcname>, but <npcname> manages to dodge it!" ),
+                                       z->name() );
+        if( !uncanny ) {
+            target->on_dodge( z, z->type->melee_skill * 2 );
+        }
+        return true;
+    }
+
+    target->add_msg_player_or_npc( SNIPPET.random_from_category( "seduce_msg_player" ).value_or( translation() ),
+                                   SNIPPET.random_from_category( "seduce_msg_npc" ).value_or( translation() ),
+                                   z->name(),
+                                   SNIPPET.random_from_category( "hentai_bp" ).value_or( translation() ) );
+    target->gain_corrupt( rng( 1, 20 ), 100_turns );
+    target->add_effect( effect_lust, 4_turns );
+
+    return true;
+}
+
+bool mattack::tkiss( monster *z )
+{
+    const float range = 10.0f;
+    Creature *target = sting_get_target( z, range );
+    if( target == nullptr ) {
+        return false;
+    }
+
+    z->mod_moves( -50 );
+
+    // TODO: Use gun skill?
+    bool uncanny = target->uncanny_dodge();
+    if( uncanny || dodge_check( z, target ) ) {
+        target->add_msg_player_or_npc( _( "The %s tries to blow a kiss at you, but you manage to dodge it!" ),
+                                       _( "The %s tries to blow a kiss at <npcname>, but <npcname> manages to dodge it!" ),
+                                       z->name() );
+        if( !uncanny ) {
+            target->on_dodge( z, z->type->melee_skill * 2 );
+        }
+        return true;
+    }
+
+    target->add_msg_player_or_npc( _( "<color_pink>The %s blows a kiss at you!</color>" ),
+                                   _( "<color_pink>The %s blows a kiss at <npcname>!</color>" ),
+                                   z->name() );
+    target->gain_corrupt( rng( 1, 20 ), 50_turns );
+    target->add_effect( effect_lust, 2_turns );
+
+    return true;
+}
