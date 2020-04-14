@@ -575,8 +575,9 @@ void gun_actor::shoot( monster &z, Creature &target, const gun_mode_id &mode ) c
 static bool can_wife( const monster &z, const player *target )
 {
     if( target->wearing_something_on( bp_leg_l ) || target->wearing_something_on( bp_leg_r ) ) {
-        target->add_msg_player_or_npc( _( "<color_yellow>The %s is after your crotch!</color>" ),
-                                       _( "<color_yellow>The %s is after <npcname>'s crotch!</color>" ),
+        target->add_msg_player_or_npc( m_warning,
+                                       _( "The %s is after your crotch!" ),
+                                       _( "The %s is after <npcname>'s crotch!" ),
                                        z.name() );
         return false;
     }
@@ -584,18 +585,6 @@ static bool can_wife( const monster &z, const player *target )
         return false;
     }
     return true;
-}
-
-static bool has_cum( Creature *target )
-{
-    if( target->get_effect_int( effect_lust )  >= 100) {
-        target->add_msg_player_or_npc( _( "<color_green>You reach an orgasm!</color>" ),
-                                       _( "<color_green><npcname> reachs an orgasm!</color>" ) );
-        target->remove_effect( effect_lust );
-        target->mod_moves( -50 );
-        return true;
-    }
-    return false;
 }
 
 static Creature *get_dominating( const monster &z )
@@ -665,8 +654,9 @@ bool wife_u_actor::call( monster &z ) const
     }
 
     if( get_dominating(z) == target ) {
-        target->add_msg_player_or_npc( _( "<color_pink>The %s keeps grinding your hips...</color>" ),
-                                       _( "<color_pink>The %s keeps grinding <npcname>'s hips...</color>" ),
+        target->add_msg_player_or_npc( m_mixed,
+                                       _( "The %s keeps grinding your hips..." ),
+                                       _( "The %s keeps grinding <npcname>'s hips..." ),
                                        z.name() );
     } else {
         int count = 0;
@@ -676,12 +666,14 @@ bool wife_u_actor::call( monster &z ) const
             }
         }
         if( count < 3 ) {
-            target->add_msg_player_or_npc( _( "<color_pink>The %s pins you down and slowly eases into you before joining your bodies together..." ),
-                                           _( "<color_pink>The %s pins <npcname> down and slowly eases into <npcname> before joining <npcname>'s bodies together..." ),
+            target->add_msg_player_or_npc( m_mixed,
+                                           _( "The %s pins you down and slowly eases into you before joining your bodies together..." ),
+                                           _( "The %s pins <npcname> down and slowly eases into <npcname> before joining <npcname>'s bodies together..." ),
                                            z.name() );
         } else {
-            target->add_msg_player_or_npc( _( "<color_pink>The %s enjoys the show while staring at you as he plays with himself...</color>" ),
-                                           _( "<color_pink>The %s enjoys the show while staring at <npcname> as he plays with himself...</color>" ),
+            target->add_msg_player_or_npc( m_mixed,
+                                           _( "The %s enjoys the show while staring at you as he plays with himself..." ),
+                                           _( "The %s enjoys the show while staring at <npcname> as he plays with himself..." ),
                                            z.name() );
         }
         z.set_value( "dominating", std::to_string( target->getID().get_value() ) );
@@ -691,14 +683,24 @@ bool wife_u_actor::call( monster &z ) const
     target->add_effect( effect_lust, 8_turns + 1_turns * rng( 1, fake_dex ) );
     z.add_effect( effect_lust, 8_turns + 1_turns * rng( 1, target->dex_cur ) );
 
-    if( has_cum( target ) ) {
+    if( target->get_effect_int( effect_lust ) >= 100 ) {
+        target->add_msg_player_or_npc( m_info,
+                                       _( "You go to heaven!" ),
+                                       _( "<npcname> goes to heaven!" ) );
+        target->remove_effect( effect_lust );
+        target->mod_moves( -50 );
         g->m.add_item( target->pos(), item( "h_semen", calendar::turn ) );
     }
-    if( has_cum( &z ) ) {
-        g->m.add_item( target->pos(), item( "d_cum", calendar::turn ) );
+    if( z.get_effect_int( effect_lust ) >= 100 ) {
+        add_msg( m_info, _( "The %s goes to heaven!" ), z.name() );
+        z.remove_effect( effect_lust );
+        z.mod_moves( -50 );
+        g->m.add_item( z.pos(), item( "d_cum", calendar::turn ) );
+
         if( dice( 1, 100 ) <= mutate_chance ) {
-            target->add_msg_player_or_npc( _( "<color_yellow>Demonic bodily fluids cause your body to mutate...</color>" ),
-                                           _( "<color_yellow>Demonic bodily fluids cause <npcname>'s body to mutate...</color>" ) );
+            target->add_msg_player_or_npc( m_warning,
+                                           _( "Demonic bodily fluids cause your body to mutate..." ),
+                                           _( "Demonic bodily fluids cause <npcname>'s body to mutate..." ) );
             target->mutate_category( mutate_category );
         }
 

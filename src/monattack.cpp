@@ -5952,14 +5952,16 @@ bool mattack::stripu( monster *z )
     }
 
     if( it.volume() > 250_ml ) {
-        target->add_msg_player_or_npc( _( "<color_pink>The %1$s quickly takes off your</color> %2$s <color_pink>and drops it on the ground!</color>" ),
-                                       _( "<color_pink>The %1$s quickly takes off <npcname>'s</color> %2$s <color_pink>and drops it on the ground!</color>" ),
+        target->add_msg_player_or_npc( m_mixed,
+                                       _( "The %1$s quickly takes off your %2$s and drops it on the ground!" ),
+                                       _( "The %1$s quickly takes off <npcname>'s %2$s and drops it on the ground!" ),
                                         z->name(),
                                         it.display_name() );
         g->m.add_item( z->pos(), it );
     } else {
-        target->add_msg_player_or_npc( _( "<color_pink>The %1$s takes off your</color> %2$s <color_pink>and steals it!</color>" ),
-                                       _( "<color_pink>The %1$s takes off <npcname>'s</color> %2$s <color_pink>and steals it!</color>" ),
+        target->add_msg_player_or_npc( m_mixed,
+                                       _( "The %1$s takes off your %2$s and steals it!" ),
+                                       _( "The %1$s takes off <npcname>'s %2$s and steals it!" ),
                                        z->name(),
                                        it.display_name() );
         z->add_item( it );
@@ -5992,7 +5994,8 @@ bool mattack::seduce( monster *z )
         return true;
     }
 
-    target->add_msg_player_or_npc( SNIPPET.random_from_category( "seduce_msg_player" ).value_or( translation() ),
+    target->add_msg_player_or_npc( m_mixed,
+                                   SNIPPET.random_from_category( "seduce_msg_player" ).value_or( translation() ),
                                    SNIPPET.random_from_category( "seduce_msg_npc" ).value_or( translation() ),
                                    z->name(),
                                    SNIPPET.random_from_category( "hentai_bp" ).value_or( translation() ) );
@@ -6024,8 +6027,9 @@ bool mattack::tkiss( monster *z )
         return true;
     }
 
-    target->add_msg_player_or_npc( _( "<color_pink>The %s blows a kiss at you!</color>" ),
-                                   _( "<color_pink>The %s blows a kiss at <npcname>!</color>" ),
+    target->add_msg_player_or_npc( m_mixed,
+                                   _( "The %s blows a kiss at you!" ),
+                                   _( "The %s blows a kiss at <npcname>!" ),
                                    z->name() );
     target->gain_corrupt( rng( 1, 20 ), 50_turns );
     target->add_effect( effect_lust, 2_turns );
