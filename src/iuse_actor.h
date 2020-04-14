@@ -1207,4 +1207,31 @@ class sew_advanced_actor : public iuse_actor
         int use( player &, item &, bool, const tripoint & ) const override;
         std::unique_ptr<iuse_actor> clone() const override;
 };
+
+/**
+ * Yiff - for hentai mod
+ */
+class yiff_iuse : public iuse_actor
+{
+    public:
+        // Query
+        std::string query_myself;
+        std::string query_npc;
+        std::string query_monster;
+        std::string query_unsafe;
+        std::string msg_success_with_love;
+        std::string msg_success_with_fear;
+        std::string msg_great_success_with_love;
+        std::string msg_great_success_with_fear;
+        std::string msg_fail;
+        std::string msg_great_fail;
+        std::string snippet;
+
+        yiff_iuse( const std::string &type = "yiff" ) : iuse_actor( type ) {}
+
+        ~yiff_iuse() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+};
 #endif

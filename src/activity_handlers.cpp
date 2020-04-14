@@ -207,6 +207,9 @@ static const activity_id ACT_TAKE_WASHLET("ACT_TAKE_WASHLET");
 static const activity_id ACT_EXCRETE("ACT_EXCRETE");
 static const activity_id ACT_TAKE_SHOWER("ACT_TAKE_SHOWER");
 
+// for hentai
+static const activity_id ACT_HENTAI_SEX( "ACT_SEX" );
+
 static const efftype_id effect_blind( "blind" );
 static const efftype_id effect_controlled( "controlled" );
 static const efftype_id effect_narcosis( "narcosis" );
@@ -374,7 +377,8 @@ activity_handlers::do_turn_functions = {
     { ACT_LITTLEMAID_SPECIAL, littlemaid_special_do_turn },
     { ACT_TAKE_SHOWER, take_shower_do_turn },
     { ACT_TAKE_WASHLET, take_washlet_do_turn },
-    { ACT_EXCRETE, excrete_do_turn }
+    { ACT_EXCRETE, excrete_do_turn },
+    { ACT_HENTAI_SEX, hentai_sex_do_turn }
 };
 
 
@@ -5395,3 +5399,11 @@ void activity_handlers::take_shower_finish( player_activity *act, player *p ){
 }
 
 
+void activity_handlers::hentai_sex_do_turn( player_activity *act, player *p ){
+    (void)p;
+    if( calendar::once_every( 10_minutes ) ) {
+        add_msg( SNIPPET.random_from_category( act->str_values[0] ).value_or( translation() )) ;
+    }
+
+
+}

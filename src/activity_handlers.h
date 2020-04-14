@@ -202,6 +202,7 @@ void littlemaid_special_do_turn( player_activity *act, player *p );
 void excrete_do_turn( player_activity *act, player *p );
 void take_washlet_do_turn( player_activity *act, player *p );
 void take_shower_do_turn( player_activity *act, player *p );
+void hentai_sex_do_turn( player_activity *act, player *p );
 
 // defined in activity_handlers.cpp
 extern const std::map< activity_id, std::function<void( player_activity *, player * )> >
