@@ -689,13 +689,13 @@ bool wife_u_actor::call( monster &z ) const
                                        _( "<npcname> goes to heaven!" ) );
         target->remove_effect( effect_lust );
         target->mod_moves( -50 );
-        g->m.add_item( target->pos(), item( "h_semen", calendar::turn ) );
+        g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
     }
     if( z.get_effect_int( effect_lust ) >= 100 ) {
         add_msg( m_info, _( "The %s goes to heaven!" ), z.name() );
         z.remove_effect( effect_lust );
         z.mod_moves( -50 );
-        g->m.add_item( z.pos(), item( "d_cum", calendar::turn ) );
+        g->m.add_item( z.pos(), item( "d_body_fluids", calendar::turn ) );
 
         if( dice( 1, 100 ) <= mutate_chance ) {
             target->add_msg_player_or_npc( m_warning,
