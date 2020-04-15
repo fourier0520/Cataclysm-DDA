@@ -1,5 +1,4 @@
 [
-
   {
     "type": "GENERIC",
     "id": "food_storage_tag",
@@ -45,10 +44,7 @@
     },
     "flags": [ "INTERNAL", "SHARED_FOOD_STORAGE", "FOLDABLE" ],
     "folded_volume": 1,
-    "breaks_into": [
-      { "item": "scrap", "count": [ 1, 2 ] }
-    ],
+    "breaks_into": [ { "item": "scrap", "count": [ 1, 2 ] } ],
     "damage_reduction": { "all": 10 }
   }
-
 ]

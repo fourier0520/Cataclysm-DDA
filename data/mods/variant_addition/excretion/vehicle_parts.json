@@ -20,7 +20,7 @@
       "repair": { "skills": [ [ "mechanics", 2 ] ], "time": "60 m", "using": [ [ "welding_standard", 5 ] ] }
     },
     "flags": [ "TOILET", "BOARDABLE", "CARGO", "MOUNTABLE" ],
-    "breaks_into": [ {"item": "vehicle_toilet"} ],
+    "breaks_into": [ { "item": "vehicle_toilet" } ],
     "damage_reduction": { "all": 3 }
   },
   {
@@ -44,7 +44,7 @@
       "repair": { "skills": [ [ "mechanics", 2 ] ], "time": "60 m", "using": [ [ "welding_standard", 5 ] ] }
     },
     "flags": [ "TOILET", "WASHLET", "BOARDABLE", "CARGO", "MOUNTABLE" ],
-    "breaks_into": [ {"item": "vehicle_toilet_washlet"} ],
+    "breaks_into": [ { "item": "vehicle_toilet_washlet" } ],
     "damage_reduction": { "all": 3 }
   }
 ]

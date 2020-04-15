@@ -2,8 +2,8 @@
   {
     "id": "bot_melee_defence_bot",
     "type": "TOOL",
-    "name": "近接防衛ボット(停止)",
-    "description": "閉所における侵入者を撃退するための設置型ロボットです。設置することで、半径数メートルに近づいた侵入者を攻撃します。",
+    "name": "Melee defence bot(inacvite)",
+    "description": "A robot for eliminating intruder at close range. activate and place to attack intruder in about 3 meter.",
     "looks_like": "bot_laserturret",
     "weight": "40750 g",
     "volume": "30 L",
@@ -22,12 +22,11 @@
       "skill2": "computer"
     }
   },
-
   {
     "id": "broken_melee_defence_bot",
     "type": "TOOL",
-    "name": "壊れた近接防衛ボット",
-    "description": "壊れた近接防衛ボットです。残念ながら再利用はできません。",
+    "name": "Broken melee defence bot",
+    "description": "Broken melee defence bot. sadly, It can not reuse.",
     "looks_like": "broken_laserturret",
     "weight": "40750 g",
     "volume": "30 L",
@@ -38,12 +37,11 @@
     "symbol": ";",
     "color": "yellow"
   },
-
   {
     "id": "mon_melee_defence_bot",
     "type": "MONSTER",
-    "name": "近接防衛ボット",
-    "description": "閉所における侵入者を撃退するための設置型ロボットです。半径数メートルに近づいた侵入者を攻撃します。",
+    "name": "Melee defence bot",
+    "description": "A robot for eliminating intruder at close range. activate and place to attack intruder in about 3 meter.",
     "default_faction": "player",
     "looks_like": "mon_laserturret",
     "species": [ "ROBOT" ],
@@ -65,14 +63,11 @@
     "vision_day": 6,
     "vision_night": 4,
     "revert_to_itype": "bot_melee_defence_bot",
-    "special_attacks": [
-      [ "MELEE_BOT", 1 ]
-    ],
+    "special_attacks": [ [ "MELEE_BOT", 1 ] ],
     "death_drops": {  },
     "death_function": [ "BROKEN" ],
     "flags": [ "SEES", "NOHEAD", "ELECTRONIC", "IMMOBILE", "NO_BREATHE" ]
   },
-
   {
     "type": "recipe",
     "result": "bot_melee_defence_bot",
@@ -107,5 +102,4 @@
       [ [ "tazer", 1 ] ]
     ]
   }
-
 ]

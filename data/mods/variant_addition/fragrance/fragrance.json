@@ -6,7 +6,6 @@
     "//": "Well washed clothes are good fragrant!",
     "info": "This item has <good>good fragrant</good>."
   },
-  
   {
     "id": "morale_perm_fragrant",
     "type": "morale_type",

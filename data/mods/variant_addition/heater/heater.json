@@ -1,5 +1,4 @@
 [
-
   {
     "type": "GENERIC",
     "id": "mountable_heater_strong",
@@ -17,7 +16,6 @@
     "category": "veh_parts",
     "price": 40000
   },
-  
   {
     "result": "mountable_heater_strong",
     "type": "recipe",

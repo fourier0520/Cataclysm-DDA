@@ -9,7 +9,7 @@
     "to_hit": -2,
     "color": "white",
     "symbol": "&",
-    "material": ["steel", "plastic"],
+    "material": [ "steel", "plastic" ],
     "volume": "15 L",
     "bashing": 4,
     "category": "veh_parts"
@@ -24,7 +24,7 @@
     "to_hit": -2,
     "color": "white",
     "symbol": "&",
-    "material": ["steel", "plastic"],
+    "material": [ "steel", "plastic" ],
     "volume": "15 L",
     "bashing": 4,
     "category": "veh_parts"
