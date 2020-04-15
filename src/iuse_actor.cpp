@@ -75,6 +75,7 @@
 #include "flat_set.h"
 #include "point.h"
 #include "clothing_mod.h"
+#include "npc.h"
 
 static const activity_id ACT_FIRSTAID( "ACT_FIRSTAID" );
 static const activity_id ACT_MAKE_ZLAVE( "ACT_MAKE_ZLAVE" );
@@ -83,6 +84,9 @@ static const activity_id ACT_REPAIR_ITEM( "ACT_REPAIR_ITEM" );
 static const activity_id ACT_SPELLCASTING( "ACT_SPELLCASTING" );
 static const activity_id ACT_STUDY_SPELL( "ACT_STUDY_SPELL" );
 static const activity_id ACT_START_FIRE( "ACT_START_FIRE" );
+
+// for hentai
+static const activity_id ACT_HENTAI_PLAY_WITH( "ACT_HENTAI_PLAY_WITH" );
 
 static const efftype_id effect_asthma( "asthma" );
 static const efftype_id effect_bandaged( "bandaged" );
@@ -96,6 +100,9 @@ static const efftype_id effect_playing_instrument( "playing_instrument" );
 static const efftype_id effect_recover( "recover" );
 static const efftype_id effect_sleep( "sleep" );
 static const efftype_id effect_stunned( "stunned" );
+static const efftype_id effect_drunk( "drunk" );
+static const efftype_id effect_estrus( "estrus" );
+static const efftype_id effect_corrupt( "corrupt" );
 
 static const fault_id fault_bionic_salvaged( "fault_bionic_salvaged" );
 
@@ -124,6 +131,9 @@ static const trait_id trait_SAPIOVORE( "SAPIOVORE" );
 static const trait_id trait_SELFAWARE( "SELFAWARE" );
 static const trait_id trait_SMALL_OK( "SMALL_OK" );
 static const trait_id trait_SMALL2( "SMALL2" );
+
+// for hentai
+static const trait_id trait_hentai_VIRGIN( "VIRGIN" );
 
 static const std::string flag_FIT( "FIT" );
 static const std::string flag_OVERSIZE( "OVERSIZE" );
@@ -4887,4 +4897,145 @@ int change_scent_iuse::use( player &p, item &it, bool, const tripoint & ) const
 std::unique_ptr<iuse_actor> change_scent_iuse::clone() const
 {
     return std::make_unique<change_scent_iuse>( *this );
+}
+
+std::tuple<float, bool> yiff_actor::get_willing( const player &p, const npc &target ) const
+{
+    if( target.is_enemy() ) {
+        return std::make_tuple( -100.0, false );
+    }
+    float willing;
+    bool with_love;
+    float trust = p.talk_skill();
+    trust += ( target.op_of_u.trust * 2.0 ) + target.op_of_u.value - ( target.op_of_u.anger / 2.0 );
+    float fear = p.intimidation();
+    fear += ( target.op_of_u.fear * 2.0 ) + ( target.op_of_u.owed / 2.0 );
+
+    if( target.has_effect( effect_drunk ) ) {
+        trust = trust * 1.2;
+        fear = fear * 0.8;
+    }
+    if( target.has_effect( effect_estrus ) ) {
+        trust = trust * 3.0;
+        fear = fear / 3.0;
+    }
+
+    if( trust >= fear ) {
+        willing = trust;
+        with_love = true;
+    } else {
+        willing = fear;
+        with_love = false;
+    }
+
+    if( target.has_effect( effect_corrupt ) ) {
+        willing += target.get_effect_int( effect_corrupt );
+    }
+    if( target.has_trait( trait_hentai_VIRGIN ) ) {
+		willing -= 30;
+    }
+
+    return std::make_tuple( willing, with_love );
+}
+
+void yiff_actor::load( const JsonObject &obj )
+{
+    assign( obj, "snippet", snippet );
+    assign( obj, "morale", morale );
+    assign( obj, "break_chance", break_chance );
+    assign( obj, "break_msg", break_msg );
+}
+
+int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
+{
+    int device = p.get_item_position( &it );
+    std::string act_name;
+    const std::function<bool( const tripoint & )> f = [&]( const tripoint & pnt ) {
+        return g->critter_at<npc>( pnt ) != nullptr || g->critter_at<player>( pnt ) != nullptr;
+    };
+    const std::function<std::string( const std::string & )> get_text =[&]( const std::string & id ) {
+        return snippet_id( id )->translated();
+    };
+
+    const cata::optional<tripoint> pnt_ = choose_adjacent_highlight( _( "Use to whom?" ),
+                                            _( "There is no one to use to nearby." ), f, false );
+    if( !pnt_ ) {
+        return 0;
+    }
+    const tripoint &pnt = *pnt_;
+    if( pnt == g->u.pos() ) {
+        if( !query_yn( get_text( "hentai_yiff_query_myself" ) ) ) {
+            return 0;
+        }
+    }
+    npc *const person = g->critter_at<npc>( pnt );
+    if( person != nullptr ) {
+        if( !query_yn( string_format( get_text( "hentai_yiff_query_npc" ), person->name ) ) ) {
+            return 0;
+        }
+
+        const std::tuple<float, bool> tmp = get_willing( p, *person );
+        float willing = std::get<0>( tmp );
+        bool with_love = std::get<1>( tmp );
+        if( willing > 50 ) {
+            if( with_love ) {
+                popup( string_format( get_text( "hentai_yiff_great_success_with_love" ), person->name ) );
+                // Suggest unsafe.
+                if( dice( 1, 100 ) <= willing ) {
+                    if( query_yn( string_format( get_text( "hentai_yiff_query_no_dev" ), person->name, it.display_name() ) ) ) {
+                        device = INT_MIN;
+                    }
+                }
+            } else {
+                popup( string_format( get_text( "hentai_yiff_great_success_with_fear" ), person->name ) );
+            }
+        } else if( willing > 25 ) {
+            if( with_love ) {
+                popup( string_format( get_text( "hentai_yiff_success_with_love" ), person->name ) );
+            } else {
+                popup( string_format( get_text( "hentai_yiff_success_with_fear" ), person->name ) );
+            }
+        } else if( willing > 0 ) {
+            popup( string_format( get_text( "hentai_yiff_fail" ), person->name ) );
+            return 0;
+        } else {
+            popup( string_format( get_text( "hentai_yiff_great_fail" ), person->name ) );
+            return 0;
+        }
+        p.unset_mutation( trait_hentai_VIRGIN );
+        person->unset_mutation( trait_hentai_VIRGIN );
+
+        if( with_love ) {
+            act_name = "play_with_love";
+        } else {
+            act_name = "play_with_fear";
+        }
+    }
+    if( monster *const mon_ = g->critter_at<monster>( pnt ) ) {
+        monster &mon = *mon_;
+        if( !query_yn( string_format( get_text( "hentai_yiff_query_monster" ), mon.name() ) ) ) {
+            return 0;
+        }
+        p.unset_mutation( trait_hentai_VIRGIN );
+    }
+
+    // Assign activity.
+    int cost = std::min( to_moves<int>( 10_minutes ) * p.str_cur, to_moves<int>( 3_hours ) );
+    p.assign_activity( ACT_HENTAI_PLAY_WITH, cost, 0, device, "play_with_love" );
+    p.activity.str_values.push_back( snippet );
+    p.activity.str_values.push_back( morale );
+    p.activity.str_values.push_back( break_msg );
+    p.activity.values.push_back( break_chance );
+    p.set_moves( 0 );
+    if( person != nullptr) {
+        p.activity.values.push_back( person->getID().get_value() );
+        person->set_moves( -200 );
+    }
+
+    return 0;
+}
+
+std::unique_ptr<iuse_actor> yiff_actor::clone() const
+{
+    return std::make_unique<yiff_actor>( *this );
 }

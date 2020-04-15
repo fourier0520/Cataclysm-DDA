@@ -207,6 +207,9 @@ static const activity_id ACT_TAKE_WASHLET("ACT_TAKE_WASHLET");
 static const activity_id ACT_EXCRETE("ACT_EXCRETE");
 static const activity_id ACT_TAKE_SHOWER("ACT_TAKE_SHOWER");
 
+// for hentai
+static const activity_id ACT_HENTAI_PLAY_WITH( "ACT_HENTAI_PLAY_WITH" );
+
 static const efftype_id effect_blind( "blind" );
 static const efftype_id effect_controlled( "controlled" );
 static const efftype_id effect_narcosis( "narcosis" );
@@ -231,6 +234,10 @@ const efftype_id effect_happiness( "happiness" );
 const efftype_id effect_comfortness( "comfortness" );
 const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
+
+// for hentai
+const efftype_id effect_movingdoing( "movingdoing" );
+const efftype_id effect_lust( "lust" );
 
 static const zone_type_id zone_type_FARM_PLOT( "FARM_PLOT" );
 
@@ -374,7 +381,8 @@ activity_handlers::do_turn_functions = {
     { ACT_LITTLEMAID_SPECIAL, littlemaid_special_do_turn },
     { ACT_TAKE_SHOWER, take_shower_do_turn },
     { ACT_TAKE_WASHLET, take_washlet_do_turn },
-    { ACT_EXCRETE, excrete_do_turn }
+    { ACT_EXCRETE, excrete_do_turn },
+    { ACT_HENTAI_PLAY_WITH, hentai_play_with_do_turn }
 };
 
 
@@ -456,7 +464,8 @@ activity_handlers::finish_functions = {
     { ACT_LITTLEMAID_SPECIAL, littlemaid_special_finish },
     { ACT_TAKE_SHOWER, take_shower_finish },
     { ACT_TAKE_WASHLET, take_washlet_finish },
-    { ACT_EXCRETE, excrete_finish }
+    { ACT_EXCRETE, excrete_finish },
+    { ACT_HENTAI_PLAY_WITH, hentai_play_with_finish }
 };
 
 bool activity_handlers::resume_for_multi_activities( player &p )
@@ -5395,3 +5404,84 @@ void activity_handlers::take_shower_finish( player_activity *act, player *p ){
 }
 
 
+void activity_handlers::hentai_play_with_do_turn( player_activity *act, player *p ){
+    item &it = p->i_at( act->position );
+    npc *partner = nullptr;
+    if( act->values.size() >= 2 ) {
+        partner = g->critter_by_id<npc>( character_id( act->values[1] ) );
+    }
+    if( partner != nullptr ) {
+        partner->set_moves( -200 );
+    }
+    if( calendar::once_every( 10_minutes ) ) {
+        add_msg( SNIPPET.random_from_category( act->str_values[0] ).value_or( translation() )) ;
+
+        int bonus = p->dex_cur;
+        float bonus_multiplier = 1.0f;
+        if( it.is_null() ) {
+            bonus_multiplier *= 1.5f;
+        } 
+        p->add_effect( effect_movingdoing, 10_minutes );
+        if( partner != nullptr ) {
+            bonus_multiplier *= 2.0f;
+            bonus = std::max( p->dex_cur, partner->dex_cur );
+            partner->add_effect( effect_movingdoing, 10_minutes );
+            partner->add_morale( morale_type( act->str_values[1] ), bonus * bonus_multiplier, 0, 1_hours, 15_minutes );
+        }
+        p->add_morale( morale_type( act->str_values[1] ), bonus * bonus_multiplier, 0, 1_hours, 15_minutes );
+    }
+}
+
+void activity_handlers::hentai_play_with_finish( player_activity *act, player *p ){
+    const std::function<std::string( const std::string & )> get_text =[&]( const std::string & id ) {
+        return snippet_id( id )->translated();
+    };
+    p->add_msg_if_player( m_good, get_text( "hentai_play_with_finish" ) );
+    p->remove_effect( effect_lust );
+    p->remove_effect( effect_movingdoing );
+
+    npc *partner = nullptr;
+    if( act->values.size() >= 2 ) {
+        partner = g->critter_by_id<npc>( character_id( act->values[1] ) );
+    }
+    if( partner != nullptr ) {
+        partner->remove_effect( effect_lust );
+        partner->remove_effect( effect_movingdoing );
+        partner->set_moves( 0 );
+
+        if( act->name == "play_with_love" ) {
+            partner->op_of_u.trust += 2;
+            partner->op_of_u.value += 2;
+            partner->op_of_u.fear -= 1;
+            partner->op_of_u.anger -= 1;
+        } else if( act->name == "play_with_fear" ) {
+            partner->op_of_u.trust -= 2;
+            partner->op_of_u.fear += 5;
+            partner->op_of_u.anger += 1;
+            partner->op_of_u.owed -= 1;
+        }
+    }
+
+    item &it = p->i_at( act->position );
+    if( !it.is_null() ) {
+        if( ( rng( 1, 100 ) <= act->values[0] ) ) {
+            p->add_msg_if_player( m_bad, string_format( _( act->str_values[2] ), it.display_name() ) );
+            p->i_rem( &it );
+            it = null_item_reference();
+        }
+    }
+
+    item liquid = item( "h_semen", calendar::turn );
+    if( !it.is_null() ) {
+        item used = item( it.get_property_string( "used_item" ) );
+        if( !used.is_null() ) {
+            used.fill_with( liquid );
+            p->i_add( used );
+        }
+        p->i_rem( &it );
+    } else {
+        g->m.add_item( p->pos(), liquid );
+    }
+
+    act->set_to_null();
+}

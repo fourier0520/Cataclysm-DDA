@@ -37,6 +37,7 @@ using itype_id = std::string;
 struct furn_t;
 struct itype;
 class item_location;
+class npc;
 
 /**
  * Transform an item into a specific type.
@@ -1206,5 +1207,26 @@ class sew_advanced_actor : public iuse_actor
         void load( const JsonObject &obj ) override;
         int use( player &, item &, bool, const tripoint & ) const override;
         std::unique_ptr<iuse_actor> clone() const override;
+};
+
+/**
+ * Yiff - for hentai mod
+ */
+class yiff_actor : public iuse_actor
+{
+    public:
+        std::string snippet;
+        std::string morale;
+        int break_chance;
+        std::string break_msg;
+
+        yiff_actor( const std::string &type = "yiff" ) : iuse_actor( type ) {}
+
+        ~yiff_actor() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+
+        std::tuple<float, bool> get_willing( const player &p, const npc &target ) const;
 };
 #endif
