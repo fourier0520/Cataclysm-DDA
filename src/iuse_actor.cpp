@@ -5074,29 +5074,31 @@ void anthropomorph_actor::condition::load( const JsonObject &obj )
 
 bool anthropomorph_actor::condition::check( const monster &z ) const
 {
+    bool ret = true;
     if( cond == "or" ) {
+        ret = false;
         for( auto& child : children ) {
             if( child.check( z ) ) {
-                return true;
+                ret = true;
+                break;
             }
         }
-        return false;
     } else if( cond == "and" ) {
         for( auto& child : children ) {
             if( !child.check( z ) ) {
-                return false;
+                ret = false;
+                break;
             }
         }
-        return true;
     } else if( cond == "mtype_id" ) {
-        return z.type->id == mtype_id( value );
+        ret = z.type->id == mtype_id( value );
     } else if( cond == "in_species" ) {
-        return z.type->in_species( species_id( value ) );
+        ret = z.type->in_species( species_id( value ) );
     } else if( cond == "has_flag" ) {
-        return z.type->has_flag( io::string_to_enum<m_flag>( value ) );
+        ret = z.type->has_flag( io::string_to_enum<m_flag>( value ) );
     }
-
-    return true;
+    
+    return invert ? !ret : ret;
 }
 
 void anthropomorph_actor::load( const JsonObject &jo )
