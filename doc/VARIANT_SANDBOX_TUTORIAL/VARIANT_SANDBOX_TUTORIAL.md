@@ -36,21 +36,22 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 - CDDAのmodを作ったり、CDDAのJSONファイルを検索して、アイテムやレシピ等のデータを調べたりしたことがある人なら、もしかしたら分かると思います。
 - gitについては知らなくても大丈夫なように書きました。
 
-## チュートリアル
-
 ### アカウントの準備
 
 - まずは、持っていなければ、Githubのアカウントを作ってください。
 - これを見ているなら、ページの一番右上に、「Sign up」というボタンがあると思うので、そこから登録できます。
 - Githubのアカウントをお持ちであれば、サインインしてください。
 
-### フォーク
+### フォークする
 
-- Githubのヴァリアントのページを開いてください。
+- GithubのJPヴァリアントのページを開いてください。
 - https://github.com/roloa/Cataclysm-DDA_variant
 - 右上に「Fork」というボタンがあるので、これを押します。
+- 「フォーク」とは、誰かが作ったものを、まるまる全部コピーして、自分で自由に編集できるものを作るようなイメージです。
 
 ![図1](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/1.jpg)
+
+- - -
 
 ### variant_jp_sandboxを開く
 
@@ -61,15 +62,19 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 
 ![図2](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/2.jpg)
 
-### ソースファイルを開く
+- - -
+
+### ソースファイルのフォルダを開く
 
 - プルダウンを選ぶと同じような画面に切り替わりますが、ちゃんと「variant_jp_sandbox」を選べているかをチェックしてください。
-- 問題なければ
 - Cataclysmの本体を改造するには、「src」というフォルダの中身を編集します。
 - ファイル一覧から「src」フォルダを探してクリックしてください。
 
-
 ![図3](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/3.jpg)
+
+- - -
+
+### ソースファイルを探す
 
 - srcフォルダの中にはたくさんのプログラムの元となるソースファイルが入っています。
 - どのファイルに何の機能が書かれているかは、今ここでは細かくは説明できませんが、
@@ -77,12 +82,16 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 
 ![図4](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/4.jpg)
 
+- - -
+
+### ソースファイルを開く
+
 - ファイルをクリックすると、ファイルの内容を表示する画面になります。
 - 下図の赤丸の、鉛筆ボタンをクリックすると、編集画面に移動できます。
 
-### ソースファイルを編集する
-
 ![図5](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/5.jpg)
+
+### ソースファイルを編集する
 
 - ブラウザ上の編集画面はちょっと使いにくいですが、ブラウザの手軽さと引き換えにがまんしましょう...
 - 今回は例として、キャラクター作成時のステータス（筋肉、器用、知性、感覚）の最低値を、4よりも低くしてみます。
@@ -95,11 +104,15 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 
 ![図6](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/6.jpg)
 
+- - -
+
 - ファイルの編集が終わると、ファイルの内容表示の画面に戻ってくるので、
 - 下図の赤丸で示したリンクをクリックしてください。
 - ページ上にも似たようなリンクがありますが、これをクリックすると手順が少し増えてやっかいなので気を付けましょう。
 
 ![図7](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/7.jpg)
+
+- - -
 
 ### プルリクエスト(PR, Pull Request)を送る
 
@@ -109,6 +122,10 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 - その場合は、プルダウンメニューが「variant_jp_sandbox」を選んでいるかどうかを今一度確認してみてください。
 
 ![図8](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/8.jpg)
+
+- - -
+
+### プルリクエスト作成画面
 
 - プルリクエスト作成画面では少し確認することが多いです。
 - まず、下図はちょっと見にくいですが、もし緑のチェックマークではなく赤いバツ等が表示された場合は、プルリクエストを送る前に、Discordなどでご相談ください。
@@ -120,6 +137,8 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 - 確認が出来たら、出来れば再度、送り先のブランチを確認してから、緑色の「Create PullRequest」ボタンをクリックしてください。
 
 ![図9](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/9.jpg)
+
+- - -
 
 ### 結果を待つ
 
@@ -133,10 +152,16 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 
 ![図10](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/10.jpg)
 
+- - -
+
 - ちなみに、もしプルリクエストの画面を閉じてしまった場合は、プルリクエストのリストの「Closed」をチェックしてみてください。
 - プルリクエストのリストは、画面の上に並んでいるタブから選べば開けます。
 
 ![図11](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/11.jpg)
+
+- - -
+
+### 成果を受け取る
 
 - 無事に改造が成功した場合は、送られてくるアップローダーのURL先に成果がアップロードされているはずです。
 - ゲーム本体のexeファイルのみの「(日付時刻)\_exe」と、ゲーム起動に必要なファイル全てが入った「(日付時刻)\_full.zip」の2つがアップロードされますので、必要な方を選んでください。
@@ -149,10 +174,27 @@ https://ux.getuploader.com/cdda_variant_jp_sandbox/
 
 ![図12](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/12.jpg)
 
+- - -
+
 ### 動作確認をする
 
 - 思う存分動作確認をして、おもしろい機能が作れたら、皆さんにシェアしましょう！
 
 ![図13](https://raw.githubusercontent.com/roloa/Cataclysm-DDA_variant/variant_jp/doc/VARIANT_SANDBOX_TUTORIAL/13.jpg)
 
+- - -
 
+## 注意
+
+- Sandboxシステムはまだ発展途上で、いろいろなトラブルで動かなくなるかもしれません。
+  だいたいは管理者がスイッチを入れなおすことですぐ復旧しますので、うまく動かなかったりするときは、Discordなどでご報告していただけると助かります。
+- Sandboxシステムは、プログラムのエラーが出たときは、そのままプルリクエストのコメントに書き込みます。
+  CDDA開発にかかわるエラー内容についてのサポートは全てはできないので、ご自分での調査や学習をお願いします。
+- Sandboxシステムは1つしかないので、何人もが同時に使おうとすると、うまくいかない可能性があります。
+  一応、一度にたくさんのプルリクエストを送ると、いっぺんに処理してくれて、全てが問題なければ問題なく動きますが、
+  どれか1つでもエラーを起こすと全て失敗になると思うので、複数人が同時に使うときは少し気を付けてみてください。
+- Sandboxシステムに投稿された変更は、リセットしたりしない限り積み重なっていきます。
+  つまり、自分が新しい変更をリクエストしたあと、それを取り消すリクエストを送らなければ、次の人は変更済みのヴァリアントをさらに変更することになります。早い話、Wikiみたいなものです。
+- Gitに詳しい人や、管理者なら、変更を元に戻すことは簡単なので、エラーが出てどうしようもなくなったら、他の人や管理者に相談してみてください。
+- SandboxシステムはWikiのように、Githubアカウントを持っていれば誰でも書き込むことができる性質上、悪いプログラムを書いて、悪いexeファイルを作って公開することも原理的には可能で、それを防ぐ対策は今のところありません。
+- もちろん、そんな事をすればGithubの記録に残るので、悪いプログラムを書いた人はしょっ引かれる事間違いなしですが、くれぐれも悪いプログラムを書いたり、悪いexeファイルを間違って実行することのないよう、各自ご注意をお願いします。
