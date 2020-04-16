@@ -5039,3 +5039,162 @@ std::unique_ptr<iuse_actor> yiff_actor::clone() const
 {
     return std::make_unique<yiff_actor>( *this );
 }
+
+void anthropomorph_actor::condition::load( const JsonObject &obj )
+{
+    bool has_array = false;
+    if( obj.has_array( "or" ) ) {
+        cond = "or";
+        has_array = true;
+    } else if( obj.has_array( "and" ) ) {
+        cond = "and";
+        has_array = true;
+    } else if( obj.has_object( "not" ) ) {
+        invert = !invert;
+        load( obj.get_object( "not" ) );
+    } else if( obj.has_string( "mtype_id" ) ) {
+        cond = "mtype_id";
+        value = obj.get_string( "mtype_id" );
+    } else if( obj.has_string( "in_species" ) ) {
+        cond = "in_species";
+        value = obj.get_string( "in_species" );
+    } else if( obj.has_string( "has_flag" ) ) {
+        cond = "has_flag";
+        value = obj.get_string( "has_flag" );
+    }
+
+    if( has_array ) {
+        for( const JsonObject &child_obj : obj.get_array( cond ) ) {
+            condition child = condition();
+            child.load( child_obj );
+            children.push_back( child );
+        }
+    }
+}
+
+bool anthropomorph_actor::condition::check( const monster &z ) const
+{
+    if( cond == "or" ) {
+        for( auto& child : children ) {
+            if( child.check( z ) ) {
+                return true;
+            }
+        }
+        return false;
+    } else if( cond == "and" ) {
+        for( auto& child : children ) {
+            if( !child.check( z ) ) {
+                return false;
+            }
+        }
+        return true;
+    } else if( cond == "mtype_id" ) {
+        return z.type->id == mtype_id( value );
+    } else if( cond == "in_species" ) {
+        return z.type->in_species( species_id( value ) );
+    } else if( cond == "has_flag" ) {
+        return z.type->has_flag( io::string_to_enum<m_flag>( value ) );
+    }
+
+    return true;
+}
+
+void anthropomorph_actor::load( const JsonObject &jo )
+{
+    assign( jo, "allow_enemy", allow_enemy );
+
+    for( const JsonObject selection_obj : jo.get_array( "selection" ) ) {
+        templete_sets sets;
+        condition cond;
+        bool choose_gender = false;
+        assign( selection_obj, "choose_gender", choose_gender );
+        if( selection_obj.has_object( "condition" ) ) {
+            cond.load( selection_obj.get_object( "condition" ) );
+        }
+        for( const JsonArray set_array : selection_obj.get_array( "npc_template" ) ) {
+            std::string msg;
+            std::string npcid;
+            set_array.read( 0, msg );
+            set_array.read( 1, npcid );
+            sets.push_back( std::make_tuple( msg, npcid, choose_gender ) );
+        }
+        selections.push_back( std::make_tuple( cond, sets ) );
+    }
+}
+
+int anthropomorph_actor::use( player &p, item &, bool, const tripoint & ) const
+{
+    (void)p;
+    const std::function<bool( const tripoint & )> f = [&]( const tripoint & pnt ) {
+        return g->critter_at<monster>( pnt ) != nullptr;
+    };
+
+    const cata::optional<tripoint> pnt_ = choose_adjacent_highlight( _( "Use to whom?" ),
+                                            _( "There is no one to use to nearby." ), f, false );
+    if( !pnt_ ) {
+        return 0;
+    }
+    const tripoint &pnt = *pnt_;
+    if( monster *const z_ = g->critter_at<monster>( pnt ) ) {
+        monster &z = *z_;
+        templete_sets valid_sets;
+
+        if( !allow_enemy && ( z.friendly > -1 ) ) {
+            add_msg( m_info, _( "This creature is not friendly!" ) );
+        }
+
+        for( auto& selection : selections ) {
+            condition cond = std::get<0>( selection );
+            templete_sets sets = std::get<1>( selection );
+            if( cond.check( z ) ) {
+                for( auto set : sets ) {
+                    valid_sets.push_back( set );
+                }
+            }
+        }
+
+        if( valid_sets.empty() ) {
+            add_msg( m_info, _( "This creature cannot be anthropomorphized!") , z.name() );
+            return 0;
+        }
+
+        uilist menu;
+        menu.text = string_format( _( "How does it look like?" ) );
+        for( size_t i = 0; i != valid_sets.size(); ++i ) {
+            menu.addentry( i, true, -1,  _( std::get<0>( valid_sets[ i ] ) ) );
+        }
+        menu.addentry( -1, true, -1,  _( "Cancel" ) );
+        menu.query();
+        if( menu.ret < 0 ) {
+            return 0;
+        }
+
+        string_id<npc_template> id = string_id<npc_template>( std::get<1>( valid_sets[ menu.ret ] ) );
+        bool choose_gender = std::get<2>( valid_sets[ menu.ret ] );
+        g->remove_zombie( z );
+        character_id new_npc_id = g->m.place_npc( point( pnt.x, pnt.y ), id, true );
+        npc* new_npc = g->critter_by_id<npc>( new_npc_id );
+        if( new_npc == nullptr ) {
+            return 0;
+        }
+        if( choose_gender ) {
+            uilist menu;
+            menu.allow_cancel = false;
+            menu.text = string_format( _( "Choose gender" ) );
+            menu.addentry( 0, true, -1,  _( "Male" ) );
+            menu.addentry( 1, true, -1,  _( "Female" ) );
+            menu.query();
+            new_npc->male = ( menu.ret == 0 );
+        }
+
+        p.mod_moves( -200 );
+        return 1;
+    }
+
+    return 0;
+}
+
+std::unique_ptr<iuse_actor> anthropomorph_actor::clone() const
+{
+    return std::make_unique<anthropomorph_actor>( *this );
+}
