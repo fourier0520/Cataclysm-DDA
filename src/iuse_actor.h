@@ -1281,4 +1281,22 @@ class make_pet_actor : public iuse_actor
         int use( player &, item &it, bool, const tripoint & ) const override;
         std::unique_ptr<iuse_actor> clone() const override;
 };
+
+/**
+ * transsexual - for hentai mod
+ */
+class transsexual_actor : public consume_drug_iuse
+{
+    public:
+        std::string msg_success_male;
+        std::string msg_success_female;
+        std::string msg_failure;
+
+        transsexual_actor( const std::string &type = "transsexual" ) : consume_drug_iuse( type ) {}
+
+        ~transsexual_actor() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &it, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+};
 #endif

@@ -978,6 +978,7 @@ void Item_factory::init()
     add_actor( std::make_unique<yiff_actor>() );
     add_actor( std::make_unique<anthropomorph_actor>() );
     add_actor( std::make_unique<make_pet_actor>() );
+    add_actor( std::make_unique<transsexual_actor>() );
     // An empty dummy group, it will not spawn anything. However, it makes that item group
     // id valid, so it can be used all over the place without need to explicitly check for it.
     m_template_groups["EMPTY_GROUP"] = std::make_unique<Item_group>( Item_group::G_COLLECTION, 100, 0,

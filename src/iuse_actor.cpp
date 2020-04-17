@@ -5261,3 +5261,32 @@ std::unique_ptr<iuse_actor> make_pet_actor::clone() const
 {
     return std::make_unique<make_pet_actor>( *this );
 }
+
+void transsexual_actor::load( const JsonObject &jo )
+{
+    assign( jo, "msg_success_male", msg_success_male );
+    assign( jo, "msg_success_female", msg_success_female );
+    assign( jo, "msg_failure", msg_failure );
+
+    consume_drug_iuse::load( jo );
+}
+
+int transsexual_actor::use( player &p, item &it, bool t, const tripoint &pos ) const
+{
+    int rval = consume_drug_iuse::use( p, it, t, pos );
+
+    // TODO: Success check.
+    if( p.male ) {
+        p.add_msg_if_player( m_warning, _( msg_success_male ), it.type_name( 1 ) );
+    } else {
+        p.add_msg_if_player( m_warning, _( msg_success_female ), it.type_name( 1 ) );
+    }
+    p.male = !p.male;
+
+    return rval;
+}
+
+std::unique_ptr<iuse_actor> transsexual_actor::clone() const
+{
+    return std::make_unique<transsexual_actor>( *this );
+}
