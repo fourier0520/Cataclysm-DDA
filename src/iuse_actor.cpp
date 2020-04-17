@@ -103,6 +103,7 @@ static const efftype_id effect_stunned( "stunned" );
 static const efftype_id effect_drunk( "drunk" );
 static const efftype_id effect_estrus( "estrus" );
 static const efftype_id effect_corrupt( "corrupt" );
+static const efftype_id effect_pet( "pet" );
 
 static const fault_id fault_bionic_salvaged( "fault_bionic_salvaged" );
 
@@ -5040,7 +5041,7 @@ std::unique_ptr<iuse_actor> yiff_actor::clone() const
     return std::make_unique<yiff_actor>( *this );
 }
 
-void anthropomorph_actor::condition::load( const JsonObject &obj )
+void iuse_condition::load( const JsonObject &obj )
 {
     bool has_array = false;
     if( obj.has_array( "or" ) ) {
@@ -5065,14 +5066,14 @@ void anthropomorph_actor::condition::load( const JsonObject &obj )
 
     if( has_array ) {
         for( const JsonObject &child_obj : obj.get_array( cond ) ) {
-            condition child = condition();
+            iuse_condition child = iuse_condition();
             child.load( child_obj );
             children.push_back( child );
         }
     }
 }
 
-bool anthropomorph_actor::condition::check( const monster &z ) const
+bool iuse_condition::check( const monster &z ) const
 {
     bool ret = true;
     if( cond == "or" ) {
@@ -5107,7 +5108,7 @@ void anthropomorph_actor::load( const JsonObject &jo )
 
     for( const JsonObject selection_obj : jo.get_array( "selection" ) ) {
         templete_sets sets;
-        condition cond;
+        iuse_condition cond;
         bool choose_gender = false;
         assign( selection_obj, "choose_gender", choose_gender );
         if( selection_obj.has_object( "condition" ) ) {
@@ -5146,7 +5147,7 @@ int anthropomorph_actor::use( player &p, item &, bool, const tripoint & ) const
         }
 
         for( auto& selection : selections ) {
-            condition cond = std::get<0>( selection );
+            iuse_condition cond = std::get<0>( selection );
             templete_sets sets = std::get<1>( selection );
             if( cond.check( z ) ) {
                 for( auto set : sets ) {
@@ -5208,4 +5209,55 @@ int anthropomorph_actor::use( player &p, item &, bool, const tripoint & ) const
 std::unique_ptr<iuse_actor> anthropomorph_actor::clone() const
 {
     return std::make_unique<anthropomorph_actor>( *this );
+}
+
+void make_pet_actor::load( const JsonObject &jo )
+{
+    assign( jo, "force", force );
+    assign( jo, "msg_success", msg_success );
+    assign( jo, "msg_failure", msg_failure );
+    assign( jo, "disable_special", disable_special );
+    if( jo.has_object( "condition" ) ) {
+        cond.load( jo.get_object( "condition" ) );
+    }
+}
+
+int make_pet_actor::use( player &p, item &it, bool, const tripoint & ) const
+{
+    (void)p;
+    const std::function<bool( const tripoint & )> f = [&]( const tripoint & pnt ) {
+        monster *z = g->critter_at<monster>( pnt );
+        return ( z != nullptr ) && ( cond.check( *z ) ) && ( z->friendly > -1 );
+    };
+
+    const cata::optional<tripoint> pnt_ = choose_adjacent_highlight( _( "Use to whom?" ),
+                                            _( "There is no one to use to nearby." ), f, false );
+    if( !pnt_ ) {
+        return 0;
+    }
+    const tripoint &pnt = *pnt_;
+    if( monster *z = g->critter_at<monster>( pnt ) ) {
+        p.mod_moves( -200 );
+        // Success check.
+        if( force || ( z->friendly > 0 ) ) {
+            p.add_msg_if_player( m_info, _( msg_success ), z->name() );
+            z->friendly = -1;
+            z->add_effect( effect_pet, 1_turns, num_bp, true );
+            for( std::string special : disable_special ) {
+                z->disable_special( special );
+            }
+            z->add_item( it );
+            return 1;
+        } else {
+            p.add_msg_if_player( m_info, _( msg_failure ), z->name() );
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+std::unique_ptr<iuse_actor> make_pet_actor::clone() const
+{
+    return std::make_unique<make_pet_actor>( *this );
 }
