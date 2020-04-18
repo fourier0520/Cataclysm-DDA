@@ -867,3 +867,71 @@ bool expose_actor::call( monster &z ) const
 
     return true;
 }
+
+void place_field_actor::load_internal( const JsonObject &obj, const std::string & )
+{
+    move_cost = obj.get_int( "move_cost", 200 );
+    max_range = obj.get_float( "max_range", 15 );
+    msg = obj.get_string( "msg", "" );
+    self = obj.get_bool( "self", false );
+    intensity = obj.get_int( "age", 10 );
+    age = obj.get_int( "age", 10 );
+
+    JsonObject mobj = obj.get_object( "object" );
+    JsonObject fobj = mobj.get_object( "field" );
+    std::vector<std::string> rows = mobj.get_string_array( "rows" );
+    point center;
+    center.x = mobj.get_object( "center" ).get_int( "x" );
+    center.y = mobj.get_object( "center" ).get_int( "y" );
+    for( size_t y = 0; y < rows.size(); y++ ) {
+        for( size_t x = 0; x < rows[y].size(); x++ ) {
+            std::vector<field_type_str_id> fds;
+            for( auto fd_str : fobj.get_string_array( rows[y].substr( x, 1 ) ) ) {
+                fds.push_back( field_type_str_id( fd_str ) );
+            }
+            fields.push_back( std::make_tuple( point( x, y ) - center, fds ) );
+        }
+    }
+}
+
+std::unique_ptr<mattack_actor> place_field_actor::clone() const
+{
+    return std::make_unique<place_field_actor>( *this );
+}
+
+player *place_field_actor::find_target( monster &z ) const
+{
+    if( !z.can_act() ) {
+        return nullptr;
+    }
+
+    player *target = dynamic_cast<player *>( z.attack_target() );
+    if( target == nullptr || ( rl_dist( z.pos(), target->pos() ) > max_range ) ) {
+        return nullptr;
+    }
+
+    return target;
+}
+
+bool place_field_actor::call( monster &z ) const
+{
+    player *target = find_target( z );
+    if( target == nullptr ) {
+        return false;
+    }
+
+    tripoint center = self ? z.pos() : target->pos();
+    z.mod_moves( -move_cost );
+
+    for( auto field : fields ) {
+        point offset = std::get<0>( field );
+        std::vector<field_type_str_id> candidate = std::get<1>( field );
+        tripoint loc = center + offset;
+        if( !candidate.empty() ) {
+            g->m.add_field( loc, random_entry( candidate ), intensity, time_duration::from_turns( age ) );
+        }
+    }
+    add_msg( _( msg ) );
+
+    return true;
+}

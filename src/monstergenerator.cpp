@@ -1017,6 +1017,8 @@ mtype_special_attack MonsterGenerator::create_actor( const JsonObject &obj,
         new_attack = std::make_unique<summon_mon_actor>();
     } else if( attack_type == "expose" ) {
         new_attack = std::make_unique<expose_actor>();
+    } else if( attack_type == "place_field" ) {
+        new_attack = std::make_unique<place_field_actor>();
     } else {
         obj.throw_error( "unknown monster attack", "attack_type" );
     }

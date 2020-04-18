@@ -255,4 +255,25 @@ class expose_actor : public mattack_actor
         std::unique_ptr<mattack_actor> clone() const override;
 };
 
+class place_field_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        float max_range;
+        std::string msg;
+        bool self;
+        std::vector<std::tuple<point, std::vector<field_type_str_id>>> fields;
+        int intensity;
+        int age;
+
+        place_field_actor() = default;
+        ~place_field_actor() override = default;
+
+        player *find_target( monster &z ) const;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
 #endif
