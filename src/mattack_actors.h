@@ -213,4 +213,28 @@ class wife_u_actor : public mattack_actor
         std::unique_ptr<mattack_actor> clone() const override;
 };
 
+class summon_mon_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        float max_range;
+        int delay = 150;
+        std::string delay_var_str;
+        std::string summon_msg;
+        std::string trap_msg;
+        int summoning_sickness;
+        std::vector<mtype_id> mon_list;
+        bool need_trap = false;
+        trap_str_id tr_needed;
+
+        summon_mon_actor() = default;
+        ~summon_mon_actor() override = default;
+
+        virtual player *find_target( monster &z ) const;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
 #endif

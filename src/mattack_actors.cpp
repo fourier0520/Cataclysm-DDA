@@ -24,6 +24,7 @@
 #include "rng.h"
 #include "material.h"
 #include "point.h"
+#include "trap.h"
 
 static const efftype_id effect_badpoison( "badpoison" );
 static const efftype_id effect_bite( "bite" );
@@ -713,6 +714,104 @@ bool wife_u_actor::call( monster &z ) const
 
     target->mod_moves( -move_cost );
     z.mod_moves( -move_cost );
+
+    return true;
+}
+
+void summon_mon_actor::load_internal( const JsonObject &obj, const std::string & )
+{
+    move_cost = obj.get_int( "move_cost", 300 );
+    max_range = obj.get_float( "max_range", 10 );
+    delay = obj.get_int( "delay", 150 );
+    delay_var_str = obj.get_string( "delay_var_str", "summon_mon_delay" );
+    summon_msg = obj.get_string( "summon_msg", "" );
+    trap_msg = obj.get_string( "trap_msg", "" );
+    summoning_sickness = obj.get_int( "summoning_sickness", 200 );
+    for( std::string mon_str : obj.get_string_array( "mon_list" ) ) {
+        mon_list.push_back( mtype_id( mon_str ) );
+    }
+    if( mon_list.empty() ) {
+        obj.throw_error( "at least one monster (member \"mon_list\") must be defined" );
+    }
+    need_trap = obj.get_bool( "need_trap", false );
+    if( need_trap ) {
+        tr_needed = trap_str_id(  obj.get_string( "trap", "" ) );
+    }
+}
+
+std::unique_ptr<mattack_actor> summon_mon_actor::clone() const
+{
+    return std::make_unique<summon_mon_actor>( *this );
+}
+
+player *summon_mon_actor::find_target( monster &z ) const
+{
+    if( !z.can_act() ) {
+        return nullptr;
+    }
+
+    player *target = dynamic_cast<player *>( z.attack_target() );
+    if( target == nullptr || ( rl_dist( z.pos(), target->pos() ) > max_range ) ) {
+        return nullptr;
+    }
+
+    return target;
+}
+
+bool summon_mon_actor::call( monster &z ) const
+{
+    player *target = find_target( z );
+    if( target == nullptr ) {
+        return false;
+    }
+
+    // Check delay.
+    int cur_delay = z.get_value( delay_var_str ).empty() ? 0 : std::stoi( z.get_value( delay_var_str ) );
+    if( cur_delay >= delay ) {
+        if( need_trap ) {
+            if( one_in(4) ) {
+                for( const tripoint &candidate : g->m.points_in_radius( z.pos(), max_range ) ) {
+                    trap tr = g->m.tr_at(candidate);
+                    if( tr.id == tr_needed && g->is_empty( candidate ) ) {
+                        g->m.remove_trap( candidate );
+                        monster *mon = g->place_critter_at( random_entry( mon_list ), candidate );
+                        if( mon != nullptr ) {
+                            mon->set_moves( -summoning_sickness );
+                            if( g->u.sees( candidate ) ) {
+                                add_msg( _( summon_msg ), mon->name() );
+                            }
+                        }
+                    }
+                }
+            } else {
+                const tripoint &candidate = random_entry( g->m.points_in_radius( target->pos(), 1 ) );
+                if( g->m.tr_at( candidate ).id.is_null() ) {
+                    g->m.trap_set( candidate, tr_needed );
+                    if( g->u.sees( candidate ) ) {
+                        add_msg( _( trap_msg ), z.name() );
+                    }
+                }
+            }
+        } else {
+            const tripoint &candidate = random_entry( g->m.points_in_radius( z.pos(), max_range ) );
+            if( g->is_empty( candidate ) ) {
+                monster *mon = g->place_critter_at( random_entry( mon_list ), candidate );
+                if( mon != nullptr ) {
+                    mon->set_moves( -summoning_sickness );
+                    if( g->u.sees( candidate ) ) {
+                        add_msg( _( summon_msg ), mon->name() );
+                    }
+                }
+            }
+        }
+        z.mod_moves( -move_cost );
+        cur_delay -= delay;
+        z.set_value( delay_var_str, std::to_string( cur_delay ) );
+    } else {
+        z.mod_moves( -100 );
+        cur_delay += 100;
+        z.set_value( delay_var_str, std::to_string( cur_delay ) );
+    }
 
     return true;
 }
