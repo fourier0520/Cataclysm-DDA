@@ -237,4 +237,22 @@ class summon_mon_actor : public mattack_actor
         std::unique_ptr<mattack_actor> clone() const override;
 };
 
+class expose_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        float max_range;
+        bool only_sees;
+        bool gain_corrupt;
+        std::vector<mon_effect_data> effects;
+        std::string snippet;
+
+        expose_actor() = default;
+        ~expose_actor() override = default;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
 #endif

@@ -5929,7 +5929,7 @@ bool mattack::stripu( monster *z )
     }
 
     player *foe = dynamic_cast<player *>( target );
-    if( rl_dist( z->pos(), target->pos() ) > 2 || foe == nullptr || !z->sees( *target ) ) {
+    if( !is_adjacent( z, target, false ) || foe == nullptr || !z->sees( *target ) ) {
         return false;
     }
     int i_pos = get_random_wear( foe );

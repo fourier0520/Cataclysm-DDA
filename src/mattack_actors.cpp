@@ -25,6 +25,7 @@
 #include "material.h"
 #include "point.h"
 #include "trap.h"
+#include "text_snippets.h"
 
 static const efftype_id effect_badpoison( "badpoison" );
 static const efftype_id effect_bite( "bite" );
@@ -811,6 +812,57 @@ bool summon_mon_actor::call( monster &z ) const
         z.mod_moves( -100 );
         cur_delay += 100;
         z.set_value( delay_var_str, std::to_string( cur_delay ) );
+    }
+
+    return true;
+}
+
+void expose_actor::load_internal( const JsonObject &obj, const std::string & )
+{
+    move_cost = obj.get_int( "move_cost", 500 );
+    max_range = obj.get_float( "max_range", 30 );
+    only_sees = obj.get_bool( "only_sees", true );
+    gain_corrupt = obj.get_bool( "gain_corrupt", false );
+    if( obj.has_array( "effects" ) ) {
+        for( JsonObject eff : obj.get_array( "effects" ) ) {
+            effects.push_back( load_mon_effect_data( eff ) );
+        }
+    }
+    snippet = obj.get_string( "snippet", "" );
+}
+
+std::unique_ptr<mattack_actor> expose_actor::clone() const
+{
+    return std::make_unique<expose_actor>( *this );
+}
+
+bool expose_actor::call( monster &z ) const
+{
+    std::vector<player *> targets;
+    for( const tripoint &candidate : g->m.points_in_radius( z.pos(), max_range ) ) {
+        if( player *target = g->critter_at<player>( candidate ) ) {
+            if( !only_sees || target->sees( z.pos() ) ) {
+                targets.push_back( target );
+            }
+        }
+    }
+    if( targets.empty() ) {
+        return false;
+    }
+
+    z.mod_moves( -move_cost );
+    if( g->u.sees(  z.pos() ) ) {
+        add_msg( m_mixed, string_format( SNIPPET.random_from_category( snippet ).value_or( translation() ), z.name() ) );
+    }
+    for( player *target : targets ) {
+        if( gain_corrupt ) {
+            target->gain_corrupt( rng( 1, 20 ), 1_hours );
+        }
+        for( const auto &eff : effects ) {
+            if( x_in_y( eff.chance, 100 ) ) {
+                target->add_effect( eff.id, time_duration::from_turns( eff.duration ), eff.bp, eff.permanent );
+            }
+        }
     }
 
     return true;
