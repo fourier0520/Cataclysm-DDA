@@ -57,6 +57,9 @@ static const efftype_id effect_stunned( "stunned" );
 static const efftype_id effect_tied( "tied" );
 static const efftype_id effect_zapped( "zapped" );
 
+// for hentai mod
+static const efftype_id effect_corrupt( "corrupt" );
+
 const std::map<std::string, m_size> Creature::size_map = {
     {"TINY", MS_TINY}, {"SMALL", MS_SMALL}, {"MEDIUM", MS_MEDIUM},
     {"LARGE", MS_LARGE}, {"HUGE", MS_HUGE}
@@ -1763,4 +1766,9 @@ bool Creature::has_movement_impairing() const
         }
     }
     return false;
+}
+
+void Creature::gain_corrupt( int, const time_duration &dur )
+{
+    add_effect( effect_corrupt, dur );
 }

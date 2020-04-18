@@ -24,6 +24,8 @@
 #include "rng.h"
 #include "material.h"
 #include "point.h"
+#include "trap.h"
+#include "text_snippets.h"
 
 static const efftype_id effect_badpoison( "badpoison" );
 static const efftype_id effect_bite( "bite" );
@@ -36,7 +38,6 @@ static const efftype_id effect_was_laserlocked( "was_laserlocked" );
 
 // for hentai mod
 static const efftype_id effect_lust( "lust" );
-static const efftype_id effect_corrupt( "corrupt" );
 
 static const trait_id trait_TOXICFLESH( "TOXICFLESH" );
 
@@ -576,8 +577,9 @@ void gun_actor::shoot( monster &z, Creature &target, const gun_mode_id &mode ) c
 static bool can_wife( const monster &z, const player *target )
 {
     if( target->wearing_something_on( bp_leg_l ) || target->wearing_something_on( bp_leg_r ) ) {
-        target->add_msg_player_or_npc( _( "<color_yellow>The %s is after your crotch!</color>" ),
-                                       _( "<color_yellow>The %s is after <npcname>'s crotch!</color>" ),
+        target->add_msg_player_or_npc( m_warning,
+                                       _( "The %s is after your crotch!" ),
+                                       _( "The %s is after <npcname>'s crotch!" ),
                                        z.name() );
         return false;
     }
@@ -585,18 +587,6 @@ static bool can_wife( const monster &z, const player *target )
         return false;
     }
     return true;
-}
-
-static bool has_cum( Creature *target )
-{
-    if( target->get_effect_int( effect_lust )  >= 100) {
-        target->add_msg_player_or_npc( _( "<color_green>You reach an orgasm!</color>" ),
-                                       _( "<color_green><npcname> reachs an orgasm!</color>" ) );
-        target->remove_effect( effect_lust );
-        target->mod_moves( -50 );
-        return true;
-    }
-    return false;
 }
 
 static Creature *get_dominating( const monster &z )
@@ -643,17 +633,6 @@ player *wife_u_actor::find_target( monster &z ) const
     return target;
 }
 
-void wife_u_actor::gain_corrupt( Creature *target, const time_duration &dur ) const
-{
-    player *foe = dynamic_cast<player *>( target );
-    if( foe == nullptr || ( dice( corrupt_dice, corrupt_dice_sides ) > foe->int_cur ) ) {
-        target->add_effect( effect_corrupt, dur );
-    } else {
-        target->add_msg_player_or_npc( _( "However you successfully resist the temptation!" ),
-                                       _( "However <npcname> successfully resists the temptation!" ) );
-    }
-}
-
 bool wife_u_actor::call( monster &z ) const
 {
     player *target = find_target( z );
@@ -677,8 +656,9 @@ bool wife_u_actor::call( monster &z ) const
     }
 
     if( get_dominating(z) == target ) {
-        target->add_msg_player_or_npc( _( "<color_pink>The %s keeps grinding your hips...</color>" ),
-                                       _( "<color_pink>The %s keeps grinding <npcname>'s hips...</color>" ),
+        target->add_msg_player_or_npc( m_mixed,
+                                       _( "The %s keeps grinding your hips..." ),
+                                       _( "The %s keeps grinding <npcname>'s hips..." ),
                                        z.name() );
     } else {
         int count = 0;
@@ -688,29 +668,41 @@ bool wife_u_actor::call( monster &z ) const
             }
         }
         if( count < 3 ) {
-            target->add_msg_player_or_npc( _( "<color_pink>The %s pins you down and slowly eases into you before joining your bodies together..." ),
-                                           _( "<color_pink>The %s pins <npcname> down and slowly eases into <npcname> before joining <npcname>'s bodies together..." ),
+            target->add_msg_player_or_npc( m_mixed,
+                                           _( "The %s pins you down and slowly eases into you before joining your bodies together..." ),
+                                           _( "The %s pins <npcname> down and slowly eases into <npcname> before joining <npcname>'s bodies together..." ),
                                            z.name() );
         } else {
-            target->add_msg_player_or_npc( _( "<color_pink>The %s enjoys the show while staring at you as he plays with himself...</color>" ),
-                                           _( "<color_pink>The %s enjoys the show while staring at <npcname> as he plays with himself...</color>" ),
+            target->add_msg_player_or_npc( m_mixed,
+                                           _( "The %s enjoys the show while staring at you as he plays with himself..." ),
+                                           _( "The %s enjoys the show while staring at <npcname> as he plays with himself..." ),
                                            z.name() );
         }
         z.set_value( "dominating", std::to_string( target->getID().get_value() ) );
     }
 
-    gain_corrupt( target, 1_turns * corrupt_turns );
+    target->gain_corrupt( dice( corrupt_dice, corrupt_dice_sides ), 1_turns * corrupt_turns );
     target->add_effect( effect_lust, 8_turns + 1_turns * rng( 1, fake_dex ) );
     z.add_effect( effect_lust, 8_turns + 1_turns * rng( 1, target->dex_cur ) );
 
-    if( has_cum( target ) ) {
-        g->m.add_item( target->pos(), item( "h_semen", calendar::turn ) );
+    if( target->get_effect_int( effect_lust ) >= 100 ) {
+        target->add_msg_player_or_npc( m_info,
+                                       _( "You go to heaven!" ),
+                                       _( "<npcname> goes to heaven!" ) );
+        target->remove_effect( effect_lust );
+        target->mod_moves( -50 );
+        g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
     }
-    if( has_cum( &z ) ) {
-        g->m.add_item( target->pos(), item( "d_cum", calendar::turn ) );
+    if( z.get_effect_int( effect_lust ) >= 100 ) {
+        add_msg( m_info, _( "The %s goes to heaven!" ), z.name() );
+        z.remove_effect( effect_lust );
+        z.mod_moves( -50 );
+        g->m.add_item( z.pos(), item( "d_body_fluids", calendar::turn ) );
+
         if( dice( 1, 100 ) <= mutate_chance ) {
-            target->add_msg_player_or_npc( _( "<color_yellow>Demonic bodily fluids cause your body to mutate...</color>" ),
-                                           _( "<color_yellow>Demonic bodily fluids cause <npcname>'s body to mutate...</color>" ) );
+            target->add_msg_player_or_npc( m_warning,
+                                           _( "Demonic bodily fluids cause your body to mutate..." ),
+                                           _( "Demonic bodily fluids cause <npcname>'s body to mutate..." ) );
             target->mutate_category( mutate_category );
         }
 
@@ -723,6 +715,223 @@ bool wife_u_actor::call( monster &z ) const
 
     target->mod_moves( -move_cost );
     z.mod_moves( -move_cost );
+
+    return true;
+}
+
+void summon_mon_actor::load_internal( const JsonObject &obj, const std::string & )
+{
+    move_cost = obj.get_int( "move_cost", 300 );
+    max_range = obj.get_float( "max_range", 10 );
+    delay = obj.get_int( "delay", 150 );
+    delay_var_str = obj.get_string( "delay_var_str", "summon_mon_delay" );
+    summon_msg = obj.get_string( "summon_msg", "" );
+    trap_msg = obj.get_string( "trap_msg", "" );
+    summoning_sickness = obj.get_int( "summoning_sickness", 200 );
+    for( std::string mon_str : obj.get_string_array( "mon_list" ) ) {
+        mon_list.push_back( mtype_id( mon_str ) );
+    }
+    if( mon_list.empty() ) {
+        obj.throw_error( "at least one monster (member \"mon_list\") must be defined" );
+    }
+    need_trap = obj.get_bool( "need_trap", false );
+    if( need_trap ) {
+        tr_needed = trap_str_id(  obj.get_string( "trap", "" ) );
+    }
+}
+
+std::unique_ptr<mattack_actor> summon_mon_actor::clone() const
+{
+    return std::make_unique<summon_mon_actor>( *this );
+}
+
+player *summon_mon_actor::find_target( monster &z ) const
+{
+    if( !z.can_act() ) {
+        return nullptr;
+    }
+
+    player *target = dynamic_cast<player *>( z.attack_target() );
+    if( target == nullptr || ( rl_dist( z.pos(), target->pos() ) > max_range ) ) {
+        return nullptr;
+    }
+
+    return target;
+}
+
+bool summon_mon_actor::call( monster &z ) const
+{
+    player *target = find_target( z );
+    if( target == nullptr ) {
+        return false;
+    }
+
+    // Check delay.
+    int cur_delay = z.get_value( delay_var_str ).empty() ? 0 : std::stoi( z.get_value( delay_var_str ) );
+    if( cur_delay >= delay ) {
+        if( need_trap ) {
+            if( one_in(4) ) {
+                for( const tripoint &candidate : g->m.points_in_radius( z.pos(), max_range ) ) {
+                    trap tr = g->m.tr_at(candidate);
+                    if( tr.id == tr_needed && g->is_empty( candidate ) ) {
+                        g->m.remove_trap( candidate );
+                        monster *mon = g->place_critter_at( random_entry( mon_list ), candidate );
+                        if( mon != nullptr ) {
+                            mon->set_moves( -summoning_sickness );
+                            if( g->u.sees( candidate ) ) {
+                                add_msg( _( summon_msg ), mon->name() );
+                            }
+                        }
+                    }
+                }
+            } else {
+                const tripoint &candidate = random_entry( g->m.points_in_radius( target->pos(), 1 ) );
+                if( g->m.tr_at( candidate ).id.is_null() ) {
+                    g->m.trap_set( candidate, tr_needed );
+                    if( g->u.sees( candidate ) ) {
+                        add_msg( _( trap_msg ), z.name() );
+                    }
+                }
+            }
+        } else {
+            const tripoint &candidate = random_entry( g->m.points_in_radius( z.pos(), max_range ) );
+            if( g->is_empty( candidate ) ) {
+                monster *mon = g->place_critter_at( random_entry( mon_list ), candidate );
+                if( mon != nullptr ) {
+                    mon->set_moves( -summoning_sickness );
+                    if( g->u.sees( candidate ) ) {
+                        add_msg( _( summon_msg ), mon->name() );
+                    }
+                }
+            }
+        }
+        z.mod_moves( -move_cost );
+        cur_delay -= delay;
+        z.set_value( delay_var_str, std::to_string( cur_delay ) );
+    } else {
+        z.mod_moves( -100 );
+        cur_delay += 100;
+        z.set_value( delay_var_str, std::to_string( cur_delay ) );
+    }
+
+    return true;
+}
+
+void expose_actor::load_internal( const JsonObject &obj, const std::string & )
+{
+    move_cost = obj.get_int( "move_cost", 500 );
+    max_range = obj.get_float( "max_range", 30 );
+    only_sees = obj.get_bool( "only_sees", true );
+    gain_corrupt = obj.get_bool( "gain_corrupt", false );
+    if( obj.has_array( "effects" ) ) {
+        for( JsonObject eff : obj.get_array( "effects" ) ) {
+            effects.push_back( load_mon_effect_data( eff ) );
+        }
+    }
+    snippet = obj.get_string( "snippet", "" );
+}
+
+std::unique_ptr<mattack_actor> expose_actor::clone() const
+{
+    return std::make_unique<expose_actor>( *this );
+}
+
+bool expose_actor::call( monster &z ) const
+{
+    std::vector<player *> targets;
+    for( const tripoint &candidate : g->m.points_in_radius( z.pos(), max_range ) ) {
+        if( player *target = g->critter_at<player>( candidate ) ) {
+            if( !only_sees || target->sees( z.pos() ) ) {
+                targets.push_back( target );
+            }
+        }
+    }
+    if( targets.empty() ) {
+        return false;
+    }
+
+    z.mod_moves( -move_cost );
+    if( g->u.sees(  z.pos() ) ) {
+        add_msg( m_mixed, string_format( SNIPPET.random_from_category( snippet ).value_or( translation() ), z.name() ) );
+    }
+    for( player *target : targets ) {
+        if( gain_corrupt ) {
+            target->gain_corrupt( rng( 1, 20 ), 1_hours );
+        }
+        for( const auto &eff : effects ) {
+            if( x_in_y( eff.chance, 100 ) ) {
+                target->add_effect( eff.id, time_duration::from_turns( eff.duration ), eff.bp, eff.permanent );
+            }
+        }
+    }
+
+    return true;
+}
+
+void place_field_actor::load_internal( const JsonObject &obj, const std::string & )
+{
+    move_cost = obj.get_int( "move_cost", 200 );
+    max_range = obj.get_float( "max_range", 15 );
+    msg = obj.get_string( "msg", "" );
+    self = obj.get_bool( "self", false );
+    intensity = obj.get_int( "age", 10 );
+    age = obj.get_int( "age", 10 );
+
+    JsonObject mobj = obj.get_object( "object" );
+    JsonObject fobj = mobj.get_object( "field" );
+    std::vector<std::string> rows = mobj.get_string_array( "rows" );
+    point center;
+    center.x = mobj.get_object( "center" ).get_int( "x" );
+    center.y = mobj.get_object( "center" ).get_int( "y" );
+    for( size_t y = 0; y < rows.size(); y++ ) {
+        for( size_t x = 0; x < rows[y].size(); x++ ) {
+            std::vector<field_type_str_id> fds;
+            for( auto fd_str : fobj.get_string_array( rows[y].substr( x, 1 ) ) ) {
+                fds.push_back( field_type_str_id( fd_str ) );
+            }
+            fields.push_back( std::make_tuple( point( x, y ) - center, fds ) );
+        }
+    }
+}
+
+std::unique_ptr<mattack_actor> place_field_actor::clone() const
+{
+    return std::make_unique<place_field_actor>( *this );
+}
+
+player *place_field_actor::find_target( monster &z ) const
+{
+    if( !z.can_act() ) {
+        return nullptr;
+    }
+
+    player *target = dynamic_cast<player *>( z.attack_target() );
+    if( target == nullptr || ( rl_dist( z.pos(), target->pos() ) > max_range ) ) {
+        return nullptr;
+    }
+
+    return target;
+}
+
+bool place_field_actor::call( monster &z ) const
+{
+    player *target = find_target( z );
+    if( target == nullptr ) {
+        return false;
+    }
+
+    tripoint center = self ? z.pos() : target->pos();
+    z.mod_moves( -move_cost );
+
+    for( auto field : fields ) {
+        point offset = std::get<0>( field );
+        std::vector<field_type_str_id> candidate = std::get<1>( field );
+        tripoint loc = center + offset;
+        if( !candidate.empty() ) {
+            g->m.add_field( loc, random_entry( candidate ), intensity, time_duration::from_turns( age ) );
+        }
+    }
+    add_msg( _( msg ) );
 
     return true;
 }
