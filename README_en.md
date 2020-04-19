@@ -10,10 +10,15 @@ It is based build 0.E Ellison(#10478).
 
 ## Caution
 
-Main feature of this variant is offensive content for some people.
+Some main feature of this variant is offensive content for some people.
 
-- Excrement feature.
-- *Lovely* activity with nether maids.
+All of those offensive features are made as mod or can turn off from option,
+
+So you can turn off dislike feature.
+
+- Excrement feature option.
+- Mod that add \*Lovely activity\* with nether maids.
+- Mod that add Hentai feature like succubus and incubus.
 
 ## Downloads and how to play
 
