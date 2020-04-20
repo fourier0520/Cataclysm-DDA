@@ -935,6 +935,7 @@ void Item_factory::init()
     add_iuse( "BREAK_STICK", &iuse::break_stick );
     add_iuse( "UNDERGROUND_SONAR", &iuse::underground_sonar );
     add_iuse( "NAMING", &iuse::naming );
+    add_iuse( "SPAWN_ARTIFACT", &iuse::spawn_artifact );
 
     add_actor( std::make_unique<ammobelt_actor>() );
     add_actor( std::make_unique<bandolier_actor>() );

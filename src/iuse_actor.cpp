@@ -5188,15 +5188,14 @@ int anthropomorph_actor::use( player &p, item &, bool, const tripoint & ) const
             menu.addentry( 1, true, -1,  _( "Female" ) );
             menu.query();
             new_npc->male = ( menu.ret == 0 );
-
-            std::string filterstring = new_npc->name;
-            string_input_popup popup;
-            popup.title( _( "Naming:" ) )
-            .width( 85 ).description( string_format( _( "\n%s\n" ),new_npc->name ) )
-            .edit( filterstring );
-            if( popup.confirmed() && !filterstring.empty() ) {
-                new_npc->name = filterstring;
-            }
+        }
+        std::string filterstring = new_npc->name;
+        string_input_popup popup;
+        popup.title( _( "Naming:" ) )
+        .width( 85 ).description( string_format( _( "\n%s\n" ),new_npc->name ) )
+        .edit( filterstring );
+        if( popup.confirmed() && !filterstring.empty() ) {
+            new_npc->name = filterstring;
         }
 
         p.mod_moves( -200 );

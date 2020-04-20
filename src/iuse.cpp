@@ -9771,6 +9771,15 @@ int iuse::naming( player *p, item *, bool, const tripoint & )
     return 0;
 }
 
+int iuse::spawn_artifact( player *p, item *, bool, const tripoint & )
+{
+    g->m.spawn_artifact( p->pos() );
+    p->add_msg_if_player( _( "For a moment you were seized with a strange feeling as if the world just got distorted." ) );
+    p->mod_moves( -100 );
+
+    return 1;
+}
+
 void use_function::dump_info( const item &it, std::vector<iteminfo> &dump ) const
 {
     if( actor != nullptr ) {

@@ -5977,7 +5977,7 @@ bool mattack::stripu( monster *z )
 bool mattack::seduce( monster *z )
 {
     Creature *target = z->attack_target();
-    if( target == nullptr ) {
+    if( !is_adjacent( z, target, false ) || target == nullptr || !z->sees( *target ) ) {
         return false;
     }
 
