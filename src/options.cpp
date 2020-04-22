@@ -2113,7 +2113,7 @@ void options_manager::add_options_world_default()
        );
     add( "HENTAI_EXTEND", "world_default", translate_marker( "Hentai exteneds" ),
          translate_marker( "Extends feature of packed hentai mod more when it enabled. if false, like original hentai mod experience." ),
-         true
+         false
        );
 
     add_empty_line();
