@@ -1058,6 +1058,9 @@ class game
 
         // called on map shifting
         void shift_destination_preview( const point &delta );
+
+    public:
+        bool is_debug_touched = false;
 };
 
 // Returns temperature modifier from direct heat radiation of nearby sources

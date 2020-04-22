@@ -1117,6 +1117,7 @@ void debug()
 {
     bool debug_menu_has_hotkey = hotkey_for_action( ACTION_DEBUG, false ) != -1;
     int action = debug_menu_uilist( debug_menu_has_hotkey );
+    g->is_debug_touched = true;
     g->refresh_all();
     avatar &u = g->u;
     map &m = g->m;

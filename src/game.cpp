@@ -2906,6 +2906,13 @@ spell_events &game::spell_events_subscriber()
 
 bool game::save()
 {
+    if( is_debug_touched ) {
+        if ( !query_yn( _("You touched debug menu in this session, are you sure to save?") ) ) {
+            add_msg( m_warning ,_( "Aborted saving game." ) );
+            return false;
+        }
+    }
+
     try {
         if( !save_player_data() ||
             !save_factions_missions_npcs() ||
