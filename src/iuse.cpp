@@ -9739,6 +9739,47 @@ int iuse::underground_sonar( player *p, item *, bool, const tripoint &pt )
     return 0;
 }
 
+int iuse::naming( player *p, item *, bool, const tripoint & )
+{
+    if( p->is_npc() ) {
+        return 0;
+    }
+    const std::function<bool( const tripoint & )> f = [&]( const tripoint & pnt ) {
+        return g->critter_at<player>( pnt ) != nullptr;
+    };
+    const cata::optional<tripoint> pnt_ = choose_adjacent_highlight( _( "Use to whom?" ),
+                                            _( "There is no one to use to nearby." ), f, false );
+    if( !pnt_ ) {
+        return 0;
+    }
+    const tripoint &pnt = *pnt_;
+    if( player *const target = g->critter_at<player>( pnt ) ) {
+        if( target != nullptr ) {
+            std::string filterstring = target->name;
+            string_input_popup popup;
+            popup.title( _( "Naming:" ) )
+            .width( 85 ).description( string_format( _( "Target:\n%s\n" ), target->name ) )
+            .edit( filterstring );
+            if( popup.confirmed() && !filterstring.empty() ) {
+                p->add_msg_if_player( m_info, _( "New name is %s!" ), filterstring );
+                target->name = filterstring;
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int iuse::spawn_artifact( player *p, item *, bool, const tripoint & )
+{
+    g->m.spawn_artifact( p->pos() );
+    p->add_msg_if_player( _( "For a moment you were seized with a strange feeling as if the world just got distorted." ) );
+    p->mod_moves( -100 );
+
+    return 1;
+}
+
 void use_function::dump_info( const item &it, std::vector<iteminfo> &dump ) const
 {
     if( actor != nullptr ) {

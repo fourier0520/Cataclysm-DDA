@@ -137,6 +137,9 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
+// for hentai mod
+static const efftype_id effect_lust( "lust" );
+
 static const skill_id skill_gun( "gun" );
 static const skill_id skill_launcher( "launcher" );
 static const skill_id skill_melee( "melee" );
@@ -5890,4 +5893,146 @@ bool mattack::melee_bot( monster *bot )
     return true;
 }
 
+static Creature *get_dominating( const monster *z )
+{
+    Creature *wife = nullptr;
+    std::string str_dominating = z->get_value( "dominating" );
+    if( !str_dominating.empty() ) {
+        int dominating =  std::stoi( str_dominating );
+        wife = g->critter_by_id( character_id( dominating ) );
+    }
 
+    return wife;
+}
+
+static int get_random_wear( const player *target )
+{
+    std::list<int> list;
+    for( int i = -2; target->is_worn( target->i_at( i ) ); i--) {
+        list.push_back( i );
+    }
+    if( list.empty() ) {
+        return INT_MIN;
+    }
+    return random_entry( list );
+}
+
+bool mattack::stripu( monster *z )
+{
+    if( get_dominating( z ) != nullptr ) {
+        return false;
+    }
+
+    Creature *target = z->attack_target();
+    if( target == nullptr ) {
+        return false;
+    }
+
+    player *foe = dynamic_cast<player *>( target );
+    if( !is_adjacent( z, target, false ) || foe == nullptr || !z->sees( *target ) ) {
+        return false;
+    }
+    int i_pos = get_random_wear( foe );
+    if( i_pos == INT_MIN ) {
+        return false;
+    }
+    item &it = foe->i_at( i_pos );
+
+    z->mod_moves( -100 );
+
+    bool uncanny = target->uncanny_dodge();
+    if( uncanny || dodge_check( z, target ) ) {
+        target->add_msg_player_or_npc( _( "The %s tries to undress you, but you manage to dodge it!" ),
+                                       _( "The %s tries to undress <npcname>, but <npcname> manages to dodge it!" ),
+                                       z->name() );
+        if( !uncanny ) {
+            target->on_dodge( z, z->type->melee_skill * 2 );
+        }
+        return true;
+    }
+
+    if( it.volume() > 250_ml ) {
+        target->add_msg_player_or_npc( m_mixed,
+                                       _( "The %1$s quickly takes off your %2$s and drops it on the ground!" ),
+                                       _( "The %1$s quickly takes off <npcname>'s %2$s and drops it on the ground!" ),
+                                        z->name(),
+                                        it.display_name() );
+        g->m.add_item( z->pos(), it );
+    } else {
+        target->add_msg_player_or_npc( m_mixed,
+                                       _( "The %1$s takes off your %2$s and steals it!" ),
+                                       _( "The %1$s takes off <npcname>'s %2$s and steals it!" ),
+                                       z->name(),
+                                       it.display_name() );
+        z->add_item( it );
+    }
+
+    if( foe->has_item( it ) ) {
+        foe->i_rem( &it );
+    }
+
+    return true;
+}
+
+bool mattack::seduce( monster *z )
+{
+    Creature *target = z->attack_target();
+    if( !is_adjacent( z, target, false ) || target == nullptr || !z->sees( *target ) ) {
+        return false;
+    }
+
+    z->mod_moves( -100 );
+
+    bool uncanny = target->uncanny_dodge();
+    if( uncanny || dodge_check( z, target ) ) {
+        target->add_msg_player_or_npc( _( "The %s tries to reach for you, but you manage to dodge it!" ),
+                                       _( "The %s tries to reach for <npcname>, but <npcname> manages to dodge it!" ),
+                                       z->name() );
+        if( !uncanny ) {
+            target->on_dodge( z, z->type->melee_skill * 2 );
+        }
+        return true;
+    }
+
+    target->add_msg_player_or_npc( m_mixed,
+                                   SNIPPET.random_from_category( "seduce_msg_player" ).value_or( translation() ),
+                                   SNIPPET.random_from_category( "seduce_msg_npc" ).value_or( translation() ),
+                                   z->name(),
+                                   SNIPPET.random_from_category( "hentai_bp" ).value_or( translation() ) );
+    target->gain_corrupt( rng( 1, 20 ), 100_turns );
+    target->add_effect( effect_lust, 4_turns );
+
+    return true;
+}
+
+bool mattack::tkiss( monster *z )
+{
+    const float range = 10.0f;
+    Creature *target = sting_get_target( z, range );
+    if( target == nullptr ) {
+        return false;
+    }
+
+    z->mod_moves( -50 );
+
+    // TODO: Use gun skill?
+    bool uncanny = target->uncanny_dodge();
+    if( uncanny || dodge_check( z, target ) ) {
+        target->add_msg_player_or_npc( _( "The %s tries to blow a kiss at you, but you manage to dodge it!" ),
+                                       _( "The %s tries to blow a kiss at <npcname>, but <npcname> manages to dodge it!" ),
+                                       z->name() );
+        if( !uncanny ) {
+            target->on_dodge( z, z->type->melee_skill * 2 );
+        }
+        return true;
+    }
+
+    target->add_msg_player_or_npc( m_mixed,
+                                   _( "The %s blows a kiss at you!" ),
+                                   _( "The %s blows a kiss at <npcname>!" ),
+                                   z->name() );
+    target->gain_corrupt( rng( 1, 20 ), 50_turns );
+    target->add_effect( effect_lust, 2_turns );
+
+    return true;
+}

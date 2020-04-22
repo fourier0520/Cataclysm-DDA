@@ -37,6 +37,7 @@ using itype_id = std::string;
 struct furn_t;
 struct itype;
 class item_location;
+class npc;
 
 /**
  * Transform an item into a specific type.
@@ -1205,6 +1206,97 @@ class sew_advanced_actor : public iuse_actor
         ~sew_advanced_actor() override = default;
         void load( const JsonObject &obj ) override;
         int use( player &, item &, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+};
+
+/**
+ * Yiff - for hentai mod
+ */
+class yiff_actor : public iuse_actor
+{
+    public:
+        std::string snippet;
+        std::string morale;
+        int break_chance;
+        std::string break_msg;
+
+        yiff_actor( const std::string &type = "yiff" ) : iuse_actor( type ) {}
+
+        ~yiff_actor() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+
+        std::tuple<float, bool> get_willing( const player &p, const npc &target ) const;
+};
+
+struct iuse_condition {
+    std::string cond;
+    std::string value;
+    bool invert = false;
+    std::vector<iuse_condition> children;
+
+    iuse_condition() = default;
+    ~iuse_condition() = default;
+
+    void load( const JsonObject &obj );
+    bool check( const monster &z ) const;
+};
+
+/**
+ * Anthropomorph - for hentai mod
+ */
+class anthropomorph_actor : public iuse_actor
+{
+    using templete_sets = std::vector<std::tuple<std::string, std::string, bool>>;
+
+    public:
+        bool allow_enemy = false;
+        std::vector<std::tuple<iuse_condition, templete_sets>> selections;
+
+        anthropomorph_actor( const std::string &type = "anthropomorph" ) : iuse_actor( type ) {}
+
+        ~anthropomorph_actor() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+};
+
+/**
+ * make_pet - for hentai mod
+ */
+class make_pet_actor : public iuse_actor
+{
+    public:
+        bool force = false;
+        iuse_condition cond;
+        std::string msg_success;
+        std::string msg_failure;
+        std::vector<std::string> disable_special;
+
+        make_pet_actor( const std::string &type = "make_pet" ) : iuse_actor( type ) {}
+
+        ~make_pet_actor() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &it, bool, const tripoint & ) const override;
+        std::unique_ptr<iuse_actor> clone() const override;
+};
+
+/**
+ * transsexual - for hentai mod
+ */
+class transsexual_actor : public consume_drug_iuse
+{
+    public:
+        std::string msg_success_male;
+        std::string msg_success_female;
+        std::string msg_failure;
+
+        transsexual_actor( const std::string &type = "transsexual" ) : consume_drug_iuse( type ) {}
+
+        ~transsexual_actor() override = default;
+        void load( const JsonObject &obj ) override;
+        int use( player &, item &it, bool, const tripoint & ) const override;
         std::unique_ptr<iuse_actor> clone() const override;
 };
 #endif

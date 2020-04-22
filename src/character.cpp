@@ -137,6 +137,9 @@ static const efftype_id effect_took_xanax( "took_xanax" );
 static const efftype_id effect_webbed( "webbed" );
 static const efftype_id effect_winded( "winded" );
 
+// for hentai mod
+static const efftype_id effect_corrupt( "corrupt" );
+
 static const trait_id trait_ACIDBLOOD( "ACIDBLOOD" );
 static const trait_id trait_ACIDPROOF( "ACIDPROOF" );
 static const trait_id trait_ADRENALINE( "ADRENALINE" );
@@ -9183,5 +9186,15 @@ void Character::use_fire( const int quantity )
     } else if( has_bionic( bio_laser ) && get_power_level() > quantity * 5_kJ ) {
         mod_power_level( -quantity * 5_kJ );
         return;
+    }
+}
+
+void Character::gain_corrupt( int intensity, const time_duration &dur )
+{
+    if( intensity > int_cur ) {
+        add_effect( effect_corrupt, dur );
+    } else {
+        add_msg_player_or_npc( _( "However you successfully resist the temptation!" ),
+                               _( "However <npcname> successfully resists the temptation!" ) );
     }
 }

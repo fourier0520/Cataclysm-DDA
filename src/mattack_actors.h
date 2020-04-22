@@ -191,4 +191,89 @@ class gun_actor : public mattack_actor
         std::unique_ptr<mattack_actor> clone() const override;
 };
 
+class wife_u_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        int corrupt_dice;
+        int corrupt_dice_sides;
+        int corrupt_turns;
+        int mutate_chance;
+        std::string mutate_category;
+        int interval;
+        int fake_dex = 8;
+
+        wife_u_actor() = default;
+        ~wife_u_actor() override = default;
+
+        virtual player *find_target( monster &z ) const;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
+class summon_mon_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        float max_range;
+        int delay = 150;
+        std::string delay_var_str;
+        std::string summon_msg;
+        std::string trap_msg;
+        int summoning_sickness;
+        std::vector<mtype_id> mon_list;
+        bool need_trap = false;
+        trap_str_id tr_needed;
+
+        summon_mon_actor() = default;
+        ~summon_mon_actor() override = default;
+
+        virtual player *find_target( monster &z ) const;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
+class expose_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        float max_range;
+        bool only_sees;
+        bool gain_corrupt;
+        std::vector<mon_effect_data> effects;
+        std::string snippet;
+
+        expose_actor() = default;
+        ~expose_actor() override = default;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
+class place_field_actor : public mattack_actor
+{
+    public:
+        int move_cost;
+        float max_range;
+        std::string msg;
+        bool self;
+        std::vector<std::tuple<point, std::vector<field_type_str_id>>> fields;
+        int intensity;
+        int age;
+
+        place_field_actor() = default;
+        ~place_field_actor() override = default;
+
+        player *find_target( monster &z ) const;
+
+        void load_internal( const JsonObject &obj, const std::string &src ) override;
+        bool call( monster & ) const override;
+        std::unique_ptr<mattack_actor> clone() const override;
+};
+
 #endif

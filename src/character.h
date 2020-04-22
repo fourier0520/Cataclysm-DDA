@@ -2024,6 +2024,9 @@ class Character : public Creature, public visitable<Character>
 
         time_point next_climate_control_check;
         bool last_climate_control_ret;
+
+        // for hentai mod
+        void gain_corrupt( int intensity, const time_duration &dur ) override;
 };
 
 // Little size helper, exposed for use in deserialization code.
