@@ -5428,6 +5428,12 @@ void activity_handlers::hentai_play_with_do_turn( player_activity *act, player *
             partner->add_effect( effect_movingdoing, 10_minutes );
             partner->add_morale( morale_type( act->str_values[1] ), bonus * bonus_multiplier, 0, 1_hours, 15_minutes );
         }
+        if( get_option<bool>("HENTAI_EXTEND") ) {
+            if( 1 <= act->monsters.size() ) {
+                shared_ptr_fast<monster> mon_partner = act->monsters[0].lock();
+                mon_partner->add_effect( effect_movingdoing, 10_minutes );
+            }
+        }
         p->add_morale( morale_type( act->str_values[1] ), bonus * bonus_multiplier, 0, 1_hours, 15_minutes );
     }
 }
@@ -5459,6 +5465,13 @@ void activity_handlers::hentai_play_with_finish( player_activity *act, player *p
             partner->op_of_u.fear += 5;
             partner->op_of_u.anger += 1;
             partner->op_of_u.owed -= 1;
+        }
+    }
+
+    if( get_option<bool>("HENTAI_EXTEND") ) {
+        if( 1 <= act->monsters.size() ) {
+            shared_ptr_fast<monster> mon_partner = act->monsters[0].lock();
+            mon_partner->remove_effect( effect_movingdoing );
         }
     }
 

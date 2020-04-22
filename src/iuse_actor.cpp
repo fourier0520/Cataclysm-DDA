@@ -105,6 +105,9 @@ static const efftype_id effect_estrus( "estrus" );
 static const efftype_id effect_corrupt( "corrupt" );
 static const efftype_id effect_pet( "pet" );
 
+// for hentai
+static const efftype_id effect_movingdoing( "movingdoing" );
+
 static const fault_id fault_bionic_salvaged( "fault_bionic_salvaged" );
 
 static const bionic_id bio_syringe( "bio_syringe" );
@@ -4933,7 +4936,7 @@ std::tuple<float, bool> yiff_actor::get_willing( const player &p, const npc &tar
         willing += target.get_effect_int( effect_corrupt );
     }
     if( target.has_trait( trait_hentai_VIRGIN ) ) {
-		willing -= 30;
+        willing -= 30;
     }
 
     return std::make_tuple( willing, with_love );
@@ -5018,6 +5021,7 @@ int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
             return 0;
         }
         p.unset_mutation( trait_hentai_VIRGIN );
+
     }
 
     // Assign activity.
@@ -5032,7 +5036,12 @@ int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
         p.activity.values.push_back( person->getID().get_value() );
         person->set_moves( -200 );
     }
-
+    if( get_option<bool>("HENTAI_EXTEND") ) {
+        monster *const mon_ = g->critter_at<monster>( pnt ) ;
+        monster &mon = *mon_;
+        p.activity.monsters.emplace_back( g->shared_from( mon ) );
+        mon.add_effect( effect_movingdoing, 10_minutes );
+    }
     return 0;
 }
 
@@ -5098,7 +5107,7 @@ bool iuse_condition::check( const monster &z ) const
     } else if( cond == "has_flag" ) {
         ret = z.type->has_flag( io::string_to_enum<m_flag>( value ) );
     }
-    
+
     return invert ? !ret : ret;
 }
 

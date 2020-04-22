@@ -107,6 +107,9 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
+// for hentai
+const efftype_id effect_movingdoing( "movingdoing" );
+
 static const species_id FISH( "FISH" );
 static const species_id FUNGUS( "FUNGUS" );
 static const species_id INSECT( "INSECT" );
@@ -1662,6 +1665,12 @@ bool monster::move_effects( bool )
         has_effect( effect_littlemaid_in_kiss ) || has_effect( effect_littlemaid_in_petting ) ||
         has_effect( effect_littlemaid_in_service ) || has_effect( effect_littlemaid_in_special ) ) {
         return false;
+    }
+
+    if( get_option<bool>("HENTAI_EXTEND") ) {
+        if( has_effect( effect_movingdoing ) ) {
+            return false;
+        }
     }
 
     bool u_see_me = g->u.sees( *this );
