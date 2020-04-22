@@ -5420,7 +5420,7 @@ void activity_handlers::hentai_play_with_do_turn( player_activity *act, player *
         float bonus_multiplier = 1.0f;
         if( it.is_null() ) {
             bonus_multiplier *= 1.5f;
-        } 
+        }
         p->add_effect( effect_movingdoing, 10_minutes );
         if( partner != nullptr ) {
             bonus_multiplier *= 2.0f;
