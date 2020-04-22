@@ -5472,7 +5472,7 @@ void activity_handlers::hentai_play_with_finish( player_activity *act, player *p
     }
 
     item liquid = item( "h_body_fluids", calendar::turn );
-    if( !it.is_null() ) {
+    if( !it.is_null() && it.has_property( "used_item" ) ) {
         item used = item( it.get_property_string( "used_item" ) );
         if( !used.is_null() ) {
             used.fill_with( liquid );
