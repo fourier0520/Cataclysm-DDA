@@ -5037,10 +5037,11 @@ int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
         person->set_moves( -200 );
     }
     if( get_option<bool>("HENTAI_EXTEND") ) {
-        monster *const mon_ = g->critter_at<monster>( pnt ) ;
-        monster &mon = *mon_;
-        p.activity.monsters.emplace_back( g->shared_from( mon ) );
-        mon.add_effect( effect_movingdoing, 10_minutes );
+        if( monster *const mon_ = g->critter_at<monster>( pnt ) ) {
+            monster &mon = *mon_;
+            p.activity.monsters.emplace_back( g->shared_from( mon ) );
+            mon.add_effect( effect_movingdoing, 10_minutes );
+        }
     }
     return 0;
 }
