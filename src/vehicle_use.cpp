@@ -52,6 +52,8 @@
 #include "monster.h"
 #include "mtype.h"
 #include "weather.h"
+#include "overmap.h"
+#include "overmap_ui.h"
 
 static const activity_id ACT_HOTWIRE_CAR( "ACT_HOTWIRE_CAR" );
 static const activity_id ACT_RELOAD( "ACT_RELOAD" );
@@ -1965,6 +1967,18 @@ void vehicle::consume_washlet_resource( ){
     drain( "battery", 500 );
 }
 
+void vehicle::ftl_drive( int ) {
+
+    // open map
+
+    const tripoint om_dest( ui::omap::choose_point() );
+    if( om_dest == overmap::invalid_tripoint ) {
+        return;
+    }
+
+    g->ftl_drive(om_dest, *this);
+}
+
 // Handles interactions with a vehicle in the examine menu.
 void vehicle::interact_with( const tripoint &pos, int interact_part )
 {
@@ -2027,6 +2041,7 @@ void vehicle::interact_with( const tripoint &pos, int interact_part )
         SHOWER_HAND, SHOWER, SHOWER_HOT,
         TOILET,
         LIGHTMODE_CARGO, LIGHTMODE_TURRET,
+        FTL_DRIVE
 
     };
     uilist selectmenu;
@@ -2040,6 +2055,8 @@ void vehicle::interact_with( const tripoint &pos, int interact_part )
                 lightmode_cargo  ? _("Toggle Lightmode cargo : ON") : _("Toggle Lightmode cargo : OFF"));
         selectmenu.addentry( LIGHTMODE_TURRET  , true, 'T',
                 lightmode_turret ? _("Toggle Lightmode turret: ON") : _("Toggle Lightmode turret: OFF"));
+
+        selectmenu.addentry( FTL_DRIVE  , true, 'F', _("FTL Drive") );
     }
     if( has_electronics ) {
         selectmenu.addentry( CONTROL_ELECTRONICS, true, keybind( "CONTROL_MANY_ELECTRONICS" ),
@@ -2317,6 +2334,10 @@ void vehicle::interact_with( const tripoint &pos, int interact_part )
         }
         case LIGHTMODE_TURRET: {
             lightmode_turret = !lightmode_turret;
+            return;
+        }
+        case FTL_DRIVE: {
+            ftl_drive( 0 );
             return;
         }
 

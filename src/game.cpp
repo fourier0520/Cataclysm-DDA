@@ -9428,6 +9428,70 @@ void game::place_player_overmap( const tripoint &om_dest )
     place_player( player_pos );
 }
 
+void game::ftl_drive( const tripoint &om_dest, vehicle& veh )
+{
+    add_msg( _("ftl %s"), veh.name);
+
+//    add_msg(_("sm_pos %5d,%5d,%5d"),veh.sm_pos.x, veh.sm_pos.y, veh.sm_pos.z );
+//    add_msg(_("   pos %5d,%5d"),veh.pos.x, veh.pos.y );
+
+    // TODO remove vehicle
+    std::unique_ptr<vehicle> warping_veh = m.detach_vehicle(&veh);
+
+//    veh.sm_pos.x = om_dest.x;
+//    veh.sm_pos.y = om_dest.y;
+//    veh.sm_pos.z = om_dest.z;
+
+    // if player is teleporting around, they dont bring their horse with them
+    if( u.is_mounted() ) {
+        u.remove_effect( effect_riding );
+        u.mounted_creature->remove_effect( effect_ridden );
+        u.mounted_creature = nullptr;
+    }
+    // offload the active npcs.
+    unload_npcs();
+    for( monster &critter : all_monsters() ) {
+        despawn_monster( critter );
+    }
+//    if( u.in_vehicle ) {
+//        m.unboard_vehicle( u.pos() );
+//    }
+    const int minz = m.has_zlevels() ? -OVERMAP_DEPTH : get_levz();
+    const int maxz = m.has_zlevels() ? OVERMAP_HEIGHT : get_levz();
+    for( int z = minz; z <= maxz; z++ ) {
+        m.clear_vehicle_cache( z );
+        m.clear_vehicle_list( z );
+    }
+    m.access_cache( get_levz() ).map_memory_seen_cache.reset();
+    // offset because load_map expects the coordinates of the top left corner, but the
+    // player will be centered in the middle of the map.
+    const tripoint map_om_pos( tripoint( 2 * om_dest.x, 2 * om_dest.y,
+                                         om_dest.z ) + point( -HALF_MAPSIZE, -HALF_MAPSIZE ) );
+    const tripoint player_pos( u.pos().xy(), map_om_pos.z );
+    load_map( map_om_pos );
+    load_npcs();
+    m.spawn_monsters( true ); // Static monsters
+    update_overmap_seen();
+    // update weather now as it could be different on the new location
+    weather.nextweather = calendar::turn;
+
+    // warp vehicle here
+    auto &map_cache = m.get_cache_public( om_dest.z );
+    map_cache.vehicle_list.insert( &veh );
+    if( !veh.loot_zones.empty() ) {
+        map_cache.zone_vehicles.insert( &veh );
+    }
+//    vehicle* warping_veh_ptr = warping_veh.get();
+//    m.add_vehicle_to_cache( warping_veh_ptr );
+
+    m.add_vehicle_to_cache( &veh );
+
+
+
+
+    place_player( player_pos );
+}
+
 bool game::phasing_move( const tripoint &dest_loc )
 {
     if( !u.has_active_bionic( bionic_id( "bio_probability_travel" ) ) ||

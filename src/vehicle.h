@@ -1625,6 +1625,7 @@ class vehicle
         void use_shower( int part, const std::string &mode);
         bool is_available_washlet_resource();
         void consume_washlet_resource();
+        void ftl_drive( int part );
 
         void interact_with( const tripoint &pos, int interact_part );
 

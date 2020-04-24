@@ -1829,6 +1829,12 @@ class map
         level_cache &access_cache( int zlev );
         const level_cache &access_cache( int zlev ) const;
         bool need_draw_lower_floor( const tripoint &p );
+
+    public:
+        // for variant hacking :(
+        level_cache &get_cache_public( int zlev ) const {
+            return *caches[zlev + OVERMAP_DEPTH];
+        }
 };
 
 template<int SIZE, int MULTIPLIER>
