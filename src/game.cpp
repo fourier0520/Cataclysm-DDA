@@ -9428,6 +9428,97 @@ void game::place_player_overmap( const tripoint &om_dest )
     place_player( player_pos );
 }
 
+void game::ftl_drive( const tripoint &om_dest, vehicle& veh )
+{
+
+    std::vector<monster*> passenger_list;
+    std::vector<npc*> passenger_list_npc;
+
+    // remove and store monster and NPC on vehicle
+    for( auto const &part : veh.get_avail_parts( VPFLAG_BOARDABLE ) ) {
+
+        if( part.pos() == u.pos() ){
+            continue;
+        }
+
+        npc *passenger_npc = critter_at<npc>( part.pos() );
+        if( passenger_npc != nullptr ){
+            passenger_list_npc.push_back( passenger_npc );
+            continue;
+        }
+
+        monster *passenger = critter_at<monster>( part.pos() );
+        if( passenger != nullptr ){
+            passenger_list.push_back( passenger );
+            remove_zombie( *passenger );
+            continue;
+        }
+
+    }
+    // remove and store vehicle
+    std::unique_ptr<vehicle> warping_veh = m.detach_vehicle(&veh);
+
+    // mostly copy pesta from game::place_player_overmap
+    // vvvvv
+
+    // if player is teleporting around, they dont bring their horse with them
+    if( u.is_mounted() ) {
+        u.remove_effect( effect_riding );
+        u.mounted_creature->remove_effect( effect_ridden );
+        u.mounted_creature = nullptr;
+    }
+    // offload the active npcs.
+    unload_npcs();
+    for( monster &critter : all_monsters() ) {
+        despawn_monster( critter );
+    }
+//    if( u.in_vehicle ) {
+//        m.unboard_vehicle( u.pos() );
+//    }
+    const int minz = m.has_zlevels() ? -OVERMAP_DEPTH : get_levz();
+    const int maxz = m.has_zlevels() ? OVERMAP_HEIGHT : get_levz();
+    for( int z = minz; z <= maxz; z++ ) {
+        m.clear_vehicle_cache( z );
+        m.clear_vehicle_list( z );
+    }
+    m.access_cache( get_levz() ).map_memory_seen_cache.reset();
+    // offset because load_map expects the coordinates of the top left corner, but the
+    // player will be centered in the middle of the map.
+    const tripoint map_om_pos( tripoint( 2 * om_dest.x, 2 * om_dest.y,
+                                         om_dest.z ) + point( -HALF_MAPSIZE, -HALF_MAPSIZE ) );
+    const tripoint player_pos( u.pos().xy(), map_om_pos.z );
+    load_map( map_om_pos );
+
+    // restore vehicle
+    m.place_vehicle_ftl( std::move(warping_veh), u.pos() );
+    // restore npc
+    for( npc* passenger_npc : passenger_list_npc) {
+        passenger_npc->spawn_at_precise( { get_levx(), get_levy() }, passenger_npc->pos() );
+    }
+    // restore monster
+    for( monster* passenger : passenger_list) {
+        int fallback_radius = 2;
+        // TODO handle case that when if monster does not placed
+        // monster *const placed =
+        place_critter_around(
+            make_shared_fast<monster>( *passenger ),
+            passenger->pos(),
+            fallback_radius );
+    }
+
+    load_npcs();
+    m.spawn_monsters( true ); // Static monsters
+    update_overmap_seen();
+    // update weather now as it could be different on the new location
+    weather.nextweather = calendar::turn;
+
+    place_player( player_pos );
+
+    // ^^^^^
+    // end of copy pesta
+
+}
+
 bool game::phasing_move( const tripoint &dest_loc )
 {
     if( !u.has_active_bionic( bionic_id( "bio_probability_travel" ) ) ||

@@ -1362,6 +1362,9 @@ class map
         vehicle *add_vehicle( const vproto_id &type, const point &p, int dir,
                               int init_veh_fuel = -1, int init_veh_status = -1,
                               bool merge_wrecks = true );
+
+        void place_vehicle_ftl( std::unique_ptr<vehicle> veh, const tripoint &dest );
+
         // Light/transparency
         float light_transparency( const tripoint &p ) const;
         // Assumes 0,0 is light map center
@@ -1829,6 +1832,12 @@ class map
         level_cache &access_cache( int zlev );
         const level_cache &access_cache( int zlev ) const;
         bool need_draw_lower_floor( const tripoint &p );
+
+    public:
+        // for variant hacking :(
+        level_cache &get_cache_public( int zlev ) const {
+            return *caches[zlev + OVERMAP_DEPTH];
+        }
 };
 
 template<int SIZE, int MULTIPLIER>
