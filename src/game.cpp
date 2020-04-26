@@ -9430,17 +9430,11 @@ void game::place_player_overmap( const tripoint &om_dest )
 
 void game::ftl_drive( const tripoint &om_dest, vehicle& veh )
 {
-    add_msg( _("ftl %s"), veh.name);
 
-//    add_msg(_("sm_pos %5d,%5d,%5d"),veh.sm_pos.x, veh.sm_pos.y, veh.sm_pos.z );
-//    add_msg(_("   pos %5d,%5d"),veh.pos.x, veh.pos.y );
-
-    // TODO remove vehicle
+    // remove and store vehicle
     std::unique_ptr<vehicle> warping_veh = m.detach_vehicle(&veh);
 
-//    veh.sm_pos.x = om_dest.x;
-//    veh.sm_pos.y = om_dest.y;
-//    veh.sm_pos.z = om_dest.z;
+    // mostly copy pesta from game::place_player_overmap
 
     // if player is teleporting around, they dont bring their horse with them
     if( u.is_mounted() ) {
@@ -9475,21 +9469,12 @@ void game::ftl_drive( const tripoint &om_dest, vehicle& veh )
     // update weather now as it could be different on the new location
     weather.nextweather = calendar::turn;
 
-    // warp vehicle here
-    auto &map_cache = m.get_cache_public( om_dest.z );
-    map_cache.vehicle_list.insert( &veh );
-    if( !veh.loot_zones.empty() ) {
-        map_cache.zone_vehicles.insert( &veh );
-    }
-//    vehicle* warping_veh_ptr = warping_veh.get();
-//    m.add_vehicle_to_cache( warping_veh_ptr );
-
-    m.add_vehicle_to_cache( &veh );
-
-
-
-
     place_player( player_pos );
+
+    // end of copy pesta
+
+    m.place_vehicle_ftl( std::move(warping_veh), u.pos() );
+
 }
 
 bool game::phasing_move( const tripoint &dest_loc )

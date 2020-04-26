@@ -6031,6 +6031,42 @@ vehicle *map::add_vehicle( const vproto_id &type, const tripoint &p, const int d
     return placed_vehicle;
 }
 
+// for variant FTL
+void map::place_vehicle_ftl( std::unique_ptr<vehicle> veh, const tripoint& /*dest*/ ) {
+
+    // all of this method is almost copy pesta from half of bottom of map::add_vehicle
+
+    //tripoint p_ms = dest;
+    //veh->sm_pos = ms_to_sm_remain( p_ms );
+    //veh->pos = p_ms.xy();
+    //veh->place_spawn_items();
+    //veh->face.init( dir );
+    //veh->turn_dir = dir;
+
+    // for backwards compatibility, we always spawn with a pivot point of (0,0) so
+    // that the mount at (0,0) is located at the spawn position.
+    /// XXX what is this???
+    //veh->precalc_mounts( 0, dir, point() );
+
+    //debugmsg("adding veh: %d, sm: %d,%d,%d, pos: %d, %d", veh, veh->smx, veh->smy, veh->smz, veh->posx, veh->posy);
+
+    std::unique_ptr<vehicle> placed_vehicle_up =
+        add_vehicle_to_map( std::move( veh ), true );
+    vehicle *placed_vehicle = placed_vehicle_up.get();
+
+    if( placed_vehicle != nullptr ) {
+        submap *place_on_submap = get_submap_at_grid( placed_vehicle->sm_pos );
+        place_on_submap->vehicles.push_back( std::move( placed_vehicle_up ) );
+        place_on_submap->is_uniform = false;
+
+        auto &ch = get_cache( placed_vehicle->sm_pos.z );
+        ch.vehicle_list.insert( placed_vehicle );
+        add_vehicle_to_cache( placed_vehicle );
+
+        //debugmsg ("grid[%d]->vehicles.size=%d veh.parts.size=%d", nonant, grid[nonant]->vehicles.size(),veh.parts.size());
+    }
+
+}
 /**
  * Takes a vehicle already created with new and attempts to place it on the map,
  * checking for collisions. If the vehicle can't be placed, returns NULL,
