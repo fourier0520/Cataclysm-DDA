@@ -1,0 +1,54 @@
+[
+  {
+    "type": "GENERIC",
+    "id": "ftl_engine_item",
+    "name": "FTL engine",
+    "description": "This is FTL engine. this part mount your shi*cough* vehicle on anywhere, vehicle can do FTL drive.",
+    "weight": "100 kg",
+    "to_hit": -4,
+    "color": "green",
+    "symbol": ";",
+    "material": [ "steel" ],
+    "volume": "30 L",
+    "bashing": 12,
+    "category": "veh_parts",
+    "price": 400000
+  },
+  {
+    "result": "ftl_engine_item",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_PARTS",
+    "skill_used": "mechanics",
+    "skills_required": [ "fabrication", 4, "electronics", 6 ],
+    "difficulty": 8,
+    "time": "120 m",
+    "autolearn": true,
+    "using": [ [ "welding_standard", 20 ] ],
+    "qualities": [ { "id": "SCREW", "level": 1 }, { "id": "WRENCH", "level": 2 } ],
+    "components": [ 
+        [ [ "teleporter", 3 ] ],
+        [ [ "minireactor", 1 ] ],
+        [ [ "scrap", 20 ] ]
+    ]
+  },
+  {
+    "id": "ftl_engine",
+    "type": "vehicle_part",
+    "name": "FTL engine",
+    "item": "ftl_engine_item",
+    "location": "engine_block",
+    "symbol": ";",
+    "broken_symbol": ":",
+    "color": "green",
+    "durability": 400,
+    "requirements": {
+      "install": { "skills": [ [ "mechanics", 6 ], [ "electronics", 4 ] ], "time": "60 m", "using": [ [ "vehicle_screw", 1 ] ] },
+      "removal": { "skills": [ [ "mechanics", 5 ] ], "time": "60 m", "using": [ [ "vehicle_screw", 1 ] ] },
+      "repair": { "skills": [ [ "mechanics", 7 ] ], "time": "60 m", "using": [ [ "adhesive", 1 ] ] }
+    },
+    "flags": [ "FTL_ENGINE" ],
+    "breaks_into": [ { "item": "ftl_engine_item", "count": [ 1, 1 ] } ],
+    "damage_reduction": { "all": 20 }
+  }
+]

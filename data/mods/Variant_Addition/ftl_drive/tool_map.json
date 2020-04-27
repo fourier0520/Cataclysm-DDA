@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ftl_beacon_map",
+    "copy-from": "abstractmap",
+    "type": "GENERIC",
+    "name": { "str": "FTL beacon map" },
+    "description": "This is FTL beacon map. read to get coodinate of near beacon.",
+    "color": "yellow",
+    "use_action": {
+      "type": "reveal_map",
+      "radius": 180,
+      "terrain": [
+        "ftl_beacon"
+      ],
+      "message": "You add FTL beacon to your map."
+    }
+  }
+]

@@ -1969,14 +1969,60 @@ void vehicle::consume_washlet_resource( ){
 
 void vehicle::ftl_drive( int ) {
 
-    // open map
+    if ( 100 <= ftl_charge_percentage ){
+        // fuel check
+        bool ftl_fuel_is_not_enough = !g->u.crafting_inventory().has_charges( "plut_cell", 1 );
+        if( ftl_fuel_is_not_enough ) {
+            add_msg( m_bad, _("You have not plutnium cell, you need one plutnium cell to FTL drive.") );
+            return;
+        }
+        // select destination
+        popup( _( "Choose beacon for destination of FTL drive." ) );
+        const tripoint om_dest( ui::omap::choose_point() );
+        if( om_dest == overmap::invalid_tripoint ) {
+            // cancel
+            add_msg( m_neutral, _("FTL drive canceled. re-choose destination.") );
+            return;
+        }
+        // beacon check
+        const oter_id &dest_ter_id = overmap_buffer.ter( om_dest );
+        if( dest_ter_id->get_name() != "FTL Beacon" ) {
+            add_msg( m_neutral, _("choose center of FTL beacon.") );
+            return;
+        }
+        // fuel consume
+        std::vector<item_comp> ftl_fuel;
+        ftl_fuel.push_back( item_comp( "plut_cell", 1 ) );
+        g->u.consume_items( ftl_fuel, 1, is_crafting_component );
 
-    const tripoint om_dest( ui::omap::choose_point() );
-    if( om_dest == overmap::invalid_tripoint ) {
-        return;
+        ftl_charge_percentage = 0;
+        ftl_is_charging = false;
+
+        // do FTL drive
+        g->ftl_drive(om_dest, *this);
+
+    } else if ( ftl_is_charging ) {
+        // FTL charge started but still not complete
+        popup( _( "FTL drive is charging now (%d%%), still wait at pilot seat." ), ftl_charge_percentage );
+    } else {
+        // start FTL charge
+        if( !ftl_pilot_is_manned() ) {
+            add_msg( m_bad, _( "To start FTL charge, It need at least one manned pilot control. Try again from just on pilot seat, or make NPC sit to pirot seat." ) );
+            return;
+        }
+        // if dont have fuel, show warning
+        bool ftl_fuel_is_not_enough = !g->u.crafting_inventory().has_charges( "plut_cell", 1 );
+        if( ftl_fuel_is_not_enough ) {
+            // long message, my bad habit :(
+            add_msg( m_warning, _( "You are not having plutnium cell. you need one plutnium cell for FTL drive, and you must stay on seat during FTL charging. recommend to bring your plutonium cell before start FTL charging." ) );
+        }
+
+        if ( query_yn( _("Do start charging up FTL drive?")) ){
+            add_msg( m_neutral, _("You start up FTL drive charging. It is take 1 hour to full charge.") );
+            ftl_is_charging = true;
+        }
     }
 
-    g->ftl_drive(om_dest, *this);
 }
 
 // Handles interactions with a vehicle in the examine menu.
@@ -2034,6 +2080,9 @@ void vehicle::interact_with( const tripoint &pos, int interact_part )
     const int toilet_part = avail_part_with_feature( interact_part, "TOILET", true );
     const bool has_toilet = toilet_part >= 0;
 
+    const auto ftl_engine_part_range = get_avail_parts( "FTL_ENGINE" );
+    const bool has_ftl_engine = ftl_engine_part_range.begin() != ftl_engine_part_range.end();
+
     enum {
         EXAMINE, TRACK, CONTROL, CONTROL_ELECTRONICS, GET_ITEMS, GET_ITEMS_ON_GROUND, FOLD_VEHICLE, UNLOAD_TURRET, RELOAD_TURRET,
         USE_HOTPLATE, FILL_CONTAINER, DRINK, USE_WELDER, USE_PURIFIER, PURIFY_TANK, USE_AUTOCLAVE, USE_WASHMACHINE, USE_DISHWASHER,
@@ -2056,7 +2105,9 @@ void vehicle::interact_with( const tripoint &pos, int interact_part )
         selectmenu.addentry( LIGHTMODE_TURRET  , true, 'T',
                 lightmode_turret ? _("Toggle Lightmode turret: ON") : _("Toggle Lightmode turret: OFF"));
 
-        selectmenu.addentry( FTL_DRIVE  , true, 'F', _("FTL Drive") );
+        if( has_ftl_engine ) {
+            selectmenu.addentry( FTL_DRIVE  , true, 'F', _("FTL Drive") );
+        }
     }
     if( has_electronics ) {
         selectmenu.addentry( CONTROL_ELECTRONICS, true, keybind( "CONTROL_MANY_ELECTRONICS" ),

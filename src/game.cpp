@@ -9430,6 +9430,7 @@ void game::place_player_overmap( const tripoint &om_dest )
 
 void game::ftl_drive( const tripoint &om_dest, vehicle& veh )
 {
+    sfx::play_variant_sound( "ftl", "jump", 100 );
 
     std::vector<monster*> passenger_list;
     std::vector<npc*> passenger_list_npc;

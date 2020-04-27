@@ -1829,8 +1829,13 @@ class vehicle
         // current noise of vehicle (engine working, etc.)
         unsigned char vehicle_noise = 0;
 
+    public:
         bool lightmode_cargo  = false;
         bool lightmode_turret = false;
+        bool ftl_is_charging = false;
+        int ftl_charge_percentage = 0;
+
+        bool ftl_pilot_is_manned();
 };
 
 #endif

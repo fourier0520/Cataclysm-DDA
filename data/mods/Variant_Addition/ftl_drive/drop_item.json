@@ -1,0 +1,37 @@
+[
+  {
+    "type": "item_group",
+    "id": "ftl_beacon_drop_item_group",
+    "entries": [
+      { "item": "ftl_manual", "prob": 100 },
+      { "item": "ftl_beacon_map", "prob": 5 }
+      
+    ]
+  },
+  
+  {
+    "type": "GENERIC",
+    "id": "ftl_manual",
+    "category": "books",
+    "symbol": ",",
+    "color": "white",
+    "name": { "str": "FTL manual" },
+    "snippet_category": "ftl_tip",
+    "description": "Paper that written some information about FTL driving.",
+    "price": 0,
+    "material": "paper",
+    "flags": [ "TRADER_AVOID" ],
+    "weight": "3 g",
+    "volume": "1 ml"
+  },
+
+  {
+    "type": "snippet",
+    "category": "ftl_tip",
+    "text": [
+      { "id": "ftl_tip_1", "text": "keep clean on the beacon." },
+      { "id": "ftl_tip_2", "text": "you need plutonium cell to FTL drive." },
+      { "id": "ftl_tip_3", "text": "If you get beacon map, read it and open your map, and FIND beacon by press slash key (default)." }
+    ]
+  }
+]
