@@ -1969,7 +1969,7 @@ void vehicle::consume_washlet_resource( ){
 
 void vehicle::ftl_drive( int ) {
 
-    if ( 100 < ftl_charge_percentage ){
+    if ( 100 <= ftl_charge_percentage ){
         // fuel check
         bool ftl_fuel_is_not_enough = !g->u.crafting_inventory().has_charges( "plut_cell", 1 );
         if( ftl_fuel_is_not_enough ) {
@@ -1984,12 +1984,20 @@ void vehicle::ftl_drive( int ) {
             add_msg( m_neutral, _("FTL drive canceled. re-choose destination.") );
             return;
         }
-        // TODO beacon check
-
+        // beacon check
+        const oter_id &dest_ter_id = overmap_buffer.ter( om_dest );
+        if( dest_ter_id->get_name() != "FTL Beacon" ) {
+            add_msg( m_neutral, _("choose center of FTL beacon.") );
+            return;
+        }
         // fuel consume
         std::vector<item_comp> ftl_fuel;
         ftl_fuel.push_back( item_comp( "plut_cell", 1 ) );
         g->u.consume_items( ftl_fuel, 1, is_crafting_component );
+
+        ftl_charge_percentage = 0;
+        ftl_is_charging = false;
+
         // do FTL drive
         g->ftl_drive(om_dest, *this);
 
@@ -1998,7 +2006,10 @@ void vehicle::ftl_drive( int ) {
         popup( _( "FTL drive is charging now (%d%%), still wait at pilot seat." ), ftl_charge_percentage );
     } else {
         // start FTL charge
-
+        if( !ftl_pilot_is_manned() ) {
+            add_msg( m_bad, _( "To start FTL charge, It need at least one manned pilot control. Try again from just on pilot seat, or make NPC sit to pirot seat." ) );
+            return;
+        }
         // if dont have fuel, show warning
         bool ftl_fuel_is_not_enough = !g->u.crafting_inventory().has_charges( "plut_cell", 1 );
         if( ftl_fuel_is_not_enough ) {
@@ -2007,6 +2018,7 @@ void vehicle::ftl_drive( int ) {
         }
 
         if ( query_yn( _("Do start charging up FTL drive?")) ){
+            add_msg( m_neutral, _("You start up FTL drive charging. It is take 1 hour to full charge.") );
             ftl_is_charging = true;
         }
     }

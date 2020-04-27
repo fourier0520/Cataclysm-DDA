@@ -28,17 +28,10 @@
   {
     "type": "snippet",
     "category": "ftl_tip",
-    "text": [ "keep clean on the beacon." ]
-  },
-  {
-    "type": "snippet",
-    "category": "ftl_tip",
-    "text": [ "you need plutonium cell to FTL drive." ]
-  },
-  {
-    "type": "snippet",
-    "category": "ftl_tip",
-    "text": [ "If you get beacon map, read it and open your map, and FIND beacon by press slash key (default)." ]
+    "text": [
+      { "id": "ftl_tip_1", "text": "keep clean on the beacon." },
+      { "id": "ftl_tip_2", "text": "you need plutonium cell to FTL drive." },
+      { "id": "ftl_tip_3", "text": "If you get beacon map, read it and open your map, and FIND beacon by press slash key (default)." }
+    ]
   }
-  
 ]

@@ -5021,16 +5021,21 @@ void vehicle::idle( bool on_map )
     }
 
     if( ftl_is_charging ) {
-        // 1 hour to full charge
-        if( calendar::once_every( 36_seconds ) ) {
+        if( !ftl_pilot_is_manned() ) {
+            // is all controls is unmanned, stop ftl charge.
+            add_msg( m_bad, _("%s FTL charge stopped, It need at least one manned pirot control."), name);
+            ftl_is_charging = false;
+            ftl_charge_percentage = 0;
+        } else if( calendar::once_every( 36_seconds ) ) {
+            // 1 hour to full charge
             if( ftl_charge_percentage < 100) {
                 ftl_charge_percentage += 1;
                 if ( ftl_charge_percentage == 25) {
-                    add_msg( m_neutral, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
+                    add_msg( m_info, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
                 } else if ( ftl_charge_percentage == 50) {
-                    add_msg( m_neutral, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
+                    add_msg( m_info, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
                 } else if ( ftl_charge_percentage == 75) {
-                    add_msg( m_neutral, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
+                    add_msg( m_info, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
                 } else if ( ftl_charge_percentage == 100) {
                     add_msg( m_good, _("%s FTL charge complete! select destination at FTL drive menu."), name);
                     sfx::play_variant_sound( "ftl", "charge_complete", 100 );
@@ -6549,3 +6554,17 @@ bool vehicle_part_with_feature_range<vpart_bitflags>::matches( const size_t part
            ( !( part_status_flag::available & required_ ) || vp.is_available() ) &&
            ( !( part_status_flag::enabled & required_ ) || vp.enabled );
 }
+
+/**
+ * at least one control is manned, return true.
+ */
+bool vehicle::ftl_pilot_is_manned(){
+    for( auto const &part : get_avail_parts( VPFLAG_CONTROLS ) ) {
+        player *passenger = part.get_passenger();
+        if( passenger ) {
+            return true;
+        }
+    }
+    return false;
+}
+

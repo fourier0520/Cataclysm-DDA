@@ -1834,6 +1834,8 @@ class vehicle
         bool lightmode_turret = false;
         bool ftl_is_charging = false;
         int ftl_charge_percentage = 0;
+
+        bool ftl_pilot_is_manned();
 };
 
 #endif
