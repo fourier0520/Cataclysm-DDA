@@ -5019,6 +5019,26 @@ void vehicle::idle( bool on_map )
     if( is_alarm_on ) {
         alarm();
     }
+
+    if( ftl_is_charging ) {
+        // 1 hour to full charge
+        if( calendar::once_every( 36_seconds ) ) {
+            if( ftl_charge_percentage < 100) {
+                ftl_charge_percentage += 1;
+                if ( ftl_charge_percentage == 25) {
+                    add_msg( m_neutral, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
+                } else if ( ftl_charge_percentage == 50) {
+                    add_msg( m_neutral, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
+                } else if ( ftl_charge_percentage == 75) {
+                    add_msg( m_neutral, _("%s FTL charge: %d%%"), name, ftl_charge_percentage);
+                } else if ( ftl_charge_percentage == 100) {
+                    add_msg( m_good, _("%s FTL charge complete! select destination at FTL drive menu."), name);
+                    sfx::play_variant_sound( "ftl", "charge_complete", 100 );
+                    ftl_is_charging = false;
+                }
+            }
+        }
+    }
 }
 
 void vehicle::on_move()
