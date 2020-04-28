@@ -7,7 +7,6 @@
     "color": "yellow",
     "see_cost": 1
   },
-
   {
     "type": "overmap_terrain",
     "id": "ftl_beacon_around_space",
@@ -16,7 +15,6 @@
     "color": "yellow",
     "see_cost": 1
   },
-  
   {
     "type": "palette",
     "id": "ftl_beacon_palette",
@@ -27,15 +25,10 @@
       "I": [ "t_sand" ],
       "#": [ "t_floor_noroof" ]
     },
-    "fields": {
-    },
-    "items": {
-        "I": { "item": "ftl_beacon_drop_item_group", "chance": 10,  "repeat": [ 1, 1 ] }
-    },
-    "monster": {
-    }
+    "fields": {  },
+    "items": { "I": { "item": "ftl_beacon_drop_item_group", "chance": 10, "repeat": [ 1, 1 ] } },
+    "monster": {  }
   },
-  
   {
     "type": "mapgen",
     "method": "json",
@@ -71,8 +64,6 @@
       "palettes": [ "ftl_beacon_palette" ]
     }
   },
-  
-    
   {
     "type": "mapgen",
     "method": "json",
@@ -108,7 +99,4 @@
       "palettes": [ "ftl_beacon_palette" ]
     }
   }
-  
-  
-
 ]

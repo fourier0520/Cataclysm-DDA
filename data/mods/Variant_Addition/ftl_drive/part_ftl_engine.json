@@ -26,11 +26,7 @@
     "autolearn": true,
     "using": [ [ "welding_standard", 20 ] ],
     "qualities": [ { "id": "SCREW", "level": 1 }, { "id": "WRENCH", "level": 2 } ],
-    "components": [ 
-        [ [ "teleporter", 3 ] ],
-        [ [ "minireactor", 1 ] ],
-        [ [ "scrap", 20 ] ]
-    ]
+    "components": [ [ [ "teleporter", 3 ] ], [ [ "minireactor", 1 ] ], [ [ "scrap", 20 ] ] ]
   },
   {
     "id": "ftl_engine",
