@@ -1,0 +1,10 @@
+[
+  {
+    "id": "ACT_HENTAI_PLAY_WITH",
+    "type": "activity_type",
+    "activity_level": "EXTRA_EXERCISE",
+    "verb": "*Good feeling things*",
+    "suspendable": false,
+    "based_on": "time"
+  }
+]

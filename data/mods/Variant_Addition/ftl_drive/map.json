@@ -1,34 +1,5 @@
 [
   {
-    "type": "overmap_special",
-    "id": "ftl_beacon",
-    "overmaps": [
-      { "point": [ 0, -3, 0 ], "overmap": "road_end_north" },
-      { "point": [ 0, 0, 0 ], "overmap": "ftl_beacon_south" },
-
-      { "point": [ -1, -1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0, -1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  1, -1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [ -1 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  1 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [ -1 , 1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0 , 1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  1 , 1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-
-      { "point": [ -2 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0 ,-2, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  2 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0 , 2, 0 ], "overmap": "ftl_beacon_around_space_south" }
-
-    ],
-    "connections": [ { "point": [ 0, -3, 0 ] } ],
-    "locations": [ "land" ],
-    "city_distance": [ 2, -1 ],
-    "city_sizes": [ 2, 20 ],
-    "occurrences": [ 5, 10 ]
-  },
-
-  {
     "type": "overmap_terrain",
     "id": "ftl_beacon",
     "name": "FTL Beacon",
@@ -36,7 +7,6 @@
     "color": "yellow",
     "see_cost": 1
   },
-
   {
     "type": "overmap_terrain",
     "id": "ftl_beacon_around_space",
@@ -45,7 +15,6 @@
     "color": "yellow",
     "see_cost": 1
   },
-  
   {
     "type": "palette",
     "id": "ftl_beacon_palette",
@@ -53,18 +22,13 @@
       " ": [ [ "t_grass_dead", 3 ], [ "t_grass", 15 ], [ "t_dirt", 5 ] ],
       "-": [ "t_linoleum_white_no_roof" ],
       "=": [ "t_sand" ],
+      "I": [ "t_sand" ],
       "#": [ "t_floor_noroof" ]
     },
-    "fields": {
-    },
-    "items": { 
-        "=": { "item": "ftl_beacon_drop_item_group", "chance": 5,  "repeat": [ 1, 2 ] },
-        "-": { "item": "ftl_beacon_drop_item_group", "chance": 50, "repeat": [ 1, 2 ] } 
-    },
-    "monster": {
-    }
+    "fields": {  },
+    "items": { "I": { "item": "ftl_beacon_drop_item_group", "chance": 10, "repeat": [ 1, 1 ] } },
+    "monster": {  }
   },
-  
   {
     "type": "mapgen",
     "method": "json",
@@ -77,21 +41,21 @@
         "           --           ",
         "         --##--         ",
         "         --##--         ",
-        "       --##====--       ",
-        "       --##====--       ",
+        "       --##===I--       ",
+        "       --##=I==--       ",
         "     --##========--     ",
-        "     --##========--     ",
-        "   --##============--   ",
-        "   --##============--   ",
-        " --##================-- ",
-        " --##================-- ",
-        "   --==============--   ",
-        "   --==============--   ",
-        "     --==========--     ",
-        "     --==========--     ",
+        "     --##======I=--     ",
+        "   --##===I========--   ",
+        "   --##=I==========--   ",
+        " --##========I=======-- ",
+        " --##==I===========I=-- ",
+        "   --===========I==--   ",
+        "   --I====I========--   ",
+        "     --========I=--     ",
+        "     --=I===I====--     ",
         "       --======--       ",
         "       --======--       ",
-        "         --==--         ",
+        "         --I=--         ",
         "         --==--         ",
         "           --           ",
         "           --           ",
@@ -100,8 +64,6 @@
       "palettes": [ "ftl_beacon_palette" ]
     }
   },
-  
-    
   {
     "type": "mapgen",
     "method": "json",
@@ -137,7 +99,4 @@
       "palettes": [ "ftl_beacon_palette" ]
     }
   }
-  
-  
-
 ]

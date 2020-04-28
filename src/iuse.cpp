@@ -9780,6 +9780,146 @@ int iuse::spawn_artifact( player *p, item *, bool, const tripoint & )
     return 1;
 }
 
+
+int iuse::place_beacon( player *p, item *, bool, const tripoint & )
+{
+    if( query_yn("Are you sure to place FTL beacon here?") ) {
+        const oter_id ftl_beacon( "ftl_beacon_south" );
+        overmap_buffer.ter_set( p->global_omt_location(), ftl_beacon );
+        add_msg( m_good, _("You placed FTL beacon.") );
+        return 1;
+    }
+    return 0;
+}
+
+
+/**
+ *  method name means 'called when use item named XXX_on',
+ *        *NOT* means making item active.
+ */
+int iuse::horde_beacon_on( player *p, item *it, bool t, const tripoint &pos )
+{
+    if( t ) { // call while active
+
+        std::string turn_per_summon;
+        // check and get monster_group from property
+        if( it->has_property( "turn_per_summon" ) ) {
+            turn_per_summon = it->get_property_string( "turn_per_summon" );
+        }
+        if ( turn_per_summon == "" ) {
+            debugmsg( "turn_per_summon is nothing! ja: Beacon No properties No turn_per_summon Ga Arimasen" );
+            return it->type->charges_to_use();
+        }
+
+        if( calendar::once_every( time_duration::from_turns( std::stoi(turn_per_summon) ) )) {
+            // once per 'turn per summon'
+            std::string mongroup_name_str;
+            // check and get monster_group from property
+            if( it->has_property( "monster_group" ) ) {
+                mongroup_name_str = it->get_property_string( "monster_group" );
+            }
+            if ( mongroup_name_str == "" ) {
+                debugmsg( "monster_group is nothing! ja: Beacon No properties No monster_group Ga Arimasen" );
+                return it->type->charges_to_use();
+            }
+
+            bool item_drop = false;
+            if( it->has_property( "item_drop" ) ) {
+                // ambigius answer means FALSE.
+                if( it->get_property_string( "item_drop" ) == "true" ||
+                        it->get_property_string( "item_drop" ) == "True") {
+                     item_drop = true;
+                 }
+            }
+
+            bool corpse_drop = false;
+            if( it->has_property( "corpse_drop" ) ) {
+                // ambigius answer means FALSE.
+                if( it->get_property_string( "corpse_drop" ) == "true" ||
+                        it->get_property_string( "corpse_drop" ) == "True") {
+                    corpse_drop = true;
+                }
+            }
+
+            bool quiet_death = false;
+            if( it->has_property( "quiet_death" ) ) {
+                // ambigius answer means FALSE.
+                if( it->get_property_string( "quiet_death" ) == "true" ||
+                        it->get_property_string( "quiet_death" ) == "True") {
+                    quiet_death = true;
+                }
+            }
+
+            const mongroup_id group_id = mongroup_id( mongroup_name_str );
+            const mtype_id &mon_type = MonsterGroupManager::GetRandomMonsterFromGroup( group_id );
+
+            const int spawn_range_shortest = 50;
+            const int spawn_range_random = 5;
+            float radian = rng_float( 0, 3.14159 * 2) ;
+            int radius = spawn_range_shortest + rng( 0, spawn_range_random );
+            int dist_x = roll_remainder(std::cos( radian ) * radius);
+            int dist_y = roll_remainder(std::sin( radian ) * radius);
+
+            tripoint spawn_pos = tripoint( pos.x + dist_x, pos.y + dist_y, pos.z );
+            monster *mon = g->place_critter_around( mon_type, spawn_pos , 3);
+            if( mon != nullptr ) {
+                mon->set_dest( pos );
+                if( item_drop ){
+                    // default is drop both item and corpse
+                } else if( corpse_drop ) {
+                    mon->no_extra_death_drops = true;
+                } else {
+                    mon->death_drops = false;
+                }
+                if( quiet_death ){
+                    mon->no_corpse_quiet = true;
+                }
+
+            }
+        }
+    } else { // Turning it off
+
+        std::string convert_to_off_item_id_string;
+        // check and get off_item_id from property
+        if( it->has_property( "item_id_to_turn_off" ) ) {
+            convert_to_off_item_id_string = it->get_property_string( "item_id_to_turn_off" );
+        }
+        if ( convert_to_off_item_id_string == "" ) {
+            debugmsg( "item_id_to_turn_off is nothing! ja: Beacon No properties No item_id_to_turn_off Ga Arimasen" );
+            return it->type->charges_to_use();
+        }
+
+        p->add_msg_if_player( _( "You turn off %s." ), it->tname() );
+        it->convert( convert_to_off_item_id_string ).active = false;
+    }
+    return it->type->charges_to_use();
+}
+
+/**
+ * read above horde_beacon_on.
+ */
+int iuse::horde_beacon_off( player *p, item *it, bool , const tripoint & )
+{
+    std::string convert_to_on_item_id_string;
+    // check and get on_item_id from property
+    if( it->has_property( "item_id_to_turn_on" ) ) {
+        convert_to_on_item_id_string = it->get_property_string( "item_id_to_turn_on" );
+    }
+    if ( convert_to_on_item_id_string == "" ) {
+        debugmsg( "item_id_to_turn_on is nothing! ja: Beacon No properties No item_id_to_turn_on Ga Arimasen" );
+        return it->type->charges_to_use();
+    }
+
+    if( !it->units_sufficient( *p ) ) {
+        p->add_msg_if_player( _( "%s is out of battery." ), it->tname() );
+    } else {
+        p->add_msg_if_player( _( "You turn on %s." ), it->tname() );
+        it->convert( convert_to_on_item_id_string ).active = true;
+    }
+    return it->type->charges_to_use();
+}
+
+
 void use_function::dump_info( const item &it, std::vector<iteminfo> &dump ) const
 {
     if( actor != nullptr ) {

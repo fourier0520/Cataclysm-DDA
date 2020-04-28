@@ -1,0 +1,12 @@
+[
+  {
+    "type": "item_action",
+    "id": "HORDE_BEACON_ON",
+    "name": { "str": "襲撃を止める" }
+  },
+  {
+    "type": "item_action",
+    "id": "HORDE_BEACON_OFF",
+    "name": { "str": "襲撃を呼ぶ" }
+  }
+]
