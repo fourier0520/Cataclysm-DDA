@@ -1,0 +1,21 @@
+[
+
+  {
+    "type": "monstergroup",
+    "name": "GROUP_ELEMENTAL_ORIGINAL",
+    "//": "collection of magical zombies!",
+    "default": "mon_zombie",
+    "monsters": [
+      { "monster": "mon_zombie", "freq": 20, "cost_multiplier": 1 },
+      { "monster": "mon_zombie_electric", "freq": 20, "cost_multiplier": 1 },
+      { "monster": "mon_zombie_static", "freq": 100, "cost_multiplier": 1 },
+      { "monster": "mon_zombie_spitter", "freq": 20, "cost_multiplier": 1 },
+      { "monster": "mon_zombie_acidic", "freq": 100, "cost_multiplier": 1 },
+      { "monster": "mon_zombie_smoker", "freq": 50, "cost_multiplier": 1 },
+      { "monster": "mon_zombie_gasbag", "freq": 20, "cost_multiplier": 1 },
+      { "monster": "mon_boomer", "freq": 100, "cost_multiplier": 1 },
+      { "monster": "mon_gas_zombie", "freq": 20, "cost_multiplier": 1 }
+    ]
+  }
+
+]

@@ -5,10 +5,11 @@
   "name": "追加 - ホードビーコン",
   "author": "roloa",
   "description": "ゾンビを呼び寄せ続けるホードビーコンを追加します。任意の地点に大襲撃を発生させる事ができる楽しいアイテムですが、用法容量に気を付けてお楽しみください。",
-  "category": "content",
+  "category": "items",
   "dependencies": [
     "dda",
-    "variant_addition"
+    "variant_addition",
+    "mod_hentai"
   ],
   "path": ""
 }
