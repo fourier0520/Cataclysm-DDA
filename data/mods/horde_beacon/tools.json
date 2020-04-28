@@ -1,0 +1,133 @@
+[
+  {
+    "id": "horde_beacon_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(オフ)" },
+    "description": "ゾンビを呼び出すホードビーコンです。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": "steel",
+    "symbol": ";",
+    "color": "red",
+    "ammo": "battery",
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ 
+        ["item_id_to_turn_on", "horde_beacon_on"]
+    ],
+    "use_action": "HORDE_BEACON_OFF",
+    "magazines": [
+      [ "battery", [ "heavy_battery_cell", "heavy_plus_battery_cell", "heavy_atomic_battery_cell", "heavy_disposable_cell" ] ]
+    ],
+    "magazine_well": 4
+  },
+
+  {
+    "id": "horde_beacon_on",
+    "copy-from": "horde_beacon_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(オン)" },
+    "description": "電源の入ったホードビーコンです。ゾンビを呼び出し続けます。",
+    "power_draw": 100000,
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ 
+        ["item_id_to_turn_off", "horde_beacon_off"],
+        ["monster_group", "GROUP_VANILLA"],
+        ["turn_per_summon", "30"]
+    ],
+    "revert_to": "horde_beacon_off",
+    "use_action": "HORDE_BEACON_ON",
+    "magazine_well": 4
+  },
+
+
+
+  {
+    "id": "horde_beacon_itemdrop_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(アイテム入り)(オフ)" },
+    "description": "アイテムを持ったゾンビを呼び出すホードビーコンです。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": "steel",
+    "symbol": ";",
+    "color": "red",
+    "ammo": "battery",
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ 
+        ["item_id_to_turn_on", "horde_beacon_itemdrop_on"]
+    ],
+    "use_action": "HORDE_BEACON_OFF",
+    "magazines": [
+      [ "battery", [ "heavy_battery_cell", "heavy_plus_battery_cell", "heavy_atomic_battery_cell", "heavy_disposable_cell" ] ]
+    ],
+    "magazine_well": 4
+  },
+
+  {
+    "id": "horde_beacon_itemdrop_on",
+    "copy-from": "horde_beacon_itemdrop_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(アイテム入り)(オン)" },
+    "description": "電源の入ったホードビーコンです。ゾンビを呼び出し続けます。",
+    "power_draw": 100000,
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ 
+        ["item_id_to_turn_off", "horde_beacon_itemdrop_off"],
+        ["monster_group", "GROUP_VANILLA"],
+        ["turn_per_summon", "30"],
+        ["item_drop", "true"]
+    ],
+    "revert_to": "horde_beacon_itemdrop_off",
+    "use_action": "HORDE_BEACON_ON",
+    "magazine_well": 4
+  },
+
+
+
+  {
+    "id": "horde_beacon_corpsedrop_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(死体のみ)(オフ)" },
+    "description": "死体のみ残すゾンビを呼び出すホードビーコンです。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": "steel",
+    "symbol": ";",
+    "color": "red",
+    "ammo": "battery",
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ 
+        ["item_id_to_turn_on", "horde_beacon_corpsedrop_on"]
+    ],
+    "use_action": "HORDE_BEACON_OFF",
+    "magazines": [
+      [ "battery", [ "heavy_battery_cell", "heavy_plus_battery_cell", "heavy_atomic_battery_cell", "heavy_disposable_cell" ] ]
+    ],
+    "magazine_well": 4
+  },
+
+  {
+    "id": "horde_beacon_corpsedrop_on",
+    "type": "TOOL",
+    "copy-from": "horde_beacon_itemdrop_off",
+    "name": { "str": "ホードビーコン(死体のみ)(オン)" },
+    "description": "電源の入ったホードビーコンです。ゾンビを呼び出し続けます。",
+    "power_draw": 100000,
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ 
+        ["item_id_to_turn_off", "horde_beacon_corpsedrop_off"],
+        ["monster_group", "GROUP_VANILLA"],
+        ["turn_per_summon", "30"],
+        ["corpse_drop", "true"]
+    ],
+    "revert_to": "horde_beacon_itemdrop_off",
+    "use_action": "HORDE_BEACON_ON",
+    "magazine_well": 4
+  }
+
+
+
+]
