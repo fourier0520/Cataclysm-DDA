@@ -208,6 +208,7 @@ class iuse
         int underground_sonar( player *, item *, bool, const tripoint & );
         int naming( player *p, item *, bool, const tripoint & );
         int spawn_artifact( player *p, item *, bool, const tripoint & );
+        int place_beacon( player *p, item *, bool, const tripoint & );
 
         // MACGUFFINS
 

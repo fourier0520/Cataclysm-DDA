@@ -1,0 +1,41 @@
+[
+  {
+    "id": "ftl_beacon_place_item",
+    "type": "TOOL",
+    "name": { "str": "FTL beacon setup tool" },
+    "description": "You can place one your own FTL beacon! It is recommended to setup at open 3x3 map square space, and keep clean on the beacon even rock or sapling. Obstacles on the beacon may causes destroing your vehicle!",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 10000,
+    "material": [ "steel", "plastic" ],
+    "symbol": ";",
+    "color": "white",
+    "use_action": "PLACE_BEACON"
+  },
+
+  {
+    "result": "ftl_beacon_place_item",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_TOOLS",
+    "skill_used": "electronics",
+    "skills_required": [ "mechanics", 4 ],
+    "difficulty": 6,
+    "time": "60 m",
+    "autolearn": true,
+    "using": [ [ "soldering_standard", 10 ] ],
+    "qualities": [ { "id": "SCREW", "level": 1 } ],
+    "components": [ 
+      [ [ "plut_cell", 3 ] ],
+      [ [ "radio_repeater_mod", 1 ] ],
+      [ [ "scrap", 10 ] ]
+    ]
+  },
+
+  {
+    "type": "item_action",
+    "id": "PLACE_BEACON",
+    "name": { "str": "place FTL beacon" }
+  }
+
+]

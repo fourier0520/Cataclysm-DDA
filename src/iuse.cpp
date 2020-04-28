@@ -9780,6 +9780,18 @@ int iuse::spawn_artifact( player *p, item *, bool, const tripoint & )
     return 1;
 }
 
+
+int iuse::place_beacon( player *p, item *, bool, const tripoint & )
+{
+    if( query_yn("Are you sure to place FTL beacon here?") ) {
+        const oter_id ftl_beacon( "ftl_beacon_south" );
+        overmap_buffer.ter_set( p->global_omt_location(), ftl_beacon );
+        add_msg( m_good, _("You placed FTL beacon.") );
+        return 1;
+    }
+    return 0;
+}
+
 void use_function::dump_info( const item &it, std::vector<iteminfo> &dump ) const
 {
     if( actor != nullptr ) {
