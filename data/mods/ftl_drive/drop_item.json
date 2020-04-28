@@ -2,9 +2,11 @@
   {
     "type": "item_group",
     "id": "ftl_beacon_drop_item_group",
+    "subtype": "distribution",
     "entries": [
-      { "item": "ftl_manual", "prob": 100 },
-      { "item": "ftl_beacon_map", "prob": 5 }
+      { "item": "ftl_manual", "prob": 50 },
+      { "item": "ftl_beacon_map", "prob": 10 },
+      { "item": "scrap", "prob": 100 }
       
     ]
   },
