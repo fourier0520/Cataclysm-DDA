@@ -1,34 +1,5 @@
 [
   {
-    "type": "overmap_special",
-    "id": "ftl_beacon",
-    "overmaps": [
-      { "point": [ 0, -3, 0 ], "overmap": "road_end_north" },
-      { "point": [ 0, 0, 0 ], "overmap": "ftl_beacon_south" },
-
-      { "point": [ -1, -1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0, -1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  1, -1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [ -1 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  1 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [ -1 , 1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0 , 1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  1 , 1, 0 ], "overmap": "ftl_beacon_around_space_south" },
-
-      { "point": [ -2 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0 ,-2, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  2 , 0, 0 ], "overmap": "ftl_beacon_around_space_south" },
-      { "point": [  0 , 2, 0 ], "overmap": "ftl_beacon_around_space_south" }
-
-    ],
-    "connections": [ { "point": [ 0, -3, 0 ] } ],
-    "locations": [ "land" ],
-    "city_distance": [ 2, -1 ],
-    "city_sizes": [ 2, 20 ],
-    "occurrences": [ 5, 10 ]
-  },
-
-  {
     "type": "overmap_terrain",
     "id": "ftl_beacon",
     "name": "FTL Beacon",

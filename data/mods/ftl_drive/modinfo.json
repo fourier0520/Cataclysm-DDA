@@ -1,10 +1,10 @@
 {
   "type": "MOD_INFO",
   "mod-type": "SUPPLEMENTAL",
-  "ident": "ftl_drive",
-  "name": "FTL Drive",
+  "ident": "ftl_beacon_generate",
+  "name": "変更 - FTLビーコン自然生成",
   "author": "roloa",
-  "description": "FTL is acronym of Fast TLavel. Warp to beacon with your vehicle and NPC and pets (and maybe hostile zombie too).",
+  "description": "FTLビーコンが掩体壕や研究所と同様に道端に自然生成されるようになります。",
   "category": "content",
   "dependencies": [
     "dda",
