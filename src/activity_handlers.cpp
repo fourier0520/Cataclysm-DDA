@@ -235,6 +235,8 @@ const efftype_id effect_comfortness( "comfortness" );
 const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
 
+const efftype_id effect_took_shower( "took_shower" );
+
 // for hentai
 const efftype_id effect_movingdoing( "movingdoing" );
 const efftype_id effect_lust( "lust" );
@@ -5397,9 +5399,11 @@ void activity_handlers::take_shower_finish( player_activity *act, player *p ){
     } else if( !act->str_values.empty() && act->str_values[0] == "hot" ){
         p->add_msg_if_player( m_good, _( "You finished taking a hot shower." ) );
         p->add_morale( MORALE_TAKE_SHOWER, 20, 40, 180_minutes, 120_minutes );
+        p->add_effect( effect_took_shower, 1440_minutes);
     } else {
         p->add_msg_if_player( m_good, _( "You finished taking a shower." ) );
         p->add_morale( MORALE_TAKE_SHOWER, 15, 30, 180_minutes, 120_minutes );
+        p->add_effect( effect_took_shower, 1440_minutes);
     }
     act->set_to_null();
 }

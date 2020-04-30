@@ -1,0 +1,9 @@
+[
+  {
+    "type": "effect_type",
+    "id": "took_shower",
+    "name": [ "Took a shower" ],
+    "desc": [ "You took shower. your scent decrease for 1 Day." ],
+    "max_duration": "1440 m"
+  }
+]
