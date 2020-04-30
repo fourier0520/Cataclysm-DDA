@@ -12,6 +12,7 @@
 #include "avatar.h"
 #include "itype.h"
 #include "skill.h"
+#include "custom_activity.h"
 
 player_activity::player_activity() : type( activity_id::NULL_ID() ) { }
 
@@ -37,6 +38,9 @@ bool player_activity::rooted() const
 
 std::string player_activity::get_stop_phrase() const
 {
+    if( custom_activity_data != nullptr){
+        return string_format( _( "Stop %s?" ), custom_activity_data->name );
+    }
     return type->stop_phrase();
 }
 
@@ -119,6 +123,12 @@ cata::optional<std::string> player_activity::get_progress_message( const avatar 
                 extra_info = string_format( "%d%%", percentage );
             }
         }
+    }
+
+    if( custom_activity_data != nullptr ) {
+        return extra_info.empty() ? string_format( _( "%s…" ),
+                _( custom_activity_data->name ) ) : string_format( _( "%s: %s" ),
+                        _( custom_activity_data->name ), extra_info );
     }
 
     return extra_info.empty() ? string_format( _( "%s…" ),

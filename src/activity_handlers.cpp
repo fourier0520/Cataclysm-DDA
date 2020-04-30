@@ -98,6 +98,7 @@
 #include "point.h"
 #include "weather.h"
 #include "speech.h"
+#include "custom_activity.h"
 
 #define dbg(x) DebugLog((x),D_GAME) << __FILE__ << ":" << __LINE__ << ": "
 
@@ -206,6 +207,7 @@ static const activity_id ACT_LITTLEMAID_SPECIAL("ACT_LITTLEMAID_SPECIAL");
 static const activity_id ACT_TAKE_WASHLET("ACT_TAKE_WASHLET");
 static const activity_id ACT_EXCRETE("ACT_EXCRETE");
 static const activity_id ACT_TAKE_SHOWER("ACT_TAKE_SHOWER");
+static const activity_id ACT_CUSTOM_ACTIVITY("ACT_CUSTOM_ACTIVITY");
 
 // for hentai
 static const activity_id ACT_HENTAI_PLAY_WITH( "ACT_HENTAI_PLAY_WITH" );
@@ -236,6 +238,8 @@ const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
 
 const efftype_id effect_took_shower( "took_shower" );
+const efftype_id effect_bind_by_custom_activity( "effect_bind_by_custom_activity" );
+const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
 
 // for hentai
 const efftype_id effect_movingdoing( "movingdoing" );
@@ -384,6 +388,7 @@ activity_handlers::do_turn_functions = {
     { ACT_TAKE_SHOWER, take_shower_do_turn },
     { ACT_TAKE_WASHLET, take_washlet_do_turn },
     { ACT_EXCRETE, excrete_do_turn },
+    { ACT_CUSTOM_ACTIVITY, custom_activity_do_turn },
     { ACT_HENTAI_PLAY_WITH, hentai_play_with_do_turn }
 };
 
@@ -467,6 +472,7 @@ activity_handlers::finish_functions = {
     { ACT_TAKE_SHOWER, take_shower_finish },
     { ACT_TAKE_WASHLET, take_washlet_finish },
     { ACT_EXCRETE, excrete_finish },
+    { ACT_CUSTOM_ACTIVITY, custom_activity_finish },
     { ACT_HENTAI_PLAY_WITH, hentai_play_with_finish }
 };
 
@@ -5503,3 +5509,78 @@ void activity_handlers::hentai_play_with_finish( player_activity *act, player *p
 
     act->set_to_null();
 }
+
+
+void activity_handlers::custom_activity_do_turn( player_activity *act, player *p ){
+
+    if( !act->custom_activity_data->is_free_monster_in_act ) {
+        if( 1 <= act->monsters.size() ) {
+            if( calendar::once_every( 10_seconds ) ) {
+                shared_ptr_fast<monster> target_monster = act->monsters[0].lock();
+                target_monster->add_effect( effect_bind_by_custom_activity, 20_seconds);
+            }
+        }
+    }
+    if( act->custom_activity_data->doing_message != "" ) {
+        if( calendar::once_every( 5_minutes ) ) {
+            p->add_msg_if_player( m_neutral, _( act->custom_activity_data->doing_message ) );
+        }
+    }
+}
+
+void activity_handlers::custom_activity_finish( player_activity *act, player *p ){
+
+    shared_ptr_fast<monster> target_monster;
+    bool is_pet_monster_activity;
+
+    if( 1 <= act->monsters.size() ) {
+        target_monster = act->monsters[0].lock();
+        is_pet_monster_activity = true;
+    }
+
+    if( act->custom_activity_data->finish_message != "" ) {
+        if( is_pet_monster_activity ) {
+            p->add_msg_if_player( m_good, _( act->custom_activity_data->finish_message ), target_monster->name() );
+        } else {
+            p->add_msg_if_player( m_good, _( act->custom_activity_data->finish_message ) );
+        }
+    }
+
+    // XXX can i add morale and effect type only json file, without hardcoding?
+    if(act->custom_activity_data->morale_type_id != ""){
+        p->add_morale( morale_type( act->custom_activity_data->morale_type_id ),
+                act->custom_activity_data->morale_amount,
+                act->custom_activity_data->morale_amount * 2,
+                time_duration::from_turns( act->custom_activity_data->morale_duration_turns ),
+                time_duration::from_turns( act->custom_activity_data->morale_duration_turns / 2 ) );
+    }
+
+    if(act->custom_activity_data->effect_type_id != ""){
+        // TODO handle effect intense
+        p->add_effect( efftype_id( act->custom_activity_data->effect_type_id ),
+                time_duration::from_turns(act->custom_activity_data->effect_duration_turns) );
+    }
+
+    if(act->custom_activity_data->result_item_id_str != ""){
+           item result_item = item(
+               act->custom_activity_data->result_item_id_str,
+               calendar::turn,
+               act->custom_activity_data->result_item_charges );
+        if( result_item.made_of( LIQUID ) ) {
+            liquid_handler::handle_all_liquid( result_item, PICKUP_RANGE );
+        } else if( act->custom_activity_data->is_result_item_drop_to_ground ) {
+            put_into_vehicle_or_drop(*p, item_drop_reason::tumbling, { result_item });
+        } else {
+            p->i_add_or_drop( result_item );
+        }
+    }
+
+    if( is_pet_monster_activity ) {
+        target_monster->add_effect(
+            efftype_id( effect_cooldown_of_custom_activity ),
+            time_duration::from_turns(act->custom_activity_data->pet_cooldown_turns) );
+    }
+
+    act->set_to_null();
+}
+

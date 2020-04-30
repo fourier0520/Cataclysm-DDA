@@ -36,9 +36,11 @@
 #include "type_id.h"
 #include "pimpl.h"
 #include "point.h"
+#include "custom_activity.h"
 
 static const activity_id ACT_MILK( "ACT_MILK" );
 static const activity_id ACT_PLAY_WITH_PET( "ACT_PLAY_WITH_PET" );
+static const activity_id ACT_CUSTOM_ACTIVITY( "ACT_CUSTOM_ACTIVITY" );
 
 static const efftype_id effect_controlled( "controlled" );
 static const efftype_id effect_harnessed( "harnessed" );
@@ -70,6 +72,8 @@ const efftype_id effect_happiness( "happiness" );
 const efftype_id effect_comfortness( "comfortness" );
 const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
+
+const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
 
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
@@ -107,6 +111,7 @@ bool monexamine::pet_menu( monster &z )
         littlemaid_toggle_speak,
         littlemaid_stay,
         littlemaid_play,
+        custom_activity_choice,
     };
 
     uilist amenu;
@@ -242,6 +247,13 @@ bool monexamine::pet_menu( monster &z )
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
 
+
+    custom_activity *c_act = custom_activity_manager::find_pet_monster_activity( z.type->id );
+    if( c_act != nullptr ){
+        amenu.addentry( custom_activity_choice, true, 'C',
+                string_format( _( c_act->name_in_select_menu ), z.name() ));
+    }
+
     amenu.query();
     int choice = amenu.ret;
 
@@ -322,6 +334,9 @@ bool monexamine::pet_menu( monster &z )
             break;
         case littlemaid_change_costume:
             maid_change_costume( z );
+            break;
+        case custom_activity_choice:
+            start_custom_activity( z, c_act );
             break;
         default:
             break;
@@ -884,4 +899,30 @@ void monexamine::maid_play( monster &z )
     g->u.assign_activity(act);
 }
 
+void monexamine::start_custom_activity( monster &z, custom_activity *c_act){
+
+
+    if( z.has_effect(effect_cooldown_of_custom_activity) ) {
+        add_msg( m_bad, _(c_act->not_ready_message), z.name() );
+        return;
+    }
+
+    if( c_act->query_yn_message != "" ) {
+        const std::string msg = c_act->query_yn_message;
+        if( !query_yn( string_format( _( c_act->query_yn_message ), z.name() )  ) ) {
+            return;
+        }
+    }
+
+    activity_id act_id = activity_id( "ACT_CUSTOM_ACTIVITY" );
+
+    player_activity act = player_activity( act_id,
+                        to_moves<int>( time_duration::from_turns( c_act->to_finish_turns ) ),-1,0, c_act->name );
+    act.monsters.emplace_back( g->shared_from( z ) );
+    act.custom_activity_data = c_act;
+    g->u.assign_activity(act);
+    if( c_act->start_message != "" ){
+        add_msg( _(c_act->start_message), z.name() );
+    }
+}
 

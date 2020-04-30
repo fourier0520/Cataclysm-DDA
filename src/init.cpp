@@ -84,6 +84,7 @@
 #include "overmap.h"
 #include "clothing_mod.h"
 #include "ammo_effect.h"
+#include "custom_activity.h"
 
 DynamicDataLoader::DynamicDataLoader()
 {
@@ -392,6 +393,8 @@ void DynamicDataLoader::initialize()
     add( "event_transformation", &event_transformation::load_transformation );
     add( "event_statistic", &event_statistic::load_statistic );
     add( "score", &score::load_score );
+    add( "custom_activity", &load_custom_activity );
+
 #if defined(TILES)
     add( "mod_tileset", &load_mod_tileset );
 #else

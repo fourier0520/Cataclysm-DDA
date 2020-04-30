@@ -51,6 +51,8 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
+const efftype_id effect_bind_by_custom_activity( "effect_bind_by_custom_activity" );
+
 // for hentai
 const efftype_id effect_movingdoing( "movingdoing" );
 
@@ -1243,6 +1245,7 @@ static const std::unordered_set<efftype_id> hardcoded_movement_impairing = {{
         effect_littlemaid_in_special,
         effect_littlemaid_goodnight,
         effect_movingdoing,
+        effect_bind_by_custom_activity,
     }
 };
 

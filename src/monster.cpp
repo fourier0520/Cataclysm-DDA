@@ -107,6 +107,8 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
+const efftype_id effect_bind_by_custom_activity( "effect_bind_by_custom_activity" );
+
 // for hentai
 const efftype_id effect_movingdoing( "movingdoing" );
 
@@ -1664,6 +1666,10 @@ bool monster::move_effects( bool )
     if( has_effect( effect_littlemaid_stay ) || has_effect( effect_littlemaid_goodnight) ||
         has_effect( effect_littlemaid_in_kiss ) || has_effect( effect_littlemaid_in_petting ) ||
         has_effect( effect_littlemaid_in_service ) || has_effect( effect_littlemaid_in_special ) ) {
+        return false;
+    }
+
+    if( has_effect( effect_bind_by_custom_activity ) ) {
         return false;
     }
 

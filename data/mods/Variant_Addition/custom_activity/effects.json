@@ -1,0 +1,16 @@
+[
+  {
+    "type": "effect_type",
+    "id": "effect_bind_by_custom_activity",
+    "name": [ "immovable in activity" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+
+  {
+    "type": "effect_type",
+    "id": "effect_cooldown_of_custom_activity",
+    "name": [ "custom activity cooldown" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  }
+
+]
