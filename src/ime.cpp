@@ -133,6 +133,11 @@ void disable_ime()
 
 ime_sentry::ime_sentry( ime_sentry::mode m ) : previously_enabled( ime_enabled() )
 {
+
+    if( get_option<bool>( "STOP_IME_AUTOENABLE" ) ) {
+        m = keep;
+    }
+
     switch( m ) {
         case enable:
             enable_ime();
