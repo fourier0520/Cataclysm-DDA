@@ -6032,7 +6032,7 @@ vehicle *map::add_vehicle( const vproto_id &type, const tripoint &p, const int d
 }
 
 // for variant FTL
-void map::place_vehicle_ftl( std::unique_ptr<vehicle> veh, const tripoint& /*dest*/ ) {
+void map::place_vehicle_ftl( std::unique_ptr<vehicle> veh, const tripoint& om_dest ) {
 
     // all of this method is almost copy pesta from half of bottom of map::add_vehicle
 
@@ -6049,6 +6049,8 @@ void map::place_vehicle_ftl( std::unique_ptr<vehicle> veh, const tripoint& /*des
     //veh->precalc_mounts( 0, dir, point() );
 
     //debugmsg("adding veh: %d, sm: %d,%d,%d, pos: %d, %d", veh, veh->smx, veh->smy, veh->smz, veh->posx, veh->posy);
+
+    veh->sm_pos.z = om_dest.z;
 
     std::unique_ptr<vehicle> placed_vehicle_up =
         add_vehicle_to_map( std::move( veh ), true );
