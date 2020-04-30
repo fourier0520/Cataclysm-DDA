@@ -4984,7 +4984,8 @@ int activity_handlers::use_toilet_paper( player *p ) {
         paper_morale = 10;
 
         // process specific toilet paper item status
-        if(used_paper.type->toiletpaper_morale != 0){
+        /// XXX ignore below minus 200 million to avoid probably INT_MIN when value was unset
+        if( used_paper.type->toiletpaper_morale != 0 && -200000000 < used_paper.type->toiletpaper_morale){
             paper_morale += used_paper.type->toiletpaper_morale;
         }
         if( !used_paper.type->toiletpaper_message.empty()){
