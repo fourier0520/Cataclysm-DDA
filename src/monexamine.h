@@ -2,6 +2,8 @@
 #ifndef MONEXAMINE_H
 #define MONEXAMINE_H
 
+#include "custom_activity.h"
+
 class monster;
 
 namespace monexamine
@@ -38,6 +40,7 @@ void maid_itemize( monster &z );
 void maid_toggle_speak( monster &z );
 void maid_play( monster &z );
 void maid_change_costume( monster &z );
+void start_custom_activity( monster &z, custom_activity *c_act);
 
 } // namespace monexamine
 #endif

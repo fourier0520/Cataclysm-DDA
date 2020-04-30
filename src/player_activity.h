@@ -49,6 +49,7 @@ class player_activity
         std::vector<tripoint> coords;
         std::unordered_set<tripoint> coord_set;
         std::vector<weak_ptr_fast<monster>> monsters;
+        custom_activity* custom_activity_data;
         tripoint placement;
         /** If true, the activity will be auto-resumed next time the player attempts
          *  an identical activity. This value is set dynamically.

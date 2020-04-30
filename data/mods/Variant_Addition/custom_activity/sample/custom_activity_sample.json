@@ -1,0 +1,50 @@
+[
+  {
+    "type": "custom_activity",
+    "id": "cat_groom",
+    "name": "grooming",
+    "name_in_select_menu": "do grooming %s",
+    "query_yn_message": "really grooming %s?",
+    "start_message": "let's start grooming!",
+    "not_ready_message": "%s seems not in mood.",
+    "doing_message": "meooow <3",
+    "finish_message": "%s is seems GOOD now!",
+    "pet_monster_id": "mon_cat",
+    "morale_type_id": "groomed_my_cat",
+    "morale_amount": 5,
+    "morale_duration_turns": 1200,
+    "effect_type_id": "covered_cat_fur",
+    "effect_duration_turns": 180,
+    "result_item_id": "cat_fur_ball",
+    "result_item_charges": 22,
+    "is_result_item_drop_to_ground": true,
+    "to_finish_turns": 600,
+    "pet_cooldown_turns": 600
+  },
+  {
+    "type": "effect_type",
+    "id": "covered_cat_fur",
+    "name": [ "covered cat fur" ],
+    "desc": [ "you covered cat fur!" ],
+    "base_mods": { "per_mod": [ -1 ], "dex_mod": [ -2 ] }
+  },
+  {
+    "id": "groomed_my_cat",
+    "type": "morale_type",
+    "text": "Groomed your own cat"
+  },
+  {
+    "type": "GENERIC",
+    "id": "cat_fur_ball",
+    "symbol": "c",
+    "color": "yellow",
+    "name": { "str": "Fur_ball of cat" },
+    "description": "Fluffy fur ball produced by cat.",
+    "price": 1,
+    "material": "paper",
+    "flags": [ "TRADER_AVOID" ],
+    "charges": 2,
+    "weight": "1 g",
+    "volume": "1 ml"
+  }
+]

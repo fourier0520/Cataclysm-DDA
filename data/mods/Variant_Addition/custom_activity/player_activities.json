@@ -1,0 +1,9 @@
+[
+  {
+    "id": "ACT_CUSTOM_ACTIVITY",
+    "type": "activity_type",
+    "activity_level": "LIGHT_EXERCISE",
+    "verb": "custom activity verb",
+    "based_on": "time"
+  }
+]

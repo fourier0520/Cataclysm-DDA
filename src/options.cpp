@@ -1618,6 +1618,13 @@ void options_manager::add_options_interface()
     },
     30, 30, COPT_CURSES_HIDE );
 
+    add_empty_line();
+
+    add( "STOP_IME_AUTOENABLE", "interface", translate_marker( "Stop ime autoenable" ),
+         translate_marker( "Stop ime autoenable" ),
+         false);
+
+
 }
 
 void options_manager::add_options_graphics()

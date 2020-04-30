@@ -130,6 +130,7 @@ static const efftype_id effect_sleep( "sleep" );
 static const efftype_id effect_stunned( "stunned" );
 static const efftype_id effect_tapeworm( "tapeworm" );
 static const efftype_id effect_weed_high( "weed_high" );
+static const efftype_id effect_took_shower( "took_shower" );
 
 static const trait_id trait_ACIDBLOOD( "ACIDBLOOD" );
 static const trait_id trait_ANTENNAE( "ANTENNAE" );
@@ -407,6 +408,11 @@ void player::process_turn()
 
         //mask from scent altering items;
         norm_scent += mask_intensity;
+
+        // if player have took shower effect, halves scent.
+        if( has_effect( effect_took_shower ) ) {
+            norm_scent *= 0.5;
+        }
 
         // Scent increases fast at first, and slows down as it approaches normal levels.
         // Estimate it will take about norm_scent * 2 turns to go from 0 - norm_scent / 2

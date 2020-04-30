@@ -9491,19 +9491,24 @@ void game::ftl_drive( const tripoint &om_dest, vehicle& veh )
     load_map( map_om_pos );
 
     // restore vehicle
-    m.place_vehicle_ftl( std::move(warping_veh), u.pos() );
+    m.place_vehicle_ftl( std::move(warping_veh), om_dest );
     // restore npc
     for( npc* passenger_npc : passenger_list_npc) {
-        passenger_npc->spawn_at_precise( { get_levx(), get_levy() }, passenger_npc->pos() );
+        //passenger_npc->spawn_at_precise( { get_levx(), get_levy() }, passenger_npc->pos() );
+        tripoint npc_warp_dest_pos = passenger_npc->pos();
+        npc_warp_dest_pos.z = om_dest.z;
+        passenger_npc->setpos( npc_warp_dest_pos );
     }
     // restore monster
     for( monster* passenger : passenger_list) {
         int fallback_radius = 2;
         // TODO handle case that when if monster does not placed
         // monster *const placed =
+        tripoint monster_warp_dest_pos = passenger->pos();
+        monster_warp_dest_pos.z = om_dest.z;
         place_critter_around(
             make_shared_fast<monster>( *passenger ),
-            passenger->pos(),
+            monster_warp_dest_pos,
             fallback_radius );
     }
 

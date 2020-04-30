@@ -203,6 +203,7 @@ void excrete_do_turn( player_activity *act, player *p );
 void take_washlet_do_turn( player_activity *act, player *p );
 void take_shower_do_turn( player_activity *act, player *p );
 void hentai_play_with_do_turn( player_activity *act, player *p );
+void custom_activity_do_turn( player_activity *act, player *p );
 
 // defined in activity_handlers.cpp
 extern const std::map< activity_id, std::function<void( player_activity *, player * )> >
@@ -278,6 +279,7 @@ void excrete_finish( player_activity *act, player *p );
 void take_washlet_finish( player_activity *act, player *p );
 void take_shower_finish( player_activity *act, player *p );
 void hentai_play_with_finish( player_activity *act, player *p );
+void custom_activity_finish( player_activity *act, player *p );
 
 void try_sleep_query( player_activity *act, player *p );
 int use_toilet_paper( player *p );
