@@ -21,24 +21,18 @@
     "to_finish_turns": 600,
     "pet_cooldown_turns": 600
   },
-  
   {
     "type": "effect_type",
     "id": "covered_cat_fur",
     "name": [ "covered cat fur" ],
     "desc": [ "you covered cat fur!" ],
-    "base_mods": {
-      "per_mod": [ -1 ],
-      "dex_mod": [ -2 ]
-    }
+    "base_mods": { "per_mod": [ -1 ], "dex_mod": [ -2 ] }
   },
-
   {
     "id": "groomed_my_cat",
     "type": "morale_type",
     "text": "Groomed your own cat"
   },
-  
   {
     "type": "GENERIC",
     "id": "cat_fur_ball",
@@ -49,9 +43,8 @@
     "price": 1,
     "material": "paper",
     "flags": [ "TRADER_AVOID" ],
-    "charges" : 2,
+    "charges": 2,
     "weight": "1 g",
     "volume": "1 ml"
   }
-  
 ]
