@@ -1,13 +1,14 @@
 #pragma once
-#ifndef IUSE_ACTOR_H
-#define IUSE_ACTOR_H
+#ifndef CATA_SRC_IUSE_ACTOR_H
+#define CATA_SRC_IUSE_ACTOR_H
 
 #include <climits>
 #include <map>
+#include <memory>
 #include <set>
-#include <vector>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "calendar.h"
 #include "color.h"
@@ -15,16 +16,16 @@
 #include "explosion.h"
 #include "game_constants.h"
 #include "iuse.h"
-class npc_template;
+#include "optional.h"
 #include "ret_val.h"
 #include "string_id.h"
 #include "translations.h"
 #include "type_id.h"
 #include "units.h"
-#include "optional.h"
 
 class Character;
 class item;
+class npc_template;
 class player;
 struct iteminfo;
 struct tripoint;
@@ -34,6 +35,7 @@ enum body_part : int;
 class JsonObject;
 
 using itype_id = std::string;
+class item_location;
 struct furn_t;
 struct itype;
 class item_location;
@@ -542,6 +544,7 @@ class salvage_actor : public iuse_actor
             material_id( "nomex" ),
             material_id( "nylon" ),
             material_id( "plastic" ),
+            material_id( "rubber" ),
             material_id( "wood" ),
             material_id( "wool" )
         };
@@ -1299,4 +1302,4 @@ class transsexual_actor : public consume_drug_iuse
         int use( player &, item &it, bool, const tripoint & ) const override;
         std::unique_ptr<iuse_actor> clone() const override;
 };
-#endif
+#endif // CATA_SRC_IUSE_ACTOR_H

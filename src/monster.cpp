@@ -1,26 +1,34 @@
 #include "monster.h"
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <memory>
 #include <tuple>
 #include <unordered_map>
 
 #include "avatar.h"
+#include "character.h"
+#include "compatibility.h"
 #include "coordinate_conversions.h"
 #include "cursesdef.h"
 #include "debug.h"
 #include "effect.h"
+#include "event.h"
 #include "event_bus.h"
 #include "explosion.h"
-#include "field.h"
+#include "field_type.h"
+#include "flat_set.h"
 #include "game.h"
+#include "game_constants.h"
+#include "int_id.h"
 #include "item.h"
+#include "item_group.h"
 #include "itype.h"
 #include "line.h"
 #include "map.h"
 #include "map_iterator.h"
 #include "mapdata.h"
+#include "mattack_common.h"
 #include "melee.h"
 #include "messages.h"
 #include "mission.h"
@@ -29,29 +37,23 @@
 #include "monfaction.h"
 #include "mongroup.h"
 #include "morale_types.h"
-#include "mutation.h"
 #include "mtype.h"
+#include "mutation.h"
 #include "npc.h"
 #include "optional.h"
 #include "options.h"
 #include "output.h"
 #include "overmapbuffer.h"
+#include "pimpl.h"
+#include "player.h"
 #include "projectile.h"
 #include "rng.h"
 #include "sounds.h"
 #include "string_formatter.h"
+#include "string_id.h"
 #include "text_snippets.h"
 #include "translations.h"
 #include "trap.h"
-#include "character.h"
-#include "compatibility.h"
-#include "game_constants.h"
-#include "mattack_common.h"
-#include "pimpl.h"
-#include "player.h"
-#include "int_id.h"
-#include "string_id.h"
-#include "flat_set.h"
 #include "weather.h"
 
 static const efftype_id effect_badpoison( "badpoison" );
@@ -539,7 +541,7 @@ void monster::try_biosignature()
     }
     int counter = 0;
     while( true ) {
-        // dont catch up too much, otherwise on some scenarios,
+        // don't catch up too much, otherwise on some scenarios,
         // we could have years worth of poop just deposited on the floor.
         if( *biosig_timer > calendar::turn || counter > 50 ) {
             return;
@@ -669,8 +671,8 @@ int monster::print_info( const catacurses::window &w, int vStart, int vLines, in
 {
     const int vEnd = vStart + vLines;
 
-    mvwprintz( w, point( column, vStart ), c_white, "%s ", name() );
-
+    mvwprintz( w, point( column, vStart ), basic_symbol_color(), name() );
+    wprintw( w, " " );
     const auto att = get_attitude();
     wprintz( w, att.second, att.first );
 
@@ -1029,6 +1031,9 @@ Creature::Attitude monster::attitude_to( const Creature &other ) const
             // Friendly (to player) monsters are friendly to each other
             // Unfriendly monsters go by faction attitude
             return A_FRIENDLY;
+        } else if( ( friendly == 0 && m->friendly == 0 && faction_att == MFA_HATE ) ) {
+            // Stuff that hates a specific faction will always attack that faction
+            return A_HOSTILE;
         } else if( ( friendly == 0 && m->friendly == 0 && faction_att == MFA_NEUTRAL ) ||
                    morale < 0 || anger < 10 ) {
             // Stuff that won't attack is neutral to everything
@@ -1561,11 +1566,11 @@ void monster::deal_projectile_attack( Creature *source, dealt_projectile_attack 
 
     if( !is_hallucination() && attack.hit_critter == this ) {
         // Maybe TODO: Get difficulty from projectile speed/size/missed_by
-        on_hit( source, bp_torso, INT_MIN, &attack );
+        on_hit( source, bodypart_id( "torso" ), INT_MIN, &attack );
     }
 }
 
-void monster::deal_damage_handle_type( const damage_unit &du, body_part bp, int &damage,
+void monster::deal_damage_handle_type( const damage_unit &du, bodypart_id bp, int &damage,
                                        int &pain )
 {
     switch( du.type ) {
@@ -1605,7 +1610,7 @@ void monster::deal_damage_handle_type( const damage_unit &du, body_part bp, int 
             break;
     }
 
-    Creature::deal_damage_handle_type( du, bp, damage, pain );
+    Creature::deal_damage_handle_type( du,  bp, damage, pain );
 }
 
 int monster::heal( const int delta_hp, bool overheal )
@@ -1628,7 +1633,7 @@ void monster::set_hp( const int hp )
     this->hp = hp;
 }
 
-void monster::apply_damage( Creature *source, body_part /*bp*/, int dam,
+void monster::apply_damage( Creature *source, bodypart_id /*bp*/, int dam,
                             const bool /*bypass_med*/ )
 {
     if( is_dead_state() ) {
@@ -1686,7 +1691,7 @@ bool monster::move_effects( bool )
             return false;
         }
         // non-friendly monster will struggle to get free occasionally.
-        // some monsters cant be tangled up with a net/bolas/lassoo etc.
+        // some monsters can't be tangled up with a net/bolas/lasso etc.
         bool immediate_break = type->in_species( FISH ) || type->in_species( MOLLUSK ) ||
                                type->in_species( ROBOT ) || type->bodytype == "snake" || type->bodytype == "blob";
         if( !immediate_break && rng( 0, 900 ) > type->melee_dice * type->melee_sides * 1.5 ) {
@@ -1848,20 +1853,20 @@ int monster::get_worn_armor_val( damage_type dt ) const
     return 0;
 }
 
-int monster::get_armor_cut( body_part bp ) const
+int monster::get_armor_cut( bodypart_id bp ) const
 {
     ( void ) bp;
     // TODO: Add support for worn armor?
     return static_cast<int>( type->armor_cut ) + armor_cut_bonus + get_worn_armor_val( DT_CUT );
 }
 
-int monster::get_armor_bash( body_part bp ) const
+int monster::get_armor_bash( bodypart_id bp ) const
 {
     ( void ) bp;
     return static_cast<int>( type->armor_bash ) + armor_bash_bonus + get_worn_armor_val( DT_BASH );
 }
 
-int monster::get_armor_type( damage_type dt, body_part bp ) const
+int monster::get_armor_type( damage_type dt, bodypart_id bp ) const
 {
     int worn_armor = get_worn_armor_val( dt );
 
@@ -2009,13 +2014,13 @@ int monster::impact( const int force, const tripoint &p )
     const float mod = fall_damage_mod();
     int total_dealt = 0;
     if( g->m.has_flag( TFLAG_SHARP, p ) ) {
-        const int cut_damage = std::max( 0.0f, 10 * mod - get_armor_cut( bp_torso ) );
-        apply_damage( nullptr, bp_torso, cut_damage );
+        const int cut_damage = std::max( 0.0f, 10 * mod - get_armor_cut( bodypart_id( "torso" ) ) );
+        apply_damage( nullptr, bodypart_id( "torso" ), cut_damage );
         total_dealt += 10 * mod;
     }
 
-    const int bash_damage = std::max( 0.0f, force * mod - get_armor_bash( bp_torso ) );
-    apply_damage( nullptr, bp_torso, bash_damage );
+    const int bash_damage = std::max( 0.0f, force * mod - get_armor_bash( bodypart_id( "torso" ) ) );
+    apply_damage( nullptr, bodypart_id( "torso" ), bash_damage );
     total_dealt += force * mod;
 
     add_effect( effect_downed, time_duration::from_turns( rng( 0, mod * 3 + 1 ) ) );
@@ -2053,6 +2058,19 @@ void monster::set_special( const std::string &special_name, int time )
 void monster::disable_special( const std::string &special_name )
 {
     special_attacks.at( special_name ).enabled = false;
+}
+
+int monster::shortest_special_cooldown() const
+{
+    int countdown = std::numeric_limits<int>::max();
+    for( const std::pair<const std::string, mon_special_attack> &sp_type : special_attacks ) {
+        const mon_special_attack &local_attack_data = sp_type.second;
+        if( !local_attack_data.enabled ) {
+            continue;
+        }
+        countdown = std::min( countdown, local_attack_data.cooldown );
+    }
+    return countdown;
 }
 
 void monster::normalize_ammo( const int old_ammo )
@@ -2101,7 +2119,7 @@ void monster::process_turn()
 {
     decrement_summon_timer();
     if( !is_hallucination() ) {
-        for( const std::pair<emit_id, time_duration> &e : type->emit_fields ) {
+        for( const std::pair<const emit_id, time_duration> &e : type->emit_fields ) {
             if( !calendar::once_every( e.second ) ) {
                 continue;
             }
@@ -2433,7 +2451,7 @@ void monster::process_one_effect( effect &it, bool is_new )
     int val = get_effect( "HURT", reduced );
     if( val > 0 ) {
         if( is_new || it.activated( calendar::turn, "HURT", val, reduced, 1 ) ) {
-            apply_damage( nullptr, bp_torso, val );
+            apply_damage( nullptr, bodypart_id( "torso" ), val );
         }
     }
 
@@ -2449,9 +2467,9 @@ void monster::process_one_effect( effect &it, bool is_new )
             dam = rng( 5, 10 );
         }
 
-        dam -= get_armor_type( DT_HEAT, bp_torso );
+        dam -= get_armor_type( DT_HEAT, bodypart_id( "torso" ) );
         if( dam > 0 ) {
-            apply_damage( nullptr, bp_torso, dam );
+            apply_damage( nullptr, bodypart_id( "torso" ), dam );
         } else {
             it.set_duration( 0_turns );
         }
@@ -2485,7 +2503,7 @@ void monster::process_effects()
             healing_format_string = _( "The %s is visibly regenerating!" );
         } else if( healed_amount >= 10 ) {
             healing_format_string = _( "The %s seems a little healthier." );
-        } else if( healed_amount >= 1 ) {
+        } else {
             healing_format_string = _( "The %s is healing slowly." );
         }
         add_msg( m_warning, healing_format_string, name() );
@@ -2494,7 +2512,7 @@ void monster::process_effects()
     if( type->regenerates_in_dark ) {
         const float light = g->m.ambient_light_at( pos() );
         // Magic number 10000 was chosen so that a floodlight prevents regeneration in a range of 20 tiles
-        if( heal( static_cast<int>( 50.0 *  exp( - light * light / 10000 ) )  > 0 && one_in( 2 ) &&
+        if( heal( static_cast<int>( 50.0 *  std::exp( - light * light / 10000 ) )  > 0 && one_in( 2 ) &&
                   g->u.sees( *this ) ) ) {
             add_msg( m_warning, _( "The %s uses the darkness to regenerate." ), name() );
         }
@@ -2526,7 +2544,7 @@ void monster::process_effects()
         if( g->u.sees( *this ) ) {
             add_msg( m_good, _( "The %s burns horribly in the sunlight!" ), name() );
         }
-        apply_damage( nullptr, bp_torso, 100 );
+        apply_damage( nullptr, bodypart_id( "torso" ), 100 );
         if( hp < 0 ) {
             hp = 0;
         }
@@ -2822,7 +2840,7 @@ void monster::on_dodge( Creature *, float )
     // Currently does nothing, later should handle faction relations
 }
 
-void monster::on_hit( Creature *source, body_part,
+void monster::on_hit( Creature *source, bodypart_id,
                       float, dealt_projectile_attack const *const proj )
 {
     if( is_hallucination() ) {
@@ -2862,16 +2880,6 @@ void monster::on_hit( Creature *source, body_part,
 
     check_dead_state();
     // TODO: Faction relations
-}
-
-body_part monster::get_random_body_part( bool ) const
-{
-    return bp_torso;
-}
-
-std::vector<body_part> monster::get_all_body_parts( bool ) const
-{
-    return std::vector<body_part>( 1, bp_torso );
 }
 
 int monster::get_hp_max( hp_part ) const

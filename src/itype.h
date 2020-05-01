@@ -1,12 +1,13 @@
 #pragma once
-#ifndef ITYPE_H
-#define ITYPE_H
+#ifndef CATA_SRC_ITYPE_H
+#define CATA_SRC_ITYPE_H
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
 #include <array>
+#include <map>
+#include <memory>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 #include "bodypart.h" // body_part::num_bp
 #include "calendar.h"
@@ -25,12 +26,11 @@
 #include "units.h"
 #include "value_ptr.h"
 
-// see item.h
-class item_category;
 class Item_factory;
-class player;
 class item;
+class player;
 struct tripoint;
+template <typename E> struct enum_traits;
 
 enum art_effect_active : int;
 enum art_charge : int;
@@ -135,7 +135,7 @@ struct islot_comestible {
         int addict = 0;
 
         /** effects of addiction */
-        add_type add = ADD_NULL;
+        add_type add = add_type::NONE;
 
         /** stimulant effect */
         int stim = 0;
@@ -155,14 +155,14 @@ struct islot_comestible {
         /** chance (odds) of becoming parasitised when eating (zero if never occurs) */
         int parasites = 0;
 
-        /** probability [0, 100] to get food poisoning from this comestible */
-        int contamination = 0;
-
         /**Amount of radiation you get from this comestible*/
         int radiation = 0;
 
         /** freezing point in degrees Fahrenheit, below this temperature item can freeze */
         int freeze_point = temperatures::freezing;
+
+        /**List of diseases carried by this comestible and their associated probability*/
+        std::map<diseasetype_id, int> contamination;
 
         //** specific heats in J/(g K) and latent heat in J/g */
         float specific_heat_liquid = 4.186;
@@ -422,12 +422,6 @@ struct common_ranged_data {
      * Dispersion "bonus" from gun.
      */
     int dispersion = 0;
-    /**
-     * Legacy pierce and damage values, used if @ref damage isn't set.
-    *@{*/
-    int legacy_pierce = 0;
-    int legacy_damage = 0;
-    /*@}*/
 };
 
 struct islot_engine {
@@ -563,20 +557,34 @@ class gun_type_type
         /// @param name The untranslated name of the gun type. Must have been extracted
         /// for translation with the context "gun_type_type".
         gun_type_type( const std::string &name ) : name_( name ) {}
-        // arbitrary sorting, only here to allow usage in std::set
-        bool operator<( const gun_type_type &rhs ) const {
-            return name_ < rhs.name_;
-        }
         /// Translated name.
         std::string name() const;
+
+        friend bool operator==( const gun_type_type &l, const gun_type_type &r ) {
+            return l.name_ == r.name_;
+        }
+
+        friend struct std::hash<gun_type_type>;
 };
+
+namespace std
+{
+
+template<>
+struct hash<gun_type_type> {
+    size_t operator()( const gun_type_type &t ) const {
+        return hash<std::string>()( t.name_ );
+    }
+};
+
+} // namespace std
 
 struct islot_gunmod : common_ranged_data {
     /** Where is this gunmod installed (e.g. "stock", "rail")? */
     gunmod_location location;
 
     /** What kind of weapons can this gunmod be used with (e.g. "rifle", "crossbow")? */
-    std::set<gun_type_type> usable;
+    std::unordered_set<gun_type_type> usable;
 
     /** If this value is set (non-negative), this gunmod functions as a sight. A sight is only usable to aim by a character whose current @ref Character::recoil is at or below this value. */
     int sight_dispersion = -1;
@@ -717,16 +725,20 @@ struct islot_ammo : common_ranged_data {
     bool special_cookoff = false;
 
     /**
-     * If set, ammo does not give a flat damage, instead it multiplies the base
-     * damage of the gun by this value.
+     * The damage multiplier to apply after a critical hit.
      */
-    cata::optional<float> prop_damage;
+    float critical_multiplier = 2.0;
 
     /**
-     * Some combat ammo might not have a damage or prop_damage value
+     * Some combat ammo might not have a damage value
      * Set this to make it show as combat ammo anyway
      */
     cata::optional<bool> force_stat_display;
+
+    bool was_loaded;
+
+    void load( const JsonObject &jo );
+    void deserialize( JsonIn &jsin );
 };
 
 struct islot_bionic {
@@ -868,6 +880,9 @@ struct itype {
             return count_by_charges() ? 0 : damage_max_;
         }
 
+        // used for generic_factory for copy-from
+        bool was_loaded = false;
+
         // a hint for tilesets: if it doesn't have a tile, what does it look like?
         std::string looks_like;
 
@@ -876,7 +891,7 @@ struct itype {
 
         std::string snippet_category;
         translation description; // Flavor text
-        std::vector<std::string> ascii_picture;
+        ascii_art_id picture_id;
 
         // The container it comes in
         cata::optional<itype_id> default_container;
@@ -1096,4 +1111,4 @@ struct itype {
         virtual ~itype() = default;
 };
 
-#endif
+#endif // CATA_SRC_ITYPE_H
