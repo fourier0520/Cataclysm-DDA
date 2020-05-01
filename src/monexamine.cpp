@@ -37,6 +37,7 @@
 #include "pimpl.h"
 #include "point.h"
 #include "custom_activity.h"
+#include "options.h"
 
 static const activity_id ACT_MILK( "ACT_MILK" );
 static const activity_id ACT_PLAY_WITH_PET( "ACT_PLAY_WITH_PET" );
@@ -74,6 +75,7 @@ const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
 
 const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
+const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
 
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
@@ -81,6 +83,7 @@ const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 static const skill_id skill_survival( "survival" );
 
 static const species_id ZOMBIE( "ZOMBIE" );
+static const species_id SPECIES_CUBI( "CUBI" );
 
 bool monexamine::pet_menu( monster &z )
 {
@@ -112,6 +115,7 @@ bool monexamine::pet_menu( monster &z )
         littlemaid_stay,
         littlemaid_play,
         custom_activity_choice,
+        cubi_toggle_seduce_friend,
     };
 
     uilist amenu;
@@ -247,6 +251,15 @@ bool monexamine::pet_menu( monster &z )
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
 
+    if( get_option<bool>( "HENTAI_EXTEND" ) ) {
+        if( z.in_species( SPECIES_CUBI ) ){
+            if( z.has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
+                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Stop seduce me" ));
+            } else {
+                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Seduce me" ));
+            }
+        }
+    }
 
     custom_activity *c_act = custom_activity_manager::find_pet_monster_activity( z.type->id );
     if( c_act != nullptr ){
@@ -337,6 +350,9 @@ bool monexamine::pet_menu( monster &z )
             break;
         case custom_activity_choice:
             start_custom_activity( z, c_act );
+            break;
+        case cubi_toggle_seduce_friend:
+            cubi_allow_seduce_friendlyfire( z );
             break;
         default:
             break;
@@ -926,3 +942,13 @@ void monexamine::start_custom_activity( monster &z, custom_activity *c_act){
     }
 }
 
+void monexamine::cubi_allow_seduce_friendlyfire( monster &z )
+{
+    if( z.has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
+        add_msg( _("Stop make %s to seduce you."), z.name() );
+        z.remove_effect( effect_cubi_allow_seduce_friendlyfire );
+    } else {
+        add_msg( _("Make %s to seduce you."), z.name() );
+        z.add_effect( effect_cubi_allow_seduce_friendlyfire, 1_turns, num_bp, true );
+    }
+}
