@@ -8,8 +8,7 @@
   "category": "items",
   "dependencies": [
     "dda",
-    "variant_addition",
-    "mod_hentai"
+    "variant_addition"
   ],
   "path": ""
 }
