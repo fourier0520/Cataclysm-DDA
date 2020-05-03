@@ -3,7 +3,8 @@
     "type": "effect_type",
     "id": "effect_bind_by_custom_activity",
     "name": [ "immovable in activity" ],
-    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ],
+    "max_duration": "20 s"
   },
   {
     "type": "effect_type",

@@ -5580,6 +5580,7 @@ void activity_handlers::custom_activity_finish( player_activity *act, player *p 
         target_monster->add_effect(
             efftype_id( effect_cooldown_of_custom_activity ),
             time_duration::from_turns(act->custom_activity_data->pet_cooldown_turns) );
+        target_monster->remove_effect( effect_bind_by_custom_activity );
     }
 
     act->set_to_null();

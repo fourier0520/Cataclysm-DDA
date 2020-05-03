@@ -41,6 +41,7 @@ void maid_toggle_speak( monster &z );
 void maid_play( monster &z );
 void maid_change_costume( monster &z );
 void start_custom_activity( monster &z, custom_activity *c_act);
+void cubi_allow_seduce_friendlyfire( monster &z );
 
 } // namespace monexamine
 #endif

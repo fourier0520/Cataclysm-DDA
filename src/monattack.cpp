@@ -140,6 +140,7 @@ const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
 // for hentai mod
 static const efftype_id effect_lust( "lust" );
+static const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
 
 static const skill_id skill_gun( "gun" );
 static const skill_id skill_launcher( "launcher" );
@@ -5978,6 +5979,13 @@ bool mattack::stripu( monster *z )
 bool mattack::seduce( monster *z )
 {
     Creature *target = z->attack_target();
+
+    if( get_option<bool>( "HENTAI_EXTEND" ) ) {
+        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
+            target = &( g->u );
+        }
+    }
+
     if( !is_adjacent( z, target, false ) || target == nullptr || !z->sees( *target ) ) {
         return false;
     }
@@ -6023,6 +6031,15 @@ bool mattack::tkiss( monster *z )
 {
     const float range = 10.0f;
     Creature *target = sting_get_target( z, range );
+
+    if( get_option<bool>( "HENTAI_EXTEND" ) ) {
+        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
+            if( z->sees( g->u ) && g->m.clear_path( z->pos(), g->u.pos(), range, 1, 100 ) ) {
+                target = &( g->u );
+            }
+        }
+    }
+
     if( target == nullptr ) {
         return false;
     }
