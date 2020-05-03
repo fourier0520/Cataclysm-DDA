@@ -205,8 +205,7 @@
           { "item": "tools_earthworking", "chance": 65 },
           { "item": "mechanics", "chance": 40 },
           { "item": "home_hw", "chance": 50 },
-          { "item": "tools_common", "chance": 50 },
-          { "item": "fertilizers", "chance": 60 }
+          { "item": "tools_common", "chance": 50 }
         ],
         "u": [
           { "item": "kitchen", "chance": 70, "repeat": [ 1, 2 ] },

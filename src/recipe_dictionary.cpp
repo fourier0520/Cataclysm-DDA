@@ -3,25 +3,24 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
-#include <unordered_map>
 #include <utility>
 
 #include "cata_algo.h"
 #include "cata_utility.h"
-#include "debug.h"
 #include "init.h"
 #include "item.h"
 #include "item_factory.h"
 #include "itype.h"
-#include "json.h"
 #include "output.h"
+#include "skill.h"
+#include "uistate.h"
+#include "debug.h"
+#include "json.h"
+#include "optional.h"
 #include "player.h"
 #include "requirements.h"
-#include "skill.h"
-#include "string_id.h"
-#include "uistate.h"
 #include "units.h"
-#include "value_ptr.h"
+#include "string_id.h"
 
 recipe_dictionary recipe_dict;
 
@@ -132,9 +131,13 @@ std::vector<const recipe *> recipe_subset::recent() const
 
     for( auto rec_id = uistate.recent_recipes.rbegin(); rec_id != uistate.recent_recipes.rend();
          ++rec_id ) {
-        std::copy_if( recipes.begin(), recipes.end(), std::back_inserter( res ),
-        [&rec_id]( const recipe * r ) {
-            return *r && !( *rec_id != r->ident() || r->obsolete );
+        std::find_if( recipes.begin(), recipes.end(), [&rec_id, &res]( const recipe * r ) {
+            if( !*r || *rec_id != r->ident() || r->obsolete ) {
+                return false;
+            }
+
+            res.push_back( r );
+            return true;
         } );
     }
 
@@ -154,7 +157,8 @@ std::vector<const recipe *> recipe_subset::search( const std::string &txt,
                 return lcmatch( r->result_name(), txt );
 
             case search_type::skill:
-                return lcmatch( r->required_skills_string( nullptr, true, false ), txt );
+                return lcmatch( r->required_skills_string( nullptr ), txt ) ||
+                       lcmatch( r->skill_used->name(), txt );
 
             case search_type::primary_skill:
                 return lcmatch( r->skill_used->name(), txt );

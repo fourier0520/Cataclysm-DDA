@@ -1,96 +1,91 @@
 #include "debug_menu.h"
 
 // IWYU pragma: no_include <cxxabi.h>
-
-#include <algorithm>
-#include <array>
-#include <chrono>
-#include <csignal>
+#include <climits>
 #include <cstdint>
-#include <cstdlib>
-#include <ctime>
+#include <algorithm>
+#include <chrono>
+#include <vector>
+#include <array>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
-#include <limits>
 #include <list>
 #include <map>
 #include <memory>
 #include <sstream>
 #include <string>
-#include <unordered_map>
+#include <type_traits>
 #include <utility>
-#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <unordered_map>
 
 #include "action.h"
-#include "artifact.h"
 #include "avatar.h"
-#include "bodypart.h"
-#include "calendar.h"
-#include "cata_utility.h"
-#include "catacharset.h"
-#include "character_id.h"
-#include "character_martial_arts.h"
-#include "color.h"
-#include "compatibility.h"
 #include "coordinate_conversions.h"
-#include "cursesdef.h"
-#include "debug.h"
-#include "enum_conversions.h"
-#include "enums.h"
 #include "faction.h"
 #include "filesystem.h"
 #include "game.h"
-#include "game_constants.h"
 #include "game_inventory.h"
-#include "input.h"
-#include "inventory.h"
-#include "item.h"
-#include "item_group.h"
-#include "item_location.h"
-#include "magic.h"
-#include "map.h"
 #include "map_extras.h"
-#include "mapgen.h"
-#include "mapgendata.h"
-#include "martialarts.h"
-#include "memory_fast.h"
 #include "messages.h"
 #include "mission.h"
-#include "monster.h"
-#include "monstergenerator.h"
 #include "morale_types.h"
-#include "mtype.h"
 #include "npc.h"
 #include "npc_class.h"
-#include "omdata.h"
-#include "optional.h"
 #include "options.h"
 #include "output.h"
 #include "overmap.h"
 #include "overmap_ui.h"
 #include "overmapbuffer.h"
-#include "pimpl.h"
 #include "player.h"
-#include "pldata.h"
-#include "point.h"
-#include "recipe_dictionary.h"
-#include "rng.h"
-#include "sounds.h"
-#include "stomach.h"
 #include "string_formatter.h"
-#include "string_id.h"
 #include "string_input_popup.h"
-#include "trait_group.h"
+#include "ui.h"
+#include "vitamin.h"
+#include "color.h"
+#include "debug.h"
+#include "enums.h"
+#include "faction.h"
+#include "game_constants.h"
+#include "int_id.h"
+#include "inventory.h"
+#include "item.h"
+#include "omdata.h"
+#include "optional.h"
+#include "pldata.h"
 #include "translations.h"
 #include "type_id.h"
-#include "ui.h"
-#include "units.h"
+#include "map.h"
 #include "veh_type.h"
-#include "vitamin.h"
-#include "vpart_position.h"
 #include "weather.h"
+#include "recipe_dictionary.h"
+#include "martialarts.h"
+#include "sounds.h"
+#include "trait_group.h"
+#include "artifact.h"
+#include "vpart_position.h"
+#include "rng.h"
+#include <csignal>
+#include "magic.h"
+#include "bodypart.h"
+#include "calendar.h"
+#include "cata_utility.h"
+#include "clzones.h"
+#include "compatibility.h"
+#include "creature.h"
+#include "cursesdef.h"
+#include "input.h"
+#include "item_group.h"
+#include "monster.h"
+#include "point.h"
+#include "stomach.h"
+#include "string_id.h"
+#include "units.h"
 #include "weather_gen.h"
+#include "monstergenerator.h"
+#include "mapgendata.h"
 
 static const efftype_id effect_asthma( "asthma" );
 static const efftype_id effect_flu( "flu" );
@@ -101,8 +96,8 @@ static const trait_id trait_ASTHMA( "ASTHMA" );
 
 class vehicle;
 
-extern std::map<std::string, weighted_int_list<std::shared_ptr<mapgen_function_json_nested>> >
-        nested_mapgen;
+extern std::map<std::string, std::vector<std::unique_ptr<mapgen_function_json_nested>>>
+nested_mapgen;
 
 #if defined(TILES)
 #include "sdl_wrappers.h"
@@ -416,11 +411,8 @@ void spawn_nested_mapgen()
         target_map.load( abs_sub, true );
         const tripoint local_ms = target_map.getlocal( abs_ms );
         mapgendata md( abs_omt, target_map, 0.0f, calendar::turn, nullptr );
-        const auto &ptr = nested_mapgen[nest_str[nest_choice]].pick();
-        if( ptr == nullptr ) {
-            return;
-        }
-        ( *ptr )->nest( md, local_ms.xy() );
+        const auto &ptr = random_entry_ref( nested_mapgen[nest_str[nest_choice]] );
+        ptr->nest( md, local_ms.xy() );
         target_map.save();
         g->load_npcs();
         g->m.invalidate_map_cache( g->get_levz() );
@@ -1253,16 +1245,16 @@ void debug()
                     if( elem == vproto_id( "custom" ) ) {
                         continue;
                     }
-                    veh_strings.emplace_back( _( elem->name ), elem );
+                    veh_strings.emplace_back( elem->name, elem );
                 }
-                std::sort( veh_strings.begin(), veh_strings.end(), localized_compare );
+                std::sort( veh_strings.begin(), veh_strings.end() );
                 uilist veh_menu;
                 veh_menu.text = _( "Choose vehicle to spawn" );
                 int menu_ind = 0;
                 for( auto &elem : veh_strings ) {
                     //~ Menu entry in vehicle wish menu: 1st string: displayed name, 2nd string: internal name of vehicle
                     veh_menu.addentry( menu_ind, true, MENU_AUTOASSIGN, _( "%1$s (%2$s)" ),
-                                       elem.first, elem.second.c_str() );
+                                       _( elem.first ), elem.second.c_str() );
                     ++menu_ind;
                 }
                 veh_menu.query();
@@ -1417,31 +1409,31 @@ void debug()
             smenu.addentry( 4, true, 'z', "%s: %d", _( "Left leg" ), u.hp_cur[hp_leg_l] );
             smenu.addentry( 5, true, 'x', "%s: %d", _( "Right leg" ), u.hp_cur[hp_leg_r] );
             smenu.query();
-            bodypart_id part;
+            body_part part;
             int dbg_damage;
             switch( smenu.ret ) {
                 case 0:
-                    part = bodypart_id( "torso" );
+                    part = bp_torso;
                     break;
                 case 1:
-                    part = bodypart_id( "head" );
+                    part = bp_head;
                     break;
                 case 2:
-                    part = bodypart_id( "arm_l" );
+                    part = bp_arm_l;
                     break;
                 case 3:
-                    part = bodypart_id( "arm_r" );
+                    part = bp_arm_r;
                     break;
                 case 4:
-                    part = bodypart_id( "leg_l" );
+                    part = bp_leg_l;
                     break;
                 case 5:
-                    part = bodypart_id( "leg_r" );
+                    part = bp_leg_r;
                     break;
                 default:
                     break;
             }
-            if( query_int( dbg_damage, _( "Damage self for how much?  hp: %s" ), part.id().c_str() ) ) {
+            if( query_int( dbg_damage, _( "Damage self for how much?  hp: %d" ), part ) ) {
                 u.apply_damage( nullptr, part, dbg_damage );
                 u.die( nullptr );
             }

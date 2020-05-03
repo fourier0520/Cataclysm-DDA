@@ -1,22 +1,21 @@
-#include <algorithm>
 #include <cstdio>
-#include <memory>
+#include <algorithm>
+#include <list>
+#include <map>
 #include <utility>
 #include <vector>
 
 #include "avatar.h"
 #include "catch/catch.hpp"
 #include "game.h"
-#include "item.h"
-#include "item_contents.h"
 #include "itype.h"
-#include "recipe.h"
 #include "recipe_dictionary.h"
+#include "recipe.h"
 #include "requirements.h"
-#include "stomach.h"
-#include "string_id.h"
 #include "test_statistics.h"
-#include "type_id.h"
+#include "item.h"
+#include "optional.h"
+#include "string_id.h"
 #include "value_ptr.h"
 
 struct all_stats {

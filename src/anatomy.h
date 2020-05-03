@@ -1,16 +1,15 @@
 #pragma once
-#ifndef CATA_SRC_ANATOMY_H
-#define CATA_SRC_ANATOMY_H
+#ifndef ANATOMY_H
+#define ANATOMY_H
 
-#include <algorithm>
-#include <string>
 #include <vector>
+#include <string>
 
 #include "bodypart.h"
 #include "string_id.h"
 
-class JsonObject;
 class anatomy;
+class JsonObject;
 
 using anatomy_id = string_id<anatomy>;
 
@@ -21,13 +20,13 @@ using anatomy_id = string_id<anatomy>;
 class anatomy
 {
     private:
-        std::vector<bodypart_str_id> unloaded_bps;
+        std::vector<bodypart_ids> unloaded_bps;
         std::vector<bodypart_id> cached_bps;
         /** Sum of chances to hit a body part randomly, without aiming. */
         float size_sum = 0.0f;
 
         // TODO: get_better_name_for_function
-        bodypart_str_id get_part_with_cumulative_hit_size( float size ) const;
+        bodypart_ids get_part_with_cumulative_hit_size( float size ) const;
 
     public:
         anatomy_id id;
@@ -42,8 +41,7 @@ class anatomy
         /** Returns a random body part dependent on attacker's relative size and hit roll. */
         bodypart_id select_body_part( int size_diff, int hit_roll ) const;
 
-        std::vector<bodypart_id> get_bodyparts() const;
-        void add_body_part( const bodypart_str_id &new_bp );
+        void add_body_part( const bodypart_ids &new_bp );
         // TODO: remove_body_part
 
         void load( const JsonObject &jo, const std::string &src );
@@ -59,4 +57,4 @@ class anatomy
 
 extern anatomy_id human_anatomy;
 
-#endif // CATA_SRC_ANATOMY_H
+#endif

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_NPCTALK_H
-#define CATA_SRC_NPCTALK_H
+#ifndef NPCTALK_H
+#define NPCTALK_H
 
 #include "type_id.h"
 
@@ -38,7 +38,6 @@ void buy_100_logs( npc & );
 void start_trade( npc & );
 void sort_loot( npc & );
 void do_construction( npc & );
-void do_mining( npc & );
 void do_read( npc & );
 void do_chop_plank( npc & );
 void do_vehicle_deconstruct( npc & );
@@ -95,4 +94,4 @@ time_duration calc_skill_training_time( const npc &p, const skill_id &skill );
 int calc_skill_training_cost( const npc &p, const skill_id &skill );
 time_duration calc_ma_style_training_time( const npc &, const matype_id & /* id */ );
 int calc_ma_style_training_cost( const npc &p, const matype_id & /* id */ );
-#endif // CATA_SRC_NPCTALK_H
+#endif

@@ -1,17 +1,16 @@
 #pragma once
-#ifndef CATA_SRC_SKILL_BOOST_H
-#define CATA_SRC_SKILL_BOOST_H
+#ifndef SKILL_BOOST_H
+#define SKILL_BOOST_H
 
-#include <algorithm>
-#include <string>
 #include <vector>
+#include <string>
 
 #include "optional.h"
 #include "string_id.h"
 
-class JsonObject;
 template<typename T>
 class generic_factory;
+class JsonObject;
 
 class skill_boost
 {
@@ -39,4 +38,4 @@ class skill_boost
         void load( const JsonObject &jo, const std::string &src );
 };
 
-#endif // CATA_SRC_SKILL_BOOST_H
+#endif

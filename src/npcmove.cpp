@@ -1,68 +1,47 @@
 #include "npc.h" // IWYU pragma: associated
 
-#include <algorithm>
-#include <cfloat>
 #include <climits>
-#include <cmath>
 #include <cstdlib>
-#include <iterator>
+#include <algorithm>
 #include <memory>
 #include <numeric>
-#include <ostream>
+#include <iterator>
 #include <tuple>
+#include <cmath>
+#include <type_traits>
+#include <cfloat>
 
-#include "active_item_cache.h"
 #include "activity_handlers.h"
 #include "avatar.h"
-#include "basecamp.h"
 #include "bionics.h"
-#include "bodypart.h"
 #include "cata_algo.h"
-#include "character.h"
-#include "character_id.h"
 #include "clzones.h"
 #include "coordinate_conversions.h"
-#include "damage.h"
 #include "debug.h"
 #include "dispersion.h"
 #include "effect.h"
-#include "enums.h"
-#include "explosion.h"
 #include "field.h"
-#include "field_type.h"
 #include "game.h"
-#include "game_constants.h"
 #include "gates.h"
 #include "gun_mode.h"
-#include "item.h"
-#include "item_contents.h"
 #include "itype.h"
-#include "iuse.h"
 #include "iuse_actor.h"
 #include "line.h"
 #include "map.h"
 #include "map_iterator.h"
-#include "mapdata.h"
 #include "messages.h"
 #include "mission.h"
 #include "monster.h"
 #include "mtype.h"
 #include "npctalk.h"
 #include "options.h"
-#include "overmap.h"
 #include "overmap_location.h"
 #include "overmapbuffer.h"
-#include "player_activity.h"
-#include "pldata.h"
 #include "projectile.h"
 #include "ranged.h"
-#include "ret_val.h"
 #include "rng.h"
 #include "sounds.h"
-#include "stomach.h"
 #include "translations.h"
-#include "units.h"
-#include "value_ptr.h"
 #include "veh_type.h"
 #include "vehicle.h"
 #include "visitable.h"
@@ -154,7 +133,6 @@ enum npc_action : int {
     npc_investigate_sound,
     npc_return_to_guard_pos,
     npc_player_activity,
-    npc_worker_downtime,
     num_npc_actions
 };
 
@@ -381,21 +359,21 @@ void npc::assess_danger()
             return false;
         }
         switch( rules.engagement ) {
-            case combat_engagement::NONE:
+            case ENGAGE_NONE:
                 return false;
-            case combat_engagement::CLOSE:
+            case ENGAGE_CLOSE:
                 // Either close to player or close enough that we can reach it and close to us
                 return ( dist <= max_range && scaled_dist <= def_radius * 0.5 ) ||
                        too_close( c.pos(), g->u.pos(), def_radius );
-            case combat_engagement::WEAK:
+            case ENGAGE_WEAK:
                 return c.get_hp() <= average_damage_dealt();
-            case combat_engagement::HIT:
+            case ENGAGE_HIT:
                 return c.has_effect( effect_hit_by_player );
-            case combat_engagement::NO_MOVE:
+            case ENGAGE_NO_MOVE:
                 return dist <= max_range;
-            case combat_engagement::FREE_FIRE:
+            case ENGAGE_FREE_FIRE:
                 return dist <= max_range;
-            case combat_engagement::ALL:
+            case ENGAGE_ALL:
                 return true;
         }
 
@@ -422,7 +400,7 @@ void npc::assess_danger()
             }
         }
     }
-    if( is_player_ally() && rules.engagement == combat_engagement::FREE_FIRE ) {
+    if( is_player_ally() && rules.engagement == ENGAGE_FREE_FIRE ) {
         def_radius = std::max( 6, max_range );
     }
     // find our Character friends and enemies
@@ -480,19 +458,19 @@ void npc::assess_danger()
 
         // don't ignore monsters that are too close or too close to an ally
         bool is_too_close = dist <= def_radius;
-        for( const weak_ptr_fast<Creature> &guy : ai_cache.friends ) {
-            if( is_too_close ) {
-                break;
-            }
+        const auto test_too_close = [critter, def_radius,
+                 &is_too_close]( const weak_ptr_fast<Creature> &guy ) {
             // HACK: Bit of a dirty hack - sometimes shared_from, returns nullptr or bad weak_ptr for
-            // friendly NPC when the NPC is riding a creature - I don't know why.
-            // so this skips the bad weak_ptrs, but this doesn't functionally change the AI Priority
+            // friendly NPC when the NPC is riding a creature - I dont know why.
+            // so this skips the bad weak_ptrs, but this doesnt functionally change the AI Priority
             // because the horse the NPC is riding is still in the ai_cache.friends vector,
             // so either one would count as a friendly for this purpose.
             if( guy.lock() ) {
                 is_too_close |= too_close( critter.pos(), guy.lock()->pos(), def_radius );
             }
-        }
+            return is_too_close;
+        };
+        std::any_of( ai_cache.friends.begin(), ai_cache.friends.end(), test_too_close );
         // ignore distant monsters that our rules prevent us from attacking
         if( !is_too_close && is_player_ally() && !ok_by_rules( critter, dist, scaled_distance ) ) {
             continue;
@@ -687,7 +665,7 @@ void npc::regen_ai_cache()
 
 void npc::move()
 {
-    // don't just return from this function without doing something
+    // dont just return from this function without doing something
     // that will eventually subtract moves, or change the NPC to a different type of action.
     // because this will result in an infinite loop
     if( attitude == NPCATT_FLEE ) {
@@ -728,7 +706,7 @@ void npc::move()
     /* This bypasses the logic to determine the npc action, but this all needs to be rewritten
      * anyway.
      * NPC won't avoid dangerous terrain while accompanying the player inside a vehicle to keep
-     * them from inadvertently getting themselves run over and/or cause vehicle related errors.
+     * them from inadvertantly getting themselves run over and/or cause vehicle related errors.
      * NPCs flee from uncontained fires within 3 tiles
      */
     if( !in_vehicle && ( sees_dangerous_field( pos() ) || has_effect( effect_npc_fire_bad ) ) ) {
@@ -849,6 +827,7 @@ void npc::move()
             action = npc_player_activity;
         }
     }
+
     if( action == npc_undecided ) {
         // an interrupted activity can cause this situation. stops allied NPCs zooming off like random NPCs
         if( attitude == NPCATT_ACTIVITY && !activity ) {
@@ -858,15 +837,28 @@ void npc::move()
                 mission = NPC_MISSION_NULL;
             }
         }
-        if( assigned_camp && attitude != NPCATT_ACTIVITY ) {
-            if( has_job() && calendar::once_every( 10_minutes ) && find_job_to_perform() ) {
-                action = npc_player_activity;
-            } else {
-                action = npc_worker_downtime;
+        if( mission == NPC_MISSION_ASSIGNED_CAMP ) {
+            bool found_job = false;
+            if( has_job() && calendar::once_every( 30_minutes ) ) {
+                if( job_duties.find( job ) != job_duties.end() ) {
+                    const std::vector<activity_id> jobs_to_rotate = job_duties[job];
+                    if( !jobs_to_rotate.empty() ) {
+                        assign_activity( random_entry( jobs_to_rotate ) );
+                        action = npc_player_activity;
+                        found_job = true;
+                    } else {
+                        debugmsg( "NPC is assigned to a job, but the job: %s has no duties", npc_job_id( job ) );
+                        set_mission( NPC_MISSION_GUARD_ALLY );
+                        set_attitude( NPCATT_NULL );
+                    }
+                }
+            }
+            if( !found_job ) {
+                action = npc_pause;
                 goal = global_omt_location();
             }
         }
-        if( is_stationary( true ) && !assigned_camp ) {
+        if( is_stationary( true ) ) {
             // if we're in a vehicle, stay in the vehicle
             if( in_vehicle ) {
                 action = npc_pause;
@@ -879,9 +871,6 @@ void npc::move()
         } else if( !fetching_item ) {
             find_item();
             print_action( "find_item %s", action );
-        } else if( assigned_camp ) {
-            // this should be covered above, but justincase to stop them zooming away.
-            action = npc_pause;
         }
 
         // check if in vehicle before rushing off to fetch things
@@ -1016,6 +1005,7 @@ void npc::execute_action( npc_action action )
     int oldmoves = moves;
     tripoint tar = pos();
     Creature *cur = current_target();
+    player *patient = dynamic_cast<player *>( current_ally() );
     if( action == npc_flee ) {
         tar = good_escape_direction( false );
     } else if( cur != nullptr ) {
@@ -1027,12 +1017,11 @@ void npc::execute_action( npc_action action )
     */
 
     switch( action ) {
+
         case npc_pause:
             move_pause();
             break;
-        case npc_worker_downtime:
-            worker_downtime();
-            break;
+
         case npc_reload: {
             do_reload( weapon );
         }
@@ -1111,7 +1100,7 @@ void npc::execute_action( npc_action action )
             break;
 
         case npc_drop_items:
-            /* NPCs can't choose this action anymore, but at least it works */
+            /* NPCs cant choose this action anymore, but at least it works */
             drop_invalid_inventory();
             /* drop_items is still broken
              * drop_items( weight_carried() - weight_capacity(),
@@ -1182,21 +1171,18 @@ void npc::execute_action( npc_action action )
             }
             break;
 
-        case npc_heal_player: {
-            player *patient = dynamic_cast<player *>( current_ally() );
-            if( patient ) {
-                update_path( patient->pos() );
-                if( path.size() == 1 ) { // We're adjacent to u, and thus can heal u
-                    heal_player( *patient );
-                } else if( !path.empty() ) {
-                    say( _( "Hold still %s, I'm coming to help you." ), patient->disp_name() );
-                    move_to_next();
-                } else {
-                    move_pause();
-                }
+        case npc_heal_player:
+            update_path( patient->pos() );
+            if( path.size() == 1 ) { // We're adjacent to u, and thus can heal u
+                heal_player( *patient );
+            } else if( !path.empty() ) {
+                say( _( "Hold still %s, I'm coming to help you." ), patient->disp_name() );
+                move_to_next();
+            } else {
+                move_pause();
             }
             break;
-        }
+
         case npc_follow_player:
             update_path( g->u.pos() );
             if( static_cast<int>( path.size() ) <= follow_distance() &&
@@ -1529,10 +1515,10 @@ npc_action npc::method_of_attack()
     const bool same_z = tar.z == pos().z;
 
     // TODO: Change the in_vehicle check to actual "are we driving" check
-    const bool dont_move = in_vehicle || rules.engagement == combat_engagement::NO_MOVE ||
-                           rules.engagement == combat_engagement::FREE_FIRE;
+    const bool dont_move = in_vehicle || rules.engagement == ENGAGE_NO_MOVE ||
+                           rules.engagement == ENGAGE_FREE_FIRE;
     // NPCs engage in free fire can move to avoid allies, but not if they're in a vehicle
-    const bool dont_move_ff = in_vehicle || rules.engagement == combat_engagement::NO_MOVE;
+    const bool dont_move_ff = in_vehicle || rules.engagement == ENGAGE_NO_MOVE;
 
     // if there's enough of a threat to be here, power up the combat CBMs
     activate_combat_cbms();
@@ -1592,7 +1578,7 @@ npc_action npc::method_of_attack()
             return npc_reach_attack;
         }
     } else {
-        if( reach_range > 1 && reach_range >= std::round( trig_dist( pos(), tar ) ) &&
+        if( reach_range > 1 && reach_range >= round( trig_dist( pos(), tar ) ) &&
             clear_shot_reach( pos(), tar ) ) {
             add_msg( m_debug, "%s is trying a reach attack", disp_name() );
             return npc_reach_attack;
@@ -2213,13 +2199,13 @@ double npc::confidence_mult() const
     }
 
     switch( rules.aim ) {
-        case aim_rule::WHEN_CONVENIENT:
+        case AIM_WHEN_CONVENIENT:
             return emergency() ? 1.5f : 1.0f;
-        case aim_rule::SPRAY:
+        case AIM_SPRAY:
             return 2.0f;
-        case aim_rule::PRECISE:
+        case AIM_PRECISE:
             return emergency() ? 1.0f : 0.75f;
-        case aim_rule::STRICTLY_PRECISE:
+        case AIM_STRICTLY_PRECISE:
             return 0.5f;
     }
 
@@ -2304,7 +2290,7 @@ bool npc::wont_hit_friend( const tripoint &tar, const item &it, bool throwing ) 
         }
 
         int ally_angle = coord_to_angle( pos(), ally.pos() );
-        int angle_diff = std::abs( ally_angle - target_angle );
+        int angle_diff = abs( ally_angle - target_angle );
         angle_diff = std::min( 360 - angle_diff, angle_diff );
         if( angle_diff < safe_angle_ally ) {
             // TODO: Disable NPC whining is it's other NPC who prevents aiming
@@ -2500,7 +2486,7 @@ void npc::move_to( const tripoint &pt, bool no_bashing, std::set<tripoint> *nomo
             realnomove->insert( pos() );
             say( "<let_me_pass>" );
             np->move_away_from( pos(), true, realnomove );
-            // if we moved NPC, readjust their path, so NPCs don't jostle each other out of their activity paths.
+            // if we moved NPC, readjust their path, so NPCs dont jostle each other out of their activity paths.
             if( np->attitude == NPCATT_ACTIVITY ) {
                 std::vector<tripoint> activity_route = np->get_auto_move_route();
                 if( !activity_route.empty() && !np->has_destination_activity() ) {
@@ -2549,7 +2535,7 @@ void npc::move_to( const tripoint &pt, bool no_bashing, std::set<tripoint> *nomo
             const double base_moves = run_cost( g->m.combined_movecost( pos(), p ),
                                                 diag ) * 100.0 / mounted_creature->get_speed();
             const double encumb_moves = get_weight() / 4800.0_gram;
-            moves -= static_cast<int>( std::ceil( base_moves + encumb_moves ) );
+            moves -= static_cast<int>( ceil( base_moves + encumb_moves ) );
             if( mounted_creature->has_flag( MF_RIDEABLE_MECH ) ) {
                 mounted_creature->use_mech_power( -1 );
             }
@@ -2670,9 +2656,9 @@ void npc::avoid_friendly_fire()
     }
 
     float friend_count = ai_cache.friends.size();
-    center.x = std::round( center.x / friend_count );
-    center.y = std::round( center.y / friend_count );
-    center.z = std::round( center.z / friend_count );
+    center.x = round( center.x / friend_count );
+    center.y = round( center.y / friend_count );
+    center.z = round( center.z / friend_count );
 
     std::vector<tripoint> candidates = closest_tripoints_first( pos(), 1 );
     candidates.erase( candidates.begin() );
@@ -2735,7 +2721,7 @@ void npc::move_away_from( const tripoint &pt, bool no_bash_atk, std::set<tripoin
             continue;
         }
 
-        const int dst = std::abs( p.x - pt.x ) + std::abs( p.y - pt.y ) + std::abs( p.z - pt.z );
+        const int dst = abs( p.x - pt.x ) + abs( p.y - pt.y ) + abs( p.z - pt.z );
         const int val = dst * 1000 / cost;
         if( val > best && can_move_to( p, no_bash_atk ) ) {
             best_pos = p;
@@ -2749,99 +2735,6 @@ void npc::move_away_from( const tripoint &pt, bool no_bash_atk, std::set<tripoin
     }
 
     move_to( best_pos, no_bash_atk, nomove );
-}
-
-bool npc::find_job_to_perform()
-{
-    for( activity_id &elem : job.get_prioritised_vector() ) {
-        if( job.get_priority_of_job( elem ) == 0 ) {
-            continue;
-        }
-        player_activity scan_act = player_activity( elem );
-        if( elem == activity_id( "ACT_MOVE_LOOT" ) ) {
-            assign_activity( elem );
-        } else if( generic_multi_activity_handler( scan_act, *this->as_player(), true ) ) {
-            assign_activity( elem );
-            return true;
-        }
-    }
-    return false;
-}
-
-void npc::worker_downtime()
-{
-    // are we already in a chair
-    if( g->m.has_flag_furn( "CAN_SIT", pos() ) ) {
-        // just chill here
-        move_pause();
-        return;
-    }
-    //  already know of a chair, go there
-    if( chair_pos != no_goal_point ) {
-        if( g->m.has_flag_furn( "CAN_SIT", g->m.getlocal( chair_pos ) ) ) {
-            update_path( g->m.getlocal( chair_pos ) );
-            if( pos() == g->m.getlocal( chair_pos ) || path.empty() ) {
-                move_pause();
-                path.clear();
-            } else {
-                move_to_next();
-            }
-            wander_pos = no_goal_point;
-            return;
-        } else {
-            chair_pos = no_goal_point;
-        }
-    } else {
-        // find a chair
-        if( !is_mounted() ) {
-            for( const tripoint &elem : g->m.points_in_radius( pos(), 30 ) ) {
-                if( g->m.has_flag_furn( "CAN_SIT", elem ) && !g->critter_at( elem ) && could_move_onto( elem ) &&
-                    g->m.point_within_camp( g->m.getabs( elem ) ) ) {
-                    // this one will do
-                    chair_pos = g->m.getabs( elem );
-                    return;
-                }
-            }
-        }
-    }
-    // we got here if there are no chairs available.
-    // wander back to near the bulletin board of the camp.
-    if( wander_pos != no_goal_point ) {
-        update_path( g->m.getlocal( wander_pos ) );
-        if( pos() == g->m.getlocal( wander_pos ) || path.empty() ) {
-            move_pause();
-            path.clear();
-            if( one_in( 30 ) ) {
-                wander_pos = no_goal_point;
-            }
-        } else {
-            move_to_next();
-        }
-        return;
-    }
-    if( assigned_camp ) {
-        cata::optional<basecamp *> bcp = overmap_buffer.find_camp( ( *assigned_camp ).xy() );
-        if( !bcp ) {
-            assigned_camp = cata::nullopt;
-            move_pause();
-            return;
-        }
-        basecamp *temp_camp = *bcp;
-        std::vector<tripoint> pts;
-        for( const tripoint &elem : g->m.points_in_radius( g->m.getlocal( temp_camp->get_bb_pos() ),
-                10 ) ) {
-            if( g->critter_at( elem ) || !could_move_onto( elem ) || g->m.has_flag( TFLAG_DEEP_WATER, elem ) ||
-                !g->m.has_floor( elem ) || g->is_dangerous_tile( elem ) ) {
-                continue;
-            }
-            pts.push_back( elem );
-        }
-        if( !pts.empty() ) {
-            wander_pos = g->m.getabs( random_entry( pts ) );
-            return;
-        }
-    }
-    move_pause();
 }
 
 void npc::move_pause()
@@ -3151,7 +3044,7 @@ void npc::pick_up_item()
     }
 
     if( !rules.has_flag( ally_rule::allow_pick_up ) && is_player_ally() ) {
-        add_msg( m_debug, "%s::pick_up_item(); Canceling on player's request", name );
+        add_msg( m_debug, "%s::pick_up_item(); Cancelling on player's request", name );
         fetching_item = false;
         moves -= 1;
         return;
@@ -3526,9 +3419,9 @@ bool npc::do_player_activity()
         }
     }
     // the multi-activity types can sometimes cancel the activity, and return without using up any moves.
-    // ( when they are setting a destination etc. )
-    // normally this isn't a problem, but in the main game loop, if the NPC has a huge backlog of moves;
-    // then each of these occurrences will nudge the infinite loop counter up by one.
+    // ( when they are setting a destination etc )
+    // normally this isnt a problem, but in the main game loop, if the NPC has a huge backlog of moves;
+    // then each of these occurences will nudge the infinite loop counter up by one.
     // ( even if other move-using things occur inbetween )
     // so here - if no moves are used in a multi-type activity do_turn(), then subtract a nominal amount
     // to satisfy the infinite loop counter.
@@ -4033,18 +3926,17 @@ void npc::mug_player( player &mark )
         value_mod -= ( ( 8 - op_of_u.value ) * .07 );
     }
     double best_value = minimum_item_value() * value_mod;
-    item *to_steal = nullptr;
+    int item_index = INT_MIN;
     invslice slice = mark.inv.slice();
-    for( std::list<item> *stack : slice ) {
-        item &front_stack = stack->front();
-        if( value( front_stack ) >= best_value &&
-            can_pickVolume( front_stack, true ) &&
-            can_pickWeight( front_stack, true ) ) {
-            best_value = value( front_stack );
-            to_steal = &front_stack;
+    for( size_t i = 0; i < slice.size(); i++ ) {
+        if( value( slice[i]->front() ) >= best_value &&
+            can_pickVolume( slice[i]->front(), true ) &&
+            can_pickWeight( slice[i]->front(), true ) ) {
+            best_value = value( slice[i]->front() );
+            item_index = i;
         }
     }
-    if( to_steal == nullptr ) { // Didn't find anything worthwhile!
+    if( item_index == INT_MIN ) { // Didn't find anything worthwhile!
         set_attitude( NPCATT_FLEE_TEMP );
         if( !one_in( 3 ) ) {
             say( "<done_mugging>" );
@@ -4054,7 +3946,7 @@ void npc::mug_player( player &mark )
     }
     item stolen;
     if( !is_hallucination() ) {
-        stolen = mark.i_rem( to_steal );
+        stolen = mark.i_rem( item_index );
         i_add( stolen );
     }
     if( mark.is_npc() ) {
@@ -4291,7 +4183,7 @@ void npc::go_to_omt_destination()
         return;
     }
     if( !path.empty() ) {
-        // we already have a path, just use that until we can't.
+        // we already have a path, just use that until we cant.
         move_to_next();
         return;
     }
@@ -4347,8 +4239,6 @@ std::string npc_action_name( npc_action action )
             return "Undecided";
         case npc_pause:
             return "Pause";
-        case npc_worker_downtime:
-            return "Relaxing";
         case npc_reload:
             return "Reload";
         case npc_investigate_sound:

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_PIMPL_H
-#define CATA_SRC_PIMPL_H
+#ifndef PIMPL_H
+#define PIMPL_H
 
 #include <memory>
 #include <type_traits>
@@ -75,4 +75,4 @@ class pimpl : private std::unique_ptr<T>
         }
 };
 
-#endif // CATA_SRC_PIMPL_H
+#endif

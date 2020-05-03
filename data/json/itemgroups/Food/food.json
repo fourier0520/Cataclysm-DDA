@@ -58,24 +58,6 @@
   },
   {
     "type": "item_group",
-    "id": "ketchup_sealed_rng",
-    "subtype": "distribution",
-    "entries": [
-      { "item": "ketchup", "prob": 6, "charges-min": 1 },
-      { "item": "ketchup", "prob": 1, "charges": 32, "container-item": "condiment_bottle_sealed" }
-    ]
-  },
-  {
-    "type": "item_group",
-    "id": "mustard_sealed_rng",
-    "subtype": "distribution",
-    "entries": [
-      { "item": "mustard", "prob": 6, "charges-min": 1 },
-      { "item": "mustard", "prob": 1, "charges": 96, "container-item": "condiment_bottle_sealed" }
-    ]
-  },
-  {
-    "type": "item_group",
     "id": "condiments",
     "ammo": 75,
     "magazine": 100,
@@ -92,8 +74,8 @@
       { "item": "cookbook_italian", "prob": 25 },
       { "item": "family_cookbook", "prob": 6 },
       { "item": "brewing_cookbook", "prob": 4 },
-      { "group": "ketchup_sealed_rng", "prob": 35 },
-      { "group": "mustard_sealed_rng", "prob": 35 },
+      { "item": "ketchup", "prob": 35 },
+      { "item": "mustard", "prob": 35 },
       { "item": "soysauce", "prob": 25 },
       { "item": "horseradish", "prob": 15 },
       { "item": "honey_bottled", "prob": 35 },
@@ -498,7 +480,6 @@
       { "item": "yoghurt", "prob": 40 },
       { "item": "pudding", "prob": 50 },
       { "item": "V8", "prob": 15 },
-      { "item": "foodplace_food", "prob": 8 },
       { "item": "sandwich_t", "prob": 30 },
       { "item": "sandwich_pb", "prob": 30 },
       { "item": "sandwich_pbj", "prob": 30 },
@@ -711,8 +692,8 @@
       { "item": "bacon", "prob": 20 },
       { "item": "potato_baked", "prob": 15 },
       { "item": "bread", "prob": 40 },
-      { "group": "ketchup_sealed_rng", "prob": 80 },
-      { "group": "mustard_sealed_rng", "prob": 75 },
+      { "item": "ketchup", "prob": 80 },
+      { "item": "mustard", "prob": 75 },
       { "item": "pickle", "prob": 20, "charges": 6, "container-item": "jar_glass_sealed" },
       { "item": "pickle", "prob": 20 },
       { "item": "cheeseburger", "prob": 30 },
@@ -749,8 +730,8 @@
       { "item": "mayonnaise", "prob": 60 },
       { "item": "spork", "prob": 10 },
       { "item": "foon", "prob": 10 },
-      { "group": "ketchup_sealed_rng", "prob": 60 },
-      { "group": "mustard_sealed_rng", "prob": 60 },
+      { "item": "ketchup", "prob": 60 },
+      { "item": "mustard", "prob": 60 },
       { "item": "soysauce", "prob": 45 },
       { "item": "horseradish", "prob": 30 },
       { "item": "pickle", "prob": 40, "charges": 6, "container-item": "jar_glass_sealed" },
@@ -761,7 +742,6 @@
       { "item": "cheeseburger", "prob": 35 },
       { "item": "hotdogs_frozen", "prob": 12 },
       { "item": "hotdogs_cooked", "prob": 35 },
-      { "item": "foodplace_food", "prob": 8 },
       { "item": "chili", "prob": 20 },
       { "item": "chilidogs", "prob": 20 },
       { "item": "fries", "prob": 80 },

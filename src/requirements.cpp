@@ -1,35 +1,32 @@
 #include "requirements.h"
 
-#include <algorithm>
-#include <cassert>
 #include <climits>
 #include <cstdlib>
-#include <iterator>
+#include <algorithm>
 #include <limits>
+#include <iterator>
 #include <list>
 #include <memory>
 #include <set>
 #include <stack>
-#include <unordered_set>
+#include <unordered_map>
 
 #include "avatar.h"
 #include "cata_utility.h"
-#include "color.h"
 #include "debug.h"
 #include "game.h"
 #include "generic_factory.h"
 #include "inventory.h"
-#include "item.h"
 #include "item_factory.h"
 #include "itype.h"
 #include "json.h"
 #include "output.h"
-#include "player.h"
-#include "point.h"
 #include "string_formatter.h"
-#include "string_id.h"
 #include "translations.h"
+#include "color.h"
+#include "item.h"
 #include "visitable.h"
+#include "point.h"
 
 static const trait_id trait_DEBUG_HS( "DEBUG_HS" );
 
@@ -117,7 +114,7 @@ std::string tool_comp::to_string( const int batch, const int ) const
                                          count * batch ),
                               item::nname( type ), count * batch );
     } else {
-        return item::nname( type, std::abs( count ) );
+        return item::nname( type, abs( count ) );
     }
 }
 
@@ -337,7 +334,7 @@ template<typename T>
 bool requirement_data::any_marked_available( const std::vector<T> &comps )
 {
     for( const auto &comp : comps ) {
-        if( comp.available == available_status::a_true ) {
+        if( comp.available == a_true ) {
             return true;
         }
     }
@@ -557,7 +554,7 @@ std::vector<std::string> requirement_data::get_folded_list( int width,
             nc_color color = component.get_color( has_one, crafting_inv, filter, batch );
             const std::string color_tag = get_tag_from_color( color );
             int qty = 0;
-            if( component.get_component_type() == component_type::ITEM ) {
+            if( component.get_component_type() == COMPONENT_ITEM ) {
                 const itype_id item_id = static_cast<itype_id>( component.type );
                 if( item::count_by_charges( item_id ) ) {
                     qty = crafting_inv.charges_of( item_id, INT_MAX, filter );
@@ -658,11 +655,11 @@ bool requirement_data::has_comps( const inventory &crafting_inv,
             [ &UPS_charges_used ]( int charges ) {
             UPS_charges_used = std::min( UPS_charges_used, charges );
             } ) ) {
-                tool.available = available_status::a_true;
+                tool.available = a_true;
             } else {
-                tool.available = available_status::a_false;
+                tool.available = a_false;
             }
-            has_tool_in_set = has_tool_in_set || tool.available == available_status::a_true;
+            has_tool_in_set = has_tool_in_set || tool.available == a_true;
         }
         if( !has_tool_in_set ) {
             retval = false;
@@ -692,7 +689,7 @@ bool quality_requirement::has(
 nc_color quality_requirement::get_color( bool has_one, const inventory &,
         const std::function<bool( const item & )> &, int ) const
 {
-    if( available == available_status::a_true ) {
+    if( available == a_true ) {
         return c_green;
     }
     return has_one ? c_dark_gray : c_red;
@@ -722,7 +719,7 @@ bool tool_comp::has(
 nc_color tool_comp::get_color( bool has_one, const inventory &crafting_inv,
                                const std::function<bool( const item & )> &filter, int batch ) const
 {
-    if( available == available_status::a_insufficent ) {
+    if( available == a_insufficent ) {
         return c_brown;
     } else if( has( crafting_inv, filter, batch ) ) {
         return c_green;
@@ -748,7 +745,7 @@ bool item_comp::has(
 nc_color item_comp::get_color( bool has_one, const inventory &crafting_inv,
                                const std::function<bool( const item & )> &filter, int batch ) const
 {
-    if( available == available_status::a_insufficent ) {
+    if( available == a_insufficent ) {
         return c_brown;
     } else if( has( crafting_inv, filter, batch ) ) {
         return c_green;
@@ -791,12 +788,12 @@ bool requirement_data::check_enough_materials( const inventory &crafting_inv,
 bool requirement_data::check_enough_materials( const item_comp &comp, const inventory &crafting_inv,
         const std::function<bool( const item & )> &filter, int batch ) const
 {
-    if( comp.available != available_status::a_true ) {
+    if( comp.available != a_true ) {
         return false;
     }
     const int cnt = std::abs( comp.count ) * batch;
     const tool_comp *tq = find_by_type( tools, comp.type );
-    if( tq != nullptr && tq->available == available_status::a_true ) {
+    if( tq != nullptr && tq->available == a_true ) {
         // The very same item type is also needed as tool!
         // Use charges of it, or use it by count?
         const int tc = tq->by_charges() ? 1 : std::abs( tq->count );
@@ -817,7 +814,7 @@ bool requirement_data::check_enough_materials( const item_comp &comp, const inve
         const tool_comp t_tmp( comp.type, -( cnt + tc ) ); // not by charges!
         // batch factor is explicitly 1, because it's already included in the count.
         if( !i_tmp.has( crafting_inv, filter, 1 ) && !t_tmp.has( crafting_inv, filter, 1 ) ) {
-            comp.available = available_status::a_insufficent;
+            comp.available = a_insufficent;
         }
     }
     const itype *it = item::find_type( comp.type );
@@ -828,11 +825,11 @@ bool requirement_data::check_enough_materials( const item_comp &comp, const inve
         }
         // This item can be used for the quality requirement, same as above for specific
         // tools applies.
-        if( !crafting_inv.has_quality( qr->type, qr->level, qr->count + std::abs( comp.count ) ) ) {
-            comp.available = available_status::a_insufficent;
+        if( !crafting_inv.has_quality( qr->type, qr->level, qr->count + abs( comp.count ) ) ) {
+            comp.available = a_insufficent;
         }
     }
-    return comp.available == available_status::a_true;
+    return comp.available == a_true;
 }
 
 template <typename T>
@@ -1044,7 +1041,7 @@ requirement_data requirement_data::continue_requirements( const std::vector<item
     // Create an empty requirement_data
     requirement_data ret;
 
-    // For items we can't change what alternative we selected half way through
+    // For items we cant change what alternative we selected half way through
     for( const item_comp &it : required_comps ) {
         ret.components.emplace_back( std::vector<item_comp>( {it} ) );
     }

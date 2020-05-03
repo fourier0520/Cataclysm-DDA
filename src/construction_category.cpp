@@ -1,12 +1,9 @@
 #include "construction_category.h"
 
-#include <set>
 #include <string>
+#include <set>
 
 #include "generic_factory.h"
-#include "int_id.h"
-#include "json.h"
-#include "string_id.h"
 
 namespace
 {
@@ -55,7 +52,7 @@ const string_id<construction_category> &int_id<construction_category>::id() cons
 
 void construction_category::load( const JsonObject &jo, const std::string & )
 {
-    mandatory( jo, was_loaded, "name", _name );
+    mandatory( jo, was_loaded, "name", name );
 }
 
 size_t construction_category::count()

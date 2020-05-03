@@ -1,37 +1,32 @@
 #pragma once
-#ifndef CATA_SRC_AVATAR_H
-#define CATA_SRC_AVATAR_H
+#ifndef AVATAR_H
+#define AVATAR_H
 
 #include <cstddef>
 #include <string>
 #include <unordered_set>
 #include <vector>
 
-#include "calendar.h"
-#include "character.h"
-#include "enums.h"
-#include "item.h"
-#include "magic_teleporter_list.h"
-#include "map_memory.h"
-#include "memory_fast.h"
 #include "player.h"
+#include "magic_teleporter_list.h"
+#include "calendar.h"
+#include "map_memory.h"
 #include "point.h"
 
-class faction;
+enum character_type : int;
 
 class JsonIn;
 class JsonObject;
 class JsonOut;
 class mission;
-class monster;
 class npc;
-
+class monster;
 namespace debug_menu
 {
 class mission_debug;
 }  // namespace debug_menu
-struct mtype;
 struct points_left;
+struct mtype;
 struct targeting_data;
 
 // Monster visible in different directions (safe mode & compass)
@@ -288,4 +283,4 @@ struct points_left {
     std::string to_string();
 };
 
-#endif // CATA_SRC_AVATAR_H
+#endif

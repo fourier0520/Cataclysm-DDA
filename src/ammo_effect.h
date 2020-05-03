@@ -1,15 +1,12 @@
 #pragma once
-#ifndef CATA_SRC_AMMO_EFFECT_H
-#define CATA_SRC_AMMO_EFFECT_H
+#ifndef AMMO_EFFECT_H
+#define AMMO_EFFECT_H
 
-#include <cstddef>
-#include <string>
 #include <vector>
+#include <string>
 
 #include "explosion.h"
 #include "field_type.h"
-#include "string_id.h"
-#include "type_id.h"
 
 class JsonObject;
 
@@ -67,4 +64,4 @@ const std::vector<ammo_effect> &get_all();
 
 extern ammo_effect_id AE_NULL;
 
-#endif // CATA_SRC_AMMO_EFFECT_H
+#endif

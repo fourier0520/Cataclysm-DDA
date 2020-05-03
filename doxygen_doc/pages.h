@@ -152,7 +152,3 @@
  *  @brief Cross referenced effects of the Smg skill.
  *  @par
  */
- *! @page Effects_Skill_Lockpick
- *  @brief Cross referenced effects of the Lock picking skill.
- *  @par
- */

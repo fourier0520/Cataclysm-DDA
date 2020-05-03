@@ -123,7 +123,6 @@
     "overmap_lake_settings": {
       "noise_threshold_lake": 0.5,
       "lake_size_min": 10,
-      "lake_depth": -5,
       "shore_extendable_overmap_terrain": [ "forest", "forest_thick", "forest_water", "field" ],
       "shore_extendable_overmap_terrain_aliases": [  ]
     },
@@ -410,8 +409,7 @@
       "trail_width_offset_min": 1,
       "trail_width_offset_max": 3,
       "clear_trail_terrain": false,
-      "trail_terrain": { "t_dirt": 1 },
-      "trailheads": { "trailhead_basic": 1, "trailhead_outhouse": 1, "trailhead_shack": 1 }
+      "trail_terrain": { "t_dirt": 1 }
     },
     "map_extras": {
       "forest": {
@@ -427,6 +425,7 @@
           "mx_minefield": 50,
           "mx_crater": 10,
           "mx_portal_in": 1,
+          "mx_anomaly": 3,
           "mx_spider": 200,
           "mx_grove": 500,
           "mx_shrubbery": 500,
@@ -448,6 +447,7 @@
           "mx_minefield": 50,
           "mx_crater": 10,
           "mx_portal_in": 1,
+          "mx_anomaly": 3,
           "mx_shia": 1,
           "mx_spider": 200,
           "mx_jabberwock": 1,
@@ -471,6 +471,7 @@
           "mx_minefield": 50,
           "mx_crater": 10,
           "mx_portal_in": 1,
+          "mx_anomaly": 3,
           "mx_spider": 200,
           "mx_grove": 500,
           "mx_shrubbery": 500,
@@ -491,7 +492,8 @@
           "mx_portal": 3,
           "mx_minefield": 50,
           "mx_crater": 10,
-          "mx_portal_in": 1
+          "mx_portal_in": 1,
+          "mx_anomaly": 3
         }
       },
       "road": {
@@ -508,16 +510,25 @@
           "mx_portal": 5,
           "mx_minefield": 80,
           "mx_crater": 10,
-          "mx_portal_in": 2
+          "mx_portal_in": 2,
+          "mx_anomaly": 3
         }
       },
       "build": {
         "chance": 90,
-        "extras": { "mx_military": 5, "mx_science": 12, "mx_collegekids": 15, "mx_portal": 5, "mx_crater": 60, "mx_portal_in": 1 }
+        "extras": {
+          "mx_military": 5,
+          "mx_science": 12,
+          "mx_collegekids": 15,
+          "mx_portal": 5,
+          "mx_crater": 60,
+          "mx_portal_in": 1,
+          "mx_anomaly": 3
+        }
       },
       "subway": {
         "chance": 75,
-        "extras": { "mx_military": 5, "mx_science": 12, "mx_collegekids": 15, "mx_portal": 7, "mx_portal_in": 1 }
+        "extras": { "mx_military": 5, "mx_science": 12, "mx_collegekids": 15, "mx_portal": 7, "mx_portal_in": 1, "mx_anomaly": 3 }
       }
     },
     "city": {
@@ -525,6 +536,7 @@
       "shop_sigma": 50,
       "park_radius": 20,
       "park_sigma": 80,
+      "house_basement_chance": 5,
       "houses": {
         "house_two_story_basement": 1,
         "house_prepper": 30,
@@ -538,6 +550,7 @@
         "trailerpark_city": 15,
         "railroad_city": 10
       },
+      "basements": { "basement": 1000, "basement_hidden_lab_stairs": 25 },
       "parks": {
         "park": 400,
         "pool": 100,

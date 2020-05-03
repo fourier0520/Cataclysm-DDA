@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_AMMO_H
-#define CATA_SRC_AMMO_H
+#ifndef AMMO_H
+#define AMMO_H
 
 #include <string>
 #include <utility>
@@ -31,4 +31,4 @@ class ammunition_type
         static void check_consistency();
 };
 
-#endif // CATA_SRC_AMMO_H
+#endif

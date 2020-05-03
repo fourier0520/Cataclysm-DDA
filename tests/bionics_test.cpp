@@ -1,19 +1,21 @@
 #include <climits>
+#include <cstddef>
 #include <list>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "avatar.h"
-#include "bionics.h"
-#include "calendar.h"
 #include "catch/catch.hpp"
+#include "bionics.h"
 #include "game.h"
 #include "item.h"
-#include "pimpl.h"
 #include "player.h"
-#include "player_helpers.h"
+#include "calendar.h"
+#include "pimpl.h"
+#include "string_id.h"
 #include "type_id.h"
-#include "units.h"
+#include "player_helpers.h"
 
 static void clear_bionics( player &p )
 {

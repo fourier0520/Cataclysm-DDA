@@ -1,17 +1,14 @@
 #pragma once
-#ifndef CATA_SRC_STOMACH_H
-#define CATA_SRC_STOMACH_H
 
 #include <map>
 
-#include "calendar.h"
 #include "type_id.h"
 #include "units.h"
 
-class Character;
+struct needs_rates;
 class JsonIn;
 class JsonOut;
-struct needs_rates;
+class item;
 
 // Separate struct for nutrients so that we can easily perform arithmetic on
 // them
@@ -173,5 +170,3 @@ class stomach_contents
                                                const Character &owner );
 
 };
-
-#endif // CATA_SRC_STOMACH_H

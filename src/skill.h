@@ -1,24 +1,24 @@
 #pragma once
-#ifndef CATA_SRC_SKILL_H
-#define CATA_SRC_SKILL_H
+#ifndef SKILL_H
+#define SKILL_H
 
 #include <functional>
 #include <map>
 #include <set>
+#include <vector>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 #include "calendar.h"
+#include "string_id.h"
 #include "translations.h"
 #include "type_id.h"
 
-class JsonIn;
 class JsonObject;
+class JsonIn;
 class JsonOut;
-class item;
 class recipe;
-template <typename T> class string_id;
+class item;
 
 struct time_info_t {
     // Absolute floor on the time taken to attack.
@@ -249,4 +249,4 @@ class SkillDisplayType
 
 double price_adjustment( int );
 
-#endif // CATA_SRC_SKILL_H
+#endif

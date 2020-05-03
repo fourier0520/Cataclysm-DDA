@@ -1,15 +1,15 @@
 #pragma once
-#ifndef CATA_SRC_CURSESDEF_H
-#define CATA_SRC_CURSESDEF_H
+#ifndef CURSESDEF_H
+#define CURSESDEF_H
 
 #include <memory>
 #include <string>
 #include <utility>
 
+#include "point.h"
 #include "string_formatter.h"
 
 class nc_color;
-struct point;
 
 /**
  * Contains the curses interface used by the whole game.
@@ -135,4 +135,4 @@ int getcurx( const window &win );
 int getcury( const window &win );
 } // namespace catacurses
 
-#endif // CATA_SRC_CURSESDEF_H
+#endif

@@ -1,17 +1,13 @@
 #include "computer.h"
 
-#include <algorithm>
-#include <cstdlib>
-#include <locale>
 #include <sstream>
+#include <locale>
+#include <map>
 
 #include "debug.h"
-#include "enum_conversions.h"
 #include "json.h"
 #include "output.h"
 #include "translations.h"
-
-template <typename E> struct enum_traits;
 
 computer_option::computer_option()
     : name( "Unknown" ), action( COMPACT_NULL ), security( 0 )
@@ -381,11 +377,10 @@ struct enum_traits<computer_failure_type> {
 
 computer_option computer_option::from_json( const JsonObject &jo )
 {
-    translation name;
-    jo.read( "name", name );
+    const std::string name = jo.get_string( "name" );
     const computer_action action = jo.get_enum_value<computer_action>( "action" );
     const int sec = jo.get_int( "security", 0 );
-    return computer_option( name.translated(), action, sec );
+    return computer_option( name, action, sec );
 }
 
 computer_failure computer_failure::from_json( const JsonObject &jo )

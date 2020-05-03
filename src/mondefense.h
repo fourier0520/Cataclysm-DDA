@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_MONDEFENSE_H
-#define CATA_SRC_MONDEFENSE_H
+#ifndef MONDEFENSE_H
+#define MONDEFENSE_H
 
 class monster;
 class Creature;
@@ -21,4 +21,4 @@ void return_fire( monster &m, Creature *source, const dealt_projectile_attack *p
 void none( monster &, Creature *, const dealt_projectile_attack * );
 } //namespace mdefense
 
-#endif // CATA_SRC_MONDEFENSE_H
+#endif

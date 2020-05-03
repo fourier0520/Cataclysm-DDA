@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_FLAG_H
-#define CATA_SRC_FLAG_H
+#ifndef FLAG_H
+#define FLAG_H
 
 #include <set>
 #include <string>
@@ -35,11 +35,6 @@ class json_flag
             return craft_inherit_;
         }
 
-        /** Requires this flag to be installed on vehicle */
-        std::string requires_flag() const {
-            return requires_flag_;
-        }
-
         /** The flag's modifier on the fun value of comestibles */
         int taste_mod() const {
             return taste_mod_;
@@ -56,7 +51,6 @@ class json_flag
         std::set<std::string> conflicts_;
         bool inherit_ = true;
         bool craft_inherit_ = false;
-        std::string requires_flag_;
         int taste_mod_ = 0;
 
         json_flag( const std::string &id = std::string() ) : id_( id ) {}
@@ -71,4 +65,4 @@ class json_flag
         static void reset();
 };
 
-#endif // CATA_SRC_FLAG_H
+#endif

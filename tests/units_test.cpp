@@ -1,9 +1,8 @@
 #include <sstream>
 #include <string>
-#include <vector>
 
-#include "calendar.h"
 #include "catch/catch.hpp"
+#include "calendar.h"
 #include "json.h"
 #include "units.h"
 

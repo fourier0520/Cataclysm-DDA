@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_IME_H
-#define CATA_SRC_IME_H
+#ifndef IME_H
+#define IME_H
 
 /**
  * Enable or disable IME for text/keyboard input
@@ -26,4 +26,4 @@ class ime_sentry
         bool previously_enabled;
 };
 
-#endif // CATA_SRC_IME_H
+#endif

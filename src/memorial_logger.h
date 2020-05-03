@@ -1,18 +1,12 @@
 #pragma once
-#ifndef CATA_SRC_MEMORIAL_LOGGER_H
-#define CATA_SRC_MEMORIAL_LOGGER_H
+#ifndef CATA_MEMORIAL_LOGGER_H
+#define CATA_MEMORIAL_LOGGER_H
 
-#include <iosfwd>
+#include <map>
 #include <string>
 #include <vector>
 
 #include "event_bus.h"
-#include "string_formatter.h"
-
-namespace cata
-{
-class event;
-}  // namespace cata
 
 class memorial_logger : public event_subscriber
 {
@@ -48,4 +42,4 @@ class memorial_logger : public event_subscriber
         std::vector<std::string> log;
 };
 
-#endif // CATA_SRC_MEMORIAL_LOGGER_H
+#endif // CATA_MEMORIAL_LOGGER_H

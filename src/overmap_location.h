@@ -1,10 +1,9 @@
 #pragma once
-#ifndef CATA_SRC_OVERMAP_LOCATION_H
-#define CATA_SRC_OVERMAP_LOCATION_H
+#ifndef OVERMAP_LOCATION_H
+#define OVERMAP_LOCATION_H
 
-#include <algorithm>
-#include <string>
 #include <vector>
+#include <string>
 
 #include "int_id.h"
 #include "string_id.h"
@@ -47,4 +46,4 @@ void finalize();
 
 } // namespace overmap_locations
 
-#endif // CATA_SRC_OVERMAP_LOCATION_H
+#endif // OVERMAP_LOCATION_H

@@ -2,17 +2,13 @@
 #include <list>
 #include <memory>
 
-#include "avatar.h"
 #include "catch/catch.hpp"
+#include "avatar.h"
+#include "bodypart.h"
 #include "game.h"
 #include "inventory.h"
-#include "item.h"
 #include "monster.h"
-#include "mtype.h"
 #include "player.h"
-#include "point.h"
-#include "string_id.h"
-#include "type_id.h"
 
 static player &get_sanitized_player( )
 {

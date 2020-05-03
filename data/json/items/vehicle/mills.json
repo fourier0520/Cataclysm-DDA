@@ -12,8 +12,7 @@
     "volume": "20 L",
     "bashing": 1,
     "category": "veh_parts",
-    "price": 60000,
-    "price_postapoc": 1000
+    "price": 60000
   },
   {
     "type": "GENERIC",
@@ -25,7 +24,6 @@
     "symbol": "Y",
     "volume": "60 L",
     "price": 150000,
-    "price_postapoc": 1500,
     "copy-from": "wind_turbine"
   },
   {
@@ -40,7 +38,6 @@
     "volume": "30 L",
     "bashing": 3,
     "price": 120000,
-    "price_postapoc": 1000,
     "copy-from": "wind_turbine"
   },
   {
@@ -52,7 +49,6 @@
     "symbol": "o",
     "volume": "60 L",
     "price": 200000,
-    "price_postapoc": 1500,
     "copy-from": "water_wheel"
   }
 ]

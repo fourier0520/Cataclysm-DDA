@@ -1,32 +1,33 @@
 #pragma once
-#ifndef CATA_SRC_INVENTORY_H
-#define CATA_SRC_INVENTORY_H
+#ifndef INVENTORY_H
+#define INVENTORY_H
 
-#include <array>
-#include <bitset>
 #include <cstddef>
-#include <functional>
-#include <limits>
+#include <array>
 #include <list>
-#include <map>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <bitset>
 #include <utility>
 #include <vector>
+#include <set>
+#include <limits>
+#include <functional>
+#include <map>
 
 #include "cata_utility.h"
 #include "item.h"
 #include "item_stack.h"
 #include "magic_enchantment.h"
-#include "units.h"
 #include "visitable.h"
+#include "units.h"
 
+class map;
+class npc;
 class Character;
 class JsonIn;
 class JsonOut;
-class map;
-class npc;
 class player;
 struct tripoint;
 
@@ -247,4 +248,4 @@ class inventory : public visitable<inventory>
         mutable itype_bin binned_items;
 };
 
-#endif // CATA_SRC_INVENTORY_H
+#endif

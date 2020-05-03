@@ -1,5 +1,4 @@
 #include "json.h"
-#include "string_formatter.h"
 #include "units.h"
 
 namespace units

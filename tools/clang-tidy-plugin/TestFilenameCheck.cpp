@@ -1,21 +1,11 @@
 #include "TestFilenameCheck.h"
 
-#include <ClangTidyDiagnosticConsumer.h>
-#include <clang/Basic/IdentifierTable.h>
-#include <clang/Basic/SourceLocation.h>
-#include <clang/Basic/SourceManager.h>
 #include <clang/Lex/PPCallbacks.h>
 #include <clang/Lex/Preprocessor.h>
 #include <clang/Lex/Token.h>
-#include <llvm/ADT/STLExtras.h>
+#include <string>
 
 #include "clang/Frontend/CompilerInstance.h"
-
-namespace clang
-{
-class MacroArgs;
-class MacroDefinition;
-}  // namespace clang
 
 using namespace clang::ast_matchers;
 

@@ -1,27 +1,27 @@
 #pragma once
-#ifndef CATA_SRC_ITEM_H
-#define CATA_SRC_ITEM_H
+#ifndef ITEM_H
+#define ITEM_H
 
-#include <algorithm>
-#include <climits>
 #include <cstdint>
-#include <functional>
+#include <climits>
 #include <list>
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
+#include <functional>
+#include <memory>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include "calendar.h"
+#include "value_ptr.h"
 #include "cata_utility.h"
 #include "craft_command.h"
+#include "debug.h"
 #include "enums.h"
 #include "flat_set.h"
-#include "gun_mode.h"
 #include "io_tags.h"
-#include "item_contents.h"
 #include "item_location.h"
 #include "magic_enchantment.h"
 #include "optional.h"
@@ -30,35 +30,35 @@
 #include "string_id.h"
 #include "type_id.h"
 #include "units.h"
-#include "value_ptr.h"
 #include "visitable.h"
+#include "gun_mode.h"
 
-class Character;
-class JsonIn;
-class JsonObject;
-class JsonOut;
+class item;
+class material_type;
+struct mtype;
 class faction;
+class nc_color;
+class JsonIn;
+class JsonOut;
+class JsonObject;
+class iteminfo_query;
+template<typename T>
+class ret_val;
 class gun_type_type;
 class gunmod_location;
-class item;
-class iteminfo_query;
-class material_type;
-class nc_color;
+class Character;
 class player;
 class recipe;
 class relic;
-struct islot_comestible;
-struct itype;
-struct mtype;
 struct tripoint;
-template<typename T>
-class ret_val;
+struct itype;
+struct islot_comestible;
 
 using bodytype_id = std::string;
 using faction_id = string_id<faction>;
-class item_category;
 struct islot_armor;
 struct use_function;
+class item_category;
 
 enum art_effect_passive : int;
 enum phase_id : int;
@@ -68,10 +68,10 @@ enum class side : int;
 class body_part_set;
 
 using itype_id = std::string;
-class map;
+struct fire_data;
 struct damage_instance;
 struct damage_unit;
-struct fire_data;
+class map;
 
 enum damage_type : int;
 enum clothing_mod_type : int;
@@ -398,14 +398,10 @@ class item : public visitable<item>
                        bool debug ) const;
         void gunmod_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                           bool debug ) const;
-        void armor_protection_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
-                                    bool debug ) const;
         void armor_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                          bool debug ) const;
         void animal_armor_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                                 bool debug ) const;
-        void armor_fit_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
-                             bool debug ) const;
         void book_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                         bool debug ) const;
         void battery_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
@@ -416,18 +412,10 @@ class item : public visitable<item>
                         bool debug ) const;
         void component_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                              bool debug ) const;
-        void repair_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
-                          bool debug ) const;
         void disassembly_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                                bool debug ) const;
         void qualities_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                              bool debug ) const;
-        void bionic_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
-                          bool debug ) const;
-        void combat_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
-                          bool debug ) const;
-        void contents_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
-                            bool debug ) const;
         void final_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                          bool debug ) const;
 
@@ -561,23 +549,6 @@ class item : public visitable<item>
         damage_instance base_damage_thrown() const;
 
         /**
-        * Calculate the item's effective damage per second past armor when wielded by a
-         * character against a monster.
-         */
-        double effective_dps( const player &guy, monster &mon ) const;
-        /**
-         * calculate effective dps against a stock set of monsters.  by default, assume g->u
-         * is wielding
-        * for_display - include monsters intended for display purposes
-         * for_calc - include monsters intended for evaluation purposes
-         * for_display and for_calc are inclusive
-               */
-        std::map<std::string, double> dps( bool for_display, bool for_calc, const player &guy ) const;
-        std::map<std::string, double> dps( bool for_display, bool for_calc ) const;
-        /** return the average dps of the weapon against evaluation monsters */
-        double average_dps( const player &guy ) const;
-
-        /**
          * Whether the character needs both hands to wield this item.
          */
         bool is_two_handed( const Character &guy ) const;
@@ -600,7 +571,7 @@ class item : public visitable<item>
         /*@}*/
 
         /** Max range weapon usable for melee attack accounting for player/NPC abilities */
-        int reach_range( const Character &guy ) const;
+        int reach_range( const player &p ) const;
 
         /**
          * Sets time until activation for an item that will self-activate in the future.
@@ -707,6 +678,16 @@ class item : public visitable<item>
          */
         void put_in( const item &payload );
 
+        /** Stores a newly constructed item at the end of this item's contents */
+        template<typename ... Args>
+        item &emplace_back( Args &&... args ) {
+            contents.emplace_back( std::forward<Args>( args )... );
+            if( contents.back().is_null() ) {
+                debugmsg( "Tried to emplace null item" );
+            }
+            return contents.back();
+        }
+
         /**
          * Returns this item into its default container. If it does not have a default container,
          * returns this. It's intended to be used like \code newitem = newitem.in_its_container();\endcode
@@ -714,8 +695,6 @@ class item : public visitable<item>
         item in_its_container() const;
         item in_container( const itype_id &container_type ) const;
         /*@}*/
-
-        bool item_has_uses_recursive() const;
 
         /*@{*/
         /**
@@ -741,13 +720,6 @@ class item : public visitable<item>
          * @param mod How many charges should be removed.
          */
         void mod_charges( int mod );
-        /**
-         * Whether the item has to be removed as it has rotten away completely. May change the item as it calls process_temperature_rot()
-         * @param pnt The *absolute* position of the item in the world (see @ref map::getabs),
-         * used for rot calculation.
-         * @return true if the item has rotten away and should be removed, false otherwise.
-         */
-        bool has_rotten_away( const tripoint &pnt );
 
         /**
          * Accumulate rot of the item since last rot calculation.
@@ -770,14 +742,12 @@ class item : public visitable<item>
          * Update rot for things that perish
          * All items that rot also have temperature
          * @param insulation Amount of insulation item has from surroundings
-         * @param seals Wether the item is in sealed  container
          * @param pos The current position
          * @param carrier The current carrier
          * @param flag to specify special temperature situations
-         * @return true if the item is fully rotten and is ready to be removed
          */
-        bool process_temperature_rot( float insulation, bool seals, const tripoint &pos,
-                                      player *carrier, temperature_flag flag = temperature_flag::TEMP_NORMAL );
+        void process_temperature_rot( float insulation, const tripoint &pos, player *carrier,
+                                      temperature_flag flag = temperature_flag::TEMP_NORMAL );
 
         /** Set the item to HOT */
         void heat_up();
@@ -839,12 +809,10 @@ class item : public visitable<item>
             return get_relative_rot() > 1.0;
         }
 
-        /**
-         * Whether the item has enough rot that it should get removed.
-         * Regular shelf life perishable foods rot away completely at 2x shelf life. Corpses last 10 days
-         * @return true if the item has enough rot to be removed, false otherwise.
-         */
-        bool has_rotten_away() const;
+        /** at twice regular shelf life perishable foods rot away completely. Corpses last longer */
+        bool has_rotten_away() const {
+            return is_food() && get_relative_rot() > 2.0;
+        }
 
         /** remove frozen tag and if it takes freezerburn, applies mushy/rotten */
         void apply_freezerburn();
@@ -1779,6 +1747,10 @@ class item : public visitable<item>
         item *magazine_current();
         const item *magazine_current() const;
 
+        /** Normalizes an item to use the new magazine system. Idempotent if item already converted.
+         *  @return items that were created as a result of the conversion (excess ammo or magazines) */
+        std::vector<item> magazine_convert();
+
         /** Returns all gunmods currently attached to this item (always empty if item not a gun) */
         std::vector<item *> gunmods();
         std::vector<const item *> gunmods() const;
@@ -2080,11 +2052,6 @@ class item : public visitable<item>
                                                bool round_value = false ) const;
 
     private:
-        bool use_amount_internal( const itype_id &it, int &quantity, std::list<item> &used,
-                                  const std::function<bool( const item & )> &filter = return_true<item> );
-        const use_function *get_use_internal( const std::string &use_name ) const;
-        bool process_internal( player *carrier, const tripoint &pos, bool activate, float insulation = 1,
-                               bool seals = false, temperature_flag flag = temperature_flag::TEMP_NORMAL );
         /**
          * Calculate the thermal energy and temperature change of the item
          * @param temp Temperature of surroundings
@@ -2140,7 +2107,7 @@ class item : public visitable<item>
         static const int INFINITE_CHARGES;
 
         const itype *type;
-        item_contents contents;
+        std::list<item> contents;
         std::list<item> components;
         /** What faults (if any) currently apply to this item */
         std::set<fault_id> faults;
@@ -2244,13 +2211,13 @@ bool item_ptr_compare_by_charges( const item *left, const item *right );
  *  This is assigned as a result of some legacy logic in @ref draw_item_info().  This
  *  will eventually be rewritten to eliminate the need for this hack.
  */
-enum class hint_rating : int {
+enum hint_rating {
     /** Item should display as gray */
-    cant = 0,
+    HINT_CANT = 0,
     /** Item should display as red */
-    iffy = 1,
+    HINT_IFFY = 1,
     /** Item should display as green */
-    good = -999
+    HINT_GOOD = -999
 };
 
 /**
@@ -2268,4 +2235,4 @@ inline bool is_crafting_component( const item &component )
            !component.is_filthy();
 }
 
-#endif // CATA_SRC_ITEM_H
+#endif

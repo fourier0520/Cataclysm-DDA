@@ -42,7 +42,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -74,7 +73,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_prepper2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -97,7 +95,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_fortified_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -120,7 +117,6 @@
   {
     "type": "overmap_terrain",
     "id": "duplex_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -138,7 +134,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -156,7 +151,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex3_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -174,7 +168,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex4_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -192,7 +185,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex5_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -210,7 +202,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex6_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -228,7 +219,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex7_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -246,7 +236,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex8_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -264,7 +253,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex9_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -282,7 +270,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex10_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -300,7 +287,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_duplex11_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -317,7 +303,6 @@
   {
     "type": "overmap_terrain",
     "id": "rural_house1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -334,7 +319,6 @@
   {
     "type": "overmap_terrain",
     "id": "rural_house2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -582,7 +566,6 @@
   {
     "type": "overmap_terrain",
     "id": "trailerparksmall0_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "copy-from": "generic_city_building_no_sidewalk",
     "name": "trailer park roof",
     "sym": "#",
@@ -600,7 +583,6 @@
   {
     "type": "overmap_terrain",
     "id": "trailerparksmall1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "copy-from": "generic_city_building_no_sidewalk",
     "name": "trailer park roof",
     "sym": "#",
@@ -618,7 +600,6 @@
   {
     "type": "overmap_terrain",
     "id": "trailerparksmall2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "copy-from": "generic_city_building_no_sidewalk",
     "name": "trailer park roof",
     "sym": "#",
@@ -636,7 +617,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_01_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -654,7 +634,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_02_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -672,7 +651,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_03_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -690,7 +668,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_04_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -741,7 +718,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_08_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -764,7 +740,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_09_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -782,7 +757,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_10_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -805,7 +779,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_w_2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -828,7 +801,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_w_3_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -851,7 +823,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_w_4_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -874,7 +845,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_w_5_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -906,7 +876,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_w_6_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -961,7 +930,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_2story_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "sym": "^",
     "color": "light_green",
@@ -980,7 +948,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_inner_garden_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -998,7 +965,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_w_1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1021,7 +987,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_11_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1044,7 +1009,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_12_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1067,7 +1031,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_13_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1090,7 +1053,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_14_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1113,7 +1075,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_15_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1136,7 +1097,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_16_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1159,7 +1119,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_17_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1182,7 +1141,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_18_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1200,7 +1158,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_19_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1223,7 +1180,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_20_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1241,7 +1197,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_21_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1259,7 +1214,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_22_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1282,7 +1236,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_23_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1300,7 +1253,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_24_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1318,7 +1270,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_25_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1336,7 +1287,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_26_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1359,7 +1309,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_27_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1382,7 +1331,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_28_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1405,7 +1353,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_29_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1428,7 +1375,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_30_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1446,7 +1392,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_31_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1464,7 +1409,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_32_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1505,7 +1449,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_toolshed_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1537,7 +1480,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_suicide_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1573,7 +1515,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_rv_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1596,7 +1537,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_porch_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1619,7 +1559,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_patio_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1651,7 +1590,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_modern_1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1674,7 +1612,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_dogs_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1692,7 +1629,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_gardener_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1715,7 +1651,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1738,7 +1673,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1761,7 +1695,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage3_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1784,7 +1717,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage4_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1807,7 +1739,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage5_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1830,7 +1761,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage6_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1853,7 +1783,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage7_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1876,7 +1805,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_garage8_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1904,7 +1832,6 @@
   {
     "type": "overmap_terrain",
     "id": "garden_house_1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1927,7 +1854,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1950,7 +1876,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched2_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1973,7 +1898,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched3_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -1996,7 +1920,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched4_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2019,7 +1942,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched5_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2042,7 +1964,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched6_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2065,7 +1986,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched7_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2088,7 +2008,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched8_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2111,7 +2030,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched9_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2134,7 +2052,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_detatched10_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2157,7 +2074,6 @@
   {
     "type": "overmap_terrain",
     "id": "house_crack1_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
@@ -2189,451 +2105,9 @@
   {
     "type": "overmap_terrain",
     "id": "house_crack3_roof",
-    "spawns": { "group": "GROUP_ROOF_ANIMAL", "population": [ 0, 3 ], "chance": 2 },
     "name": "house",
     "copy-from": "generic_city_building",
     "color": "light_green",
     "see_cost": 2
-  },
-  {
-    "id": "urban_1_1",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_1_2",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_1_3",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_1_4",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_1_6",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_1_1_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_1_2_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_2_1",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_2_2",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_2_1_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_2_2_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_2_3",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_2_4",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_2_5",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_2_6",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_1",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_2",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_3",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_4",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_5",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_6",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_3_1_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_3_2_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_4_1",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_4_2",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_4_3",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_4_4",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_4_5",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_4_6",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_4_7",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_4_8",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_1",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_2",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_3",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_4",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_5",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_6",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_5_1_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_5_2_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_6_1",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_6_2",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_6_3",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_6_4",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_6_5",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_6_6",
-    "type": "overmap_terrain",
-    "name": "house",
-    "copy-from": "generic_city_building_no_sidewalk",
-    "color": "light_green",
-    "see_cost": 10
-  },
-  {
-    "id": "urban_6_1_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_6_2_basement",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_13_1",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_13_2",
-    "type": "overmap_terrain",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "id": "urban_13_3",
-    "type": "overmap_terrain",
-    "name": "dense urban",
-    "sym": "v",
-    "color": "i_white",
-    "see_cost": 40,
-    "mondensity": 2,
-    "flags": [ "SIDEWALK" ]
-  },
-  {
-    "id": "urban_13_4",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_5",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_6",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_7",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_8",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_9",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_10",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_11",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "id": "urban_13_12",
-    "type": "overmap_terrain",
-    "copy-from": "urban_13_3"
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "2storyModern01_basement",
-    "copy-from": "generic_city_house_basement"
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "2storyModern01_first",
-    "name": "house",
-    "sym": "^",
-    "color": "light_green",
-    "extras": "build",
-    "see_cost": 2,
-    "mondensity": 2,
-    "flags": [ "SIDEWALK" ]
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "2storyModern01_second",
-    "name": "house",
-    "sym": "^",
-    "color": "light_green",
-    "extras": "build",
-    "see_cost": 2,
-    "mondensity": 2
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "2storyModern01_roof",
-    "name": "house",
-    "sym": "^",
-    "color": "light_green",
-    "extras": "build",
-    "see_cost": 2,
-    "mondensity": 2
   }
 ]

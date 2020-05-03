@@ -1,20 +1,18 @@
 #pragma once
-#ifndef CATA_SRC_UI_H
-#define CATA_SRC_UI_H
+#ifndef UI_H
+#define UI_H
 
-#include <initializer_list>
 #include <map>
-#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+#include <initializer_list>
 
 #include "color.h"
 #include "cursesdef.h"
 #include "point.h"
 #include "string_formatter.h"
-
-class translation;
+#include "translations.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -34,10 +32,8 @@ const int MENU_AUTOASSIGN = -1;
 // NOLINTNEXTLINE(cata-use-named-point-constants)
 constexpr point MENU_AUTOASSIGN_POS( MENU_AUTOASSIGN, MENU_AUTOASSIGN );
 
-class input_context;
-class string_input_popup;
-class ui_adaptor;
 struct input_event;
+class input_context;
 
 catacurses::window new_centered_win( int nlines, int ncols );
 
@@ -233,12 +229,8 @@ class uilist: public ui_container
         uilist( const point &start, int width, const std::string &msg,
                 std::initializer_list<const char *const> opts );
 
-        ~uilist() override;
-
         void init();
         void setup();
-        // initialize the window or reposition it after screen size change.
-        void reposition( ui_adaptor &ui );
         void show();
         bool scrollby( int scrollby );
         int scroll_amount_from_key( int key );
@@ -246,6 +238,7 @@ class uilist: public ui_container
         void query( bool loop = true, int timeout = -1 );
         void filterlist();
         void apply_scrollbar();
+        std::string inputfilter();
         void refresh( bool refresh_callback = true ) override;
         void redraw( bool redraw_callback = true );
         void addentry( const std::string &str );
@@ -267,16 +260,10 @@ class uilist: public ui_container
 
         operator int() const;
 
+        // pending refactor // ui_element_input * filter_input;
+
     private:
         bool started = false;
-        std::unique_ptr<string_input_popup> filter_popup;
-
-        bool w_x_autoassigned = false;
-        bool w_y_autoassigned = false;
-
-        // This function assumes it's being called from `query` and should
-        // not be made public.
-        void inputfilter();
 
     protected:
         std::string hotkeys;
@@ -299,4 +286,4 @@ class pointmenu_cb : public uilist_callback
         void refresh( uilist *menu ) override;
 };
 
-#endif // CATA_SRC_UI_H
+#endif

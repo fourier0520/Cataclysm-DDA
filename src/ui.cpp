@@ -1,10 +1,10 @@
 #include "ui.h"
 
-#include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <climits>
 #include <cstdlib>
+#include <algorithm>
 #include <iterator>
 #include <memory>
 
@@ -18,8 +18,6 @@
 #include "output.h"
 #include "player.h"
 #include "string_input_popup.h"
-#include "translations.h"
-#include "ui_manager.h"
 
 #if defined(__ANDROID__)
 #include <SDL_keyboard.h>
@@ -108,8 +106,6 @@ uilist::uilist( const point &start, int width, const std::string &msg,
     query();
 }
 
-uilist::~uilist() = default;
-
 /*
  * Enables oneshot construction -> running -> exit
  */
@@ -157,7 +153,7 @@ void uilist::init()
     disabled_color = c_dark_gray; // disabled menu entry
     allow_disabled = false;  // disallow selecting disabled options
     allow_anykey = false;    // do not return on unbound keys
-    allow_cancel = true;     // allow canceling with "QUIT" action
+    allow_cancel = true;     // allow cancelling with "QUIT" action
     allow_additional = false; // do not return on unhandled additional actions
     hilight_full = true;     // render hilight_color background over the entire line (minus padding)
     hilight_disabled =
@@ -237,30 +233,60 @@ void uilist::filterlist()
     }
 }
 
-void uilist::inputfilter()
+/**
+ * Call string_input_win / ui_element_input::input_filter and filter the entries list interactively
+ */
+std::string uilist::inputfilter()
 {
-    filter_popup = std::make_unique<string_input_popup>();
-    filter_popup->text( filter )
+    // TODO: uilist.filter_identifier ?
+    std::string identifier;
+    mvwprintz( window, point( 2, w_height - 1 ), border_color, "< " );
+    mvwprintz( window, point( w_width - 3, w_height - 1 ), border_color, " >" );
+    /*
+    //debatable merit
+        std::string origfilter = filter;
+        int origselected = selected;
+        int origfselected = fselected;
+        int origvshift = vshift;
+    */
+    string_input_popup popup;
+    popup.text( filter )
     .max_length( 256 )
-    .window( window, point( 4, w_height - 1 ), w_width - 4 );
+    .window( window, 4, w_height - 1, w_width - 4 )
+    .identifier( identifier );
     input_event event;
     ime_sentry sentry;
     do {
-        ui_manager::redraw();
-        filter = filter_popup->query_string( false );
-        event = filter_popup->context().get_raw_input();
+        // filter=filter_input->query(filter, false);
+        filter = popup.query_string( false );
+        event = popup.context().get_raw_input();
+        // key = filter_input->keypress;
         if( event.get_first_input() != KEY_ESCAPE ) {
             if( !scrollby( scroll_amount_from_key( event.get_first_input() ) ) ) {
                 filterlist();
             }
+            show();
         }
     } while( event.get_first_input() != '\n' && event.get_first_input() != KEY_ESCAPE );
 
     if( event.get_first_input() == KEY_ESCAPE ) {
+        /*
+        //perhaps as an option
+                filter = origfilter;
+                selected = origselected;
+                fselected = origfselected;
+                vshift = origvshift;
+        */
         filterlist();
     }
 
-    filter_popup.reset();
+    wattron( window, border_color );
+    for( int i = 1; i < w_width - 1; i++ ) {
+        mvwaddch( window, point( i, w_height - 1 ), LINE_OXOX );
+    }
+    wattroff( window, border_color );
+
+    return filter;
 }
 
 /**
@@ -480,12 +506,10 @@ void uilist::setup()
         }
     }
 
-    w_x_autoassigned = w_x == MENU_AUTOASSIGN;
-    if( w_x_autoassigned ) {
+    if( w_x == -1 ) {
         w_x = static_cast<int>( ( TERMX - w_width ) / 2 );
     }
-    w_y_autoassigned = w_y == MENU_AUTOASSIGN;
-    if( w_y_autoassigned ) {
+    if( w_y == -1 ) {
         w_y = static_cast<int>( ( TERMY - w_height ) / 2 );
     }
 
@@ -516,35 +540,6 @@ void uilist::setup()
         }
     }
     started = true;
-}
-
-void uilist::reposition( ui_adaptor &ui )
-{
-    if( !started ) {
-        setup();
-    } else if( w_x_autoassigned || w_y_autoassigned ) {
-        // because the way `setup()` works we cannot call it again here,
-        // so just move the window to the center of the screen instead.
-        if( w_x_autoassigned ) {
-            if( w_width >= TERMX ) {
-                w_x = 0;
-            } else {
-                w_x = ( TERMX - w_width ) / 2;
-            }
-        }
-        if( w_y_autoassigned ) {
-            if( w_height > TERMY ) {
-                w_y = 0;
-            } else {
-                w_y = ( TERMY - w_height ) / 2;
-            }
-        }
-        window = catacurses::newwin( w_height, w_width, point( w_x, w_y ) );
-        if( filter_popup ) {
-            filter_popup->window( window, point( 4, w_height - 1 ), w_width - 4 );
-        }
-    }
-    ui.position_from_window( window );
 }
 
 void uilist::apply_scrollbar()
@@ -686,15 +681,9 @@ void uilist::show()
         }
     }
 
-    if( filter_popup ) {
-        mvwprintz( window, point( 2, w_height - 1 ), border_color, "< " );
-        mvwprintz( window, point( w_width - 3, w_height - 1 ), border_color, " >" );
-        filter_popup->query( /*loop=*/false, /*draw_only=*/true );
-    } else {
-        if( !filter.empty() ) {
-            mvwprintz( window, point( 2, w_height - 1 ), border_color, "< %s >", filter );
-            mvwprintz( window, point( 4, w_height - 1 ), text_color, filter );
-        }
+    if( !filter.empty() ) {
+        mvwprintz( window, point( 2, w_height - 1 ), border_color, "< %s >", filter );
+        mvwprintz( window, point( 4, w_height - 1 ), text_color, filter );
     }
     apply_scrollbar();
 
@@ -856,16 +845,7 @@ void uilist::query( bool loop, int timeout )
     }
     hotkeys = ctxt.get_available_single_char_hotkeys( hotkeys );
 
-    ui_adaptor ui;
-    ui.on_redraw( [this]( const ui_adaptor & ) {
-        show();
-    } );
-    ui.on_screen_resize( [this]( ui_adaptor & ui ) {
-        reposition( ui );
-    } );
-    reposition( ui );
-
-    ui_manager::redraw();
+    show();
 
 #if defined(__ANDROID__)
     for( const auto &entry : entries ) {
@@ -918,7 +898,7 @@ void uilist::query( bool loop, int timeout )
             }
         }
 
-        ui_manager::redraw();
+        show();
     } while( loop && ret == UILIST_WAIT_INPUT );
 }
 

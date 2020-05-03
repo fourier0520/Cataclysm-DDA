@@ -23,7 +23,7 @@
   {
     "type": "COMESTIBLE",
     "id": "marshmallow",
-    "name": { "str_sp": "marshmallows" },
+    "name": { "str": "marshmallows", "str_pl": "marshmallows" },
     "symbol": "%",
     "container": "null",
     "description": "A handful of squishy, fluffy, puffy, delicious marshmallows.  They feel oddly warm…",
@@ -35,7 +35,7 @@
   {
     "type": "COMESTIBLE",
     "id": "smores",
-    "name": { "str_sp": "s'mores" },
+    "name": { "str": "s'mores", "str_pl": "s'mores" },
     "symbol": "%",
     "container": "null",
     "copy-from": "smores",

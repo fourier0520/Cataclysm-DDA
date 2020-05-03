@@ -10,8 +10,7 @@
     "category": "veh_parts",
     "weight": "1000 g",
     "volume": "1 L",
-    "price": 3000,
-    "price_postapoc": 100
+    "price": 3000
   },
   {
     "id": "motorcycle_headlight",
@@ -21,7 +20,6 @@
     "weight": "500 g",
     "volume": "250 ml",
     "price": 5000,
-    "price_postapoc": 100,
     "copy-from": "car_headlight"
   },
   {
@@ -33,7 +31,6 @@
     "weight": "2000 g",
     "volume": "1250 ml",
     "price": 4000,
-    "price_postapoc": 150,
     "copy-from": "car_headlight"
   },
   {
@@ -48,7 +45,6 @@
     "material": [ "steel", "plastic" ],
     "bashing": 4,
     "price": 40000,
-    "price_postapoc": 250,
     "copy-from": "car_headlight"
   },
   {
@@ -71,7 +67,6 @@
     "material": [ "plastic", "steel" ],
     "bashing": 1,
     "price": 40000,
-    "price_postapoc": 100,
     "copy-from": "car_headlight"
   },
   {
@@ -93,7 +88,6 @@
     "volume": "2 L",
     "bashing": 5,
     "price": 90000,
-    "price_postapoc": 500,
     "copy-from": "car_headlight"
   },
   {

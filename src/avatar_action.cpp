@@ -1,9 +1,8 @@
 #include "avatar_action.h"
 
-#include <algorithm>
-#include <climits>
 #include <cstdlib>
-#include <map>
+#include <algorithm>
+#include <functional>
 #include <memory>
 #include <ostream>
 #include <set>
@@ -13,49 +12,42 @@
 
 #include "action.h"
 #include "avatar.h"
-#include "bodypart.h"
-#include "calendar.h"
-#include "character.h"
 #include "creature.h"
-#include "cursesdef.h"
-#include "debug.h"
-#include "enums.h"
 #include "game.h"
-#include "game_constants.h"
 #include "game_inventory.h"
-#include "gun_mode.h"
-#include "int_id.h"
-#include "inventory.h"
+#include "input.h"
 #include "item.h"
-#include "item_contents.h"
 #include "item_location.h"
 #include "itype.h"
 #include "line.h"
 #include "map.h"
-#include "map_iterator.h"
 #include "mapdata.h"
-#include "math_defines.h"
-#include "memory_fast.h"
+#include "map_iterator.h"
 #include "messages.h"
 #include "monster.h"
-#include "mtype.h"
 #include "npc.h"
 #include "options.h"
 #include "output.h"
-#include "player_activity.h"
 #include "projectile.h"
 #include "ranged.h"
-#include "ret_val.h"
-#include "rng.h"
-#include "string_formatter.h"
 #include "translations.h"
 #include "type_id.h"
-#include "value_ptr.h"
 #include "veh_type.h"
 #include "vehicle.h"
 #include "vpart_position.h"
-
-class player;
+#include "bodypart.h"
+#include "cursesdef.h"
+#include "debug.h"
+#include "enums.h"
+#include "game_constants.h"
+#include "gun_mode.h"
+#include "int_id.h"
+#include "inventory.h"
+#include "item_location.h"
+#include "mtype.h"
+#include "player_activity.h"
+#include "ret_val.h"
+#include "rng.h"
 
 static const activity_id ACT_AIM( "ACT_AIM" );
 
@@ -90,7 +82,7 @@ static const std::string flag_SWIMMABLE( "SWIMMABLE" );
 
 #define dbg(x) DebugLog((x),D_SDL) << __FILE__ << ":" << __LINE__ << ": "
 
-bool avatar_action::move( avatar &you, map &m, const tripoint &d )
+bool avatar_action::move( avatar &you, map &m, int dx, int dy, int dz )
 {
     if( ( !g->check_safe_mode_allowed() ) || you.has_active_mutation( trait_SHELL2 ) ) {
         if( you.has_active_mutation( trait_SHELL2 ) ) {
@@ -100,14 +92,14 @@ bool avatar_action::move( avatar &you, map &m, const tripoint &d )
     }
     const bool is_riding = you.is_mounted();
     tripoint dest_loc;
-    if( d.z == 0 && you.has_effect( effect_stunned ) ) {
+    if( dz == 0 && you.has_effect( effect_stunned ) ) {
         dest_loc.x = rng( you.posx() - 1, you.posx() + 1 );
         dest_loc.y = rng( you.posy() - 1, you.posy() + 1 );
         dest_loc.z = you.posz();
     } else {
-        dest_loc.x = you.posx() + d.x;
-        dest_loc.y = you.posy() + d.y;
-        dest_loc.z = you.posz() + d.z;
+        dest_loc.x = you.posx() + dx;
+        dest_loc.y = you.posy() + dy;
+        dest_loc.z = you.posz() + dz;
     }
 
     if( dest_loc == you.pos() ) {
@@ -215,7 +207,7 @@ bool avatar_action::move( avatar &you, map &m, const tripoint &d )
         }
     }
 
-    if( d.z == 0 && ramp_move( you, m, dest_loc ) ) {
+    if( dz == 0 && ramp_move( you, m, dest_loc ) ) {
         // TODO: Make it work nice with automove (if it doesn't do so already?)
         return false;
     }
@@ -335,7 +327,7 @@ bool avatar_action::move( avatar &you, map &m, const tripoint &d )
         veh_closed_door = dpart >= 0 && !veh1->parts[dpart].open;
     }
 
-    if( veh0 != nullptr && std::abs( veh0->velocity ) > 100 ) {
+    if( veh0 != nullptr && abs( veh0->velocity ) > 100 ) {
         if( veh1 == nullptr ) {
             if( query_yn( _( "Dive from moving vehicle?" ) ) ) {
                 g->moving_vehicle_dismount( dest_loc );
@@ -562,9 +554,6 @@ void avatar_action::swim( map &m, avatar &you, const tripoint &p )
     }
     you.setpos( p );
     g->update_map( you );
-
-    cata_event_dispatch::avatar_moves( you, m, p );
-
     if( m.veh_at( you.pos() ).part_with_feature( VPFLAG_BOARDABLE, true ) ) {
         m.board_vehicle( you.pos(), &you );
     }
@@ -622,7 +611,7 @@ void avatar_action::autoattack( avatar &you, map &m )
     } );
 
     const tripoint diff = best.pos() - you.pos();
-    if( std::abs( diff.x ) <= 1 && std::abs( diff.y ) <= 1 && diff.z == 0 ) {
+    if( abs( diff.x ) <= 1 && abs( diff.y ) <= 1 && diff.z == 0 ) {
         move( you, m, tripoint( diff.xy(), 0 ) );
         return;
     }
@@ -770,7 +759,7 @@ static bool can_fire_weapon( avatar &you, const map &m, const item &weapon )
 
 /**
  * Checks if the turret is valid and if the player meets certain conditions for manually firing it.
- * @param turret Turret to check.
+ * @param tdata Turret to check.
  * @return True if all conditions are true, otherwise false.
  */
 static bool can_fire_turret( avatar &you, const map &m, const turret_data &turret )
@@ -931,6 +920,7 @@ void avatar_action::aim_do_turn( avatar &you, map &m )
 
     you.moves -= reload_time;
 
+    // TODO: add check for TRIGGERHAPPY
     int shots_fired = you.fire_gun( trajectory.back(), gun.qty, *gun );
 
     // TODO: bionic power cost of firing should be derived from a value of the relevant weapon.
@@ -1001,6 +991,7 @@ void avatar_action::fire_turret_manual( avatar &you, map &m, turret_data &turret
         wrefresh( g->w_terrain );
         g->draw_panels();
 
+        // TODO: add check for TRIGGERHAPPY
         turret.fire( you, trajectory.back() );
     }
     g->reenter_fullscreen();
@@ -1092,7 +1083,7 @@ void avatar_action::eat( avatar &you, item_location loc )
 
     } else if( you.consume_item( *it ) ) {
         if( it->is_food_container() || !you.can_consume_as_is( *it ) ) {
-            it->remove_item( it->contents.front() );
+            it->contents.erase( it->contents.begin() );
             add_msg( _( "You leave the empty %s." ), it->tname() );
         } else {
             loc.remove_item();
@@ -1261,11 +1252,12 @@ void avatar_action::use_item( avatar &you, item_location &loc )
             use_in_place = true;
         } else {
             const int obtain_cost = loc.obtain_cost( you );
-            loc = loc.obtain( you );
-            if( !loc ) {
+            item &target = you.i_at( loc.obtain( you ) );
+            if( target.is_null() ) {
                 debugmsg( "Failed to obtain target item" );
                 return;
             }
+            loc = item_location( you, &target );
 
             // TODO: the following comment is inaccurate and this mechanic needs to be rexamined
             // This method only handles items in the inventory, so refund the obtain cost.
@@ -1293,7 +1285,7 @@ void avatar_action::use_item( avatar &you, item_location &loc )
 void avatar_action::unload( avatar &you )
 {
     item_location loc = g->inv_map_splice( [&you]( const item & it ) {
-        return you.rate_action_unload( it ) == hint_rating::good;
+        return you.rate_action_unload( it ) == HINT_GOOD;
     }, _( "Unload item" ), 1, _( "You have nothing to unload." ) );
 
     if( !loc ) {
@@ -1303,7 +1295,7 @@ void avatar_action::unload( avatar &you )
 
     item *it = loc.get_item();
     if( loc.where() != item_location::type::character ) {
-        it = loc.obtain( you ).get_item();
+        it = &you.i_at( loc.obtain( you ) );
     }
     if( you.unload( *it ) ) {
         if( it->has_flag( "MAG_DESTROY" ) && it->ammo_remaining() == 0 ) {

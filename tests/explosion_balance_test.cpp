@@ -1,26 +1,25 @@
-#include <algorithm>
-#include <cstddef>
-#include <memory>
 #include <sstream>
+#include <algorithm>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "avatar.h"
 #include "catch/catch.hpp"
-#include "creature.h"
 #include "game.h"
 #include "item.h"
 #include "itype.h"
 #include "line.h"
 #include "map.h"
 #include "map_helpers.h"
-#include "point.h"
-#include "string_id.h"
 #include "test_statistics.h"
-#include "type_id.h"
-#include "veh_type.h"
 #include "vehicle.h"
+#include "veh_type.h"
 #include "vpart_position.h"
+#include "creature.h"
+#include "string_id.h"
+#include "type_id.h"
+#include "point.h"
 
 enum class outcome_type {
     Kill, Casualty
@@ -135,7 +134,7 @@ static void check_vehicle_damage( const std::string &explosive_id, const std::st
     }
 }
 
-TEST_CASE( "grenade_lethality", "[grenade],[explosion],[balance],[slow]" )
+TEST_CASE( "grenade_lethality", "[grenade],[explosion],[balance]" )
 {
     check_lethality( "grenade_act", 5, 0.95, 0.06, outcome_type::Kill );
     check_lethality( "grenade_act", 15, 0.40, 0.06, outcome_type::Casualty );

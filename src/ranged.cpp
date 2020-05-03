@@ -1,71 +1,68 @@
 #include "ranged.h"
 
-#include <algorithm>
-#include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
+#include <cmath>
+#include <string>
+#include <vector>
+#include <array>
 #include <iterator>
+#include <list>
+#include <map>
 #include <memory>
 #include <set>
-#include <string>
 #include <tuple>
 #include <utility>
-#include <vector>
 
 #include "avatar.h"
 #include "ballistics.h"
+#include "cata_utility.h"
+#include "debug.h"
+#include "dispersion.h"
+#include "event_bus.h"
+#include "game.h"
+#include "gun_mode.h"
+#include "input.h"
+#include "item.h"
+#include "itype.h"
+#include "line.h"
+#include "magic.h"
+#include "map.h"
+#include "messages.h"
+#include "monster.h"
+#include "morale_types.h"
+#include "mtype.h"
+#include "npc.h"
+#include "options.h"
+#include "output.h"
+#include "projectile.h"
+#include "rng.h"
+#include "sounds.h"
+#include "string_formatter.h"
+#include "translations.h"
+#include "vehicle.h"
+#include "vpart_position.h"
+#include "trap.h"
 #include "bodypart.h"
 #include "calendar.h"
-#include "cata_utility.h"
 #include "catacharset.h"
 #include "character.h"
 #include "color.h"
 #include "creature.h"
 #include "cursesdef.h"
 #include "damage.h"
-#include "debug.h"
-#include "dispersion.h"
 #include "enums.h"
-#include "event.h"
-#include "event_bus.h"
-#include "game.h"
 #include "game_constants.h"
-#include "gun_mode.h"
-#include "input.h"
-#include "item.h"
-#include "item_location.h"
-#include "itype.h"
-#include "line.h"
-#include "magic.h"
-#include "map.h"
-#include "material.h"
-#include "math_defines.h"
-#include "messages.h"
-#include "monster.h"
-#include "morale_types.h"
-#include "mtype.h"
-#include "npc.h"
 #include "optional.h"
-#include "options.h"
-#include "output.h"
-#include "panels.h"
 #include "player.h"
 #include "player_activity.h"
-#include "point.h"
-#include "projectile.h"
-#include "rng.h"
-#include "skill.h"
-#include "sounds.h"
-#include "string_formatter.h"
 #include "string_id.h"
-#include "translations.h"
-#include "trap.h"
-#include "type_id.h"
-#include "ui_manager.h"
 #include "units.h"
-#include "value_ptr.h"
-#include "vehicle.h"
-#include "vpart_position.h"
+#include "material.h"
+#include "type_id.h"
+#include "point.h"
+#include "skill.h"
 
 static const activity_id ACT_AIM( "ACT_AIM" );
 
@@ -118,8 +115,7 @@ targeting_data targeting_data::use_wielded()
     };
 }
 
-targeting_data targeting_data::use_bionic( const item &fake_gun,
-        const units::energy &cost_per_shot )
+targeting_data targeting_data::use_bionic( const item &fake_gun, units::energy cost_per_shot )
 {
     return targeting_data{
         WEAPON_SOURCE_BIONIC,
@@ -521,11 +517,7 @@ int player::fire_gun( const tripoint &target, int shots, item &gun )
             continue; // skip retargeting for launchers
         }
     }
-    // apply shot counter to gun and its mods.
-    gun.set_var( "shot_counter", gun.get_var( "shot_counter", 0 ) + curshot );
-    for( item *mod : gun.gunmods() ) {
-        mod->set_var( "shot_counter", mod->get_var( "shot_counter", 0 ) + curshot );
-    }
+
     // apply delayed recoil
     recoil += delay;
     if( is_mech_weapon ) {
@@ -654,17 +646,11 @@ dealt_projectile_attack player::throw_item( const tripoint &target, const item &
     const int move_cost = throw_cost( *this, to_throw );
     mod_moves( -move_cost );
 
-    const int throwing_skill = get_skill_level( skill_throw );
     units::volume volume = to_throw.volume();
     units::mass weight = to_throw.weight();
 
-    // Previously calculated as 2_gram * std::max( 1, str_cur )
-    // using 16_gram normalizes it to 8 str. Same effort expenditure
-    // for being able to throw farther.
-    const int weight_cost = weight / ( 16_gram );
-    const int encumbrance_cost = roll_remainder( ( encumb( bp_arm_l ) + encumb( bp_arm_r ) ) * 2.0f );
-    const int stamina_cost = ( weight_cost + encumbrance_cost - throwing_skill + 50 ) * -1;
-
+    const int stamina_cost = ( static_cast<int>( get_option<float>( "PLAYER_BASE_STAMINA_REGEN_RATE" ) )
+                               + ( weight / 10_gram ) + 200 ) * -1;
     bool throw_assist = false;
     int throw_assist_str = 0;
     if( is_mounted() ) {
@@ -768,8 +754,8 @@ dealt_projectile_attack player::throw_item( const tripoint &target, const item &
     }
 
     Creature *critter = g->critter_at( target, true );
-    const dispersion_sources dispersion( throwing_dispersion( thrown, critter,
-                                         blind_throw_from_pos.has_value() ) );
+    const dispersion_sources dispersion = throwing_dispersion( thrown, critter,
+                                          blind_throw_from_pos.has_value() );
     const itype *thrown_type = thrown.type;
 
     // Put the item into the projectile
@@ -788,7 +774,7 @@ dealt_projectile_attack player::throw_item( const tripoint &target, const item &
     // Avoid awarding tons of xp for lucky throws against hard to hit targets
     const float range_factor = std::min<float>( range, skill_lvl + 3 );
     // We're aiming to get a damaging hit, not just an accurate one - reward proper weapons
-    const float damage_factor = 5.0f * std::sqrt( proj.impact.total_damage() / 5.0f );
+    const float damage_factor = 5.0f * sqrt( proj.impact.total_damage() / 5.0f );
     // This should generally have values below ~20*sqrt(skill_lvl)
     const float final_xp_mult = range_factor * damage_factor;
 
@@ -843,7 +829,6 @@ static int draw_targeting_window( const catacurses::window &w_target, const std:
     // Draw the "title" of the window.
     mvwprintz( w_target, point( 2, 0 ), c_white, "< " );
     std::string title;
-    std::string panel_type = panel_manager::get_manager().get_current_layout_id();
 
     switch( mode ) {
         case TARGET_MODE_FIRE:
@@ -885,20 +870,8 @@ static int draw_targeting_window( const catacurses::window &w_target, const std:
 
     // The -1 is the -2 from above, but adjusted since this is a total, not an index.
     int lines_used = getmaxy( w_target ) - 1 - text_y;
-
-    if( panel_type == "compact" || panel_type == "labels-narrow" ) {
-        std::string display_type = get_option<std::string>( "ACCURACY_DISPLAY" );
-        if( ( panel_type == "compact" || panel_type == "labels-narrow" ) && display_type != "numbers" ) {
-            int text_y = getmaxy( w_target ) - 1;
-            int lines_used = getmaxy( w_target ) - 1 - text_y;
-            const std::string aimhelp = _( "< [?] show help >" );
-            mvwprintz( w_target, point( 1, text_y ), c_white, aimhelp );
-            return lines_used;
-        }
-    } else {
-        mvwprintz( w_target, point( 1, text_y++ ), c_white,
-                   _( "Move cursor to target with directional keys" ) );
-    }
+    mvwprintz( w_target, point( 1, text_y++ ), c_white,
+               _( "Move cursor to target with directional keys" ) );
 
     const auto front_or = [&]( const std::string & s, const char fallback ) {
         const auto keys = ctxt.keys_bound_to( s );
@@ -1067,13 +1040,8 @@ static int print_ranged_chance( const player &p, const catacurses::window &w, in
                                 const dispersion_sources &dispersion, const std::vector<confidence_rating> &confidence_config,
                                 double range, double target_size, int recoil = 0 )
 {
-    int window_width = getmaxx( w ) - 2; // Window width minus borders.
+    const int window_width = getmaxx( w ) - 2; // Window width minus borders.
     std::string display_type = get_option<std::string>( "ACCURACY_DISPLAY" );
-    std::string panel_type = panel_manager::get_manager().get_current_layout_id();
-    const int bars_pad = 3; // Padding for "bars" to fit moves_to_fire value.
-    if( ( panel_type == "compact" || panel_type == "labels-narrow" ) && display_type != "numbers" ) {
-        window_width -= bars_pad;
-    }
 
     nc_color col = c_dark_gray;
 
@@ -1086,25 +1054,12 @@ static int print_ranged_chance( const player &p, const catacurses::window &w, in
 
     if( display_type != "numbers" ) {
         std::string symbols;
-        int column_number = 1;
-        if( !( panel_type == "compact" || panel_type == "labels-narrow" ) ) {
-            std::string label = _( "Symbols:" );
-            mvwprintw( w, point( column_number, line_number ), label );
-            column_number += utf8_width( label ) + 1; // 1 for whitespace after 'Symbols:'
-        }
         for( const confidence_rating &cr : confidence_config ) {
-            std::string label = pgettext( "aim_confidence", cr.label.c_str() );
-            std::string symbols = string_format( "<color_%s>%s</color> = %s", cr.color, cr.symbol,
-                                                 label );
-            int line_len = utf8_width( label ) + 5; // 5 for '# = ' and whitespace at end
-            if( ( window_width + bars_pad - column_number ) < line_len ) {
-                column_number = 1;
-                line_number++;
-            }
-            print_colored_text( w, point( column_number, line_number ), col, col, symbols );
-            column_number += line_len;
+            symbols += string_format( " <color_%s>%s</color> = %s", cr.color, cr.symbol,
+                                      pgettext( "aim_confidence", cr.label.c_str() ) );
         }
-        line_number++;
+        print_colored_text( w, point( 1, line_number++ ), col, col, string_format(
+                                _( "Symbols:%s" ), symbols ) );
     }
 
     const auto front_or = [&]( const std::string & s, const char fallback ) {
@@ -1115,8 +1070,7 @@ static int print_ranged_chance( const player &p, const catacurses::window &w, in
     for( const aim_type &type : aim_types ) {
         dispersion_sources current_dispersion = dispersion;
         int threshold = MAX_RECOIL;
-        std::string label = _( "Current" );
-        std::string aim_l = _( "Aim" );
+        std::string label = _( "Current Aim" );
         if( type.has_threshold ) {
             label = type.name;
             threshold = type.threshold;
@@ -1134,17 +1088,9 @@ static int print_ranged_chance( const player &p, const catacurses::window &w, in
         }
 
         auto hotkey = front_or( type.action.empty() ? "FIRE" : type.action, ' ' );
-        if( ( panel_type == "compact" || panel_type == "labels-narrow" ) && display_type != "numbers" ) {
-            print_colored_text( w, point( 1, line_number ), col, col, string_format( _( "%s %s:" ), label,
-                                aim_l ) );
-            right_print( w, line_number++, 1, c_light_blue, _( "Moves" ) );
-            right_print( w, line_number, 1, c_light_blue, string_format( "%d", moves_to_fire ) );
-        } else {
-            print_colored_text( w, point( 1, line_number++ ), col, col,
-                                string_format( _( "<color_white>[%s]</color> %s %s: Moves to fire: "
-                                                  "<color_light_blue>%d</color>" ),
-                                               hotkey, label, aim_l, moves_to_fire ) );
-        }
+        print_colored_text( w, point( 1, line_number++ ), col, col,
+                            string_format( _( "<color_white>[%s]</color> %s: Moves to fire: <color_light_blue>%d</color>" ),
+                                           hotkey, label, moves_to_fire ) );
 
         double confidence = confidence_estimate( range, target_size, current_dispersion );
 
@@ -1259,7 +1205,7 @@ static int draw_throw_aim( const player &p, const catacurses::window &w, int lin
         target = nullptr;
     }
 
-    const dispersion_sources dispersion( p.throwing_dispersion( weapon, target, is_blind_throw ) );
+    const dispersion_sources dispersion = p.throwing_dispersion( weapon, target, is_blind_throw );
     const double range = rl_dist( p.pos(), target_pos );
 
     const double target_size = target != nullptr ? target->ranged_target_size() : 1.0f;
@@ -1306,17 +1252,17 @@ std::vector<aim_type> Character::get_aim_types( const item &gun ) const
         thresholds_it = std::adjacent_find( thresholds.begin(), thresholds.end() );
     }
     thresholds_it = thresholds.begin();
-    aim_types.push_back( aim_type { _( "Regular" ), "AIMED_SHOT", _( "[%c] to aim and fire." ),
+    aim_types.push_back( aim_type { _( "Regular Aim" ), "AIMED_SHOT", _( "[%c] to aim and fire." ),
                                     true, *thresholds_it } );
     thresholds_it++;
     if( thresholds_it != thresholds.end() ) {
-        aim_types.push_back( aim_type { _( "Careful" ), "CAREFUL_SHOT",
+        aim_types.push_back( aim_type { _( "Careful Aim" ), "CAREFUL_SHOT",
                                         _( "[%c] to take careful aim and fire." ), true,
                                         *thresholds_it } );
         thresholds_it++;
     }
     if( thresholds_it != thresholds.end() ) {
-        aim_types.push_back( aim_type { _( "Precise" ), "PRECISE_SHOT",
+        aim_types.push_back( aim_type { _( "Precise Aim" ), "PRECISE_SHOT",
                                         _( "[%c] to take precise aim and fire." ), true,
                                         *thresholds_it } );
     }
@@ -1398,7 +1344,6 @@ std::vector<tripoint> target_handler::target_ui( player &pc, target_mode mode,
     // TODO: this should return a reference to a static vector which is cleared on each call.
     static const std::vector<tripoint> empty_result{};
     std::vector<tripoint> ret;
-    std::string panel_type = panel_manager::get_manager().get_current_layout_id();
 
     int sight_dispersion = 0;
     if( relevant ) {
@@ -1431,11 +1376,6 @@ std::vector<tripoint> target_handler::target_ui( player &pc, target_mode mode,
     } else if( compact ) {
         // Cover up more low-value ui elements if we're tight on space.
         height = 25;
-    }
-    // Call accuracy display type to exclude "Numbers" style
-    std::string display_type = get_option<std::string>( "ACCURACY_DISPLAY" );
-    if( ( panel_type == "compact" || panel_type == "labels-narrow" ) && display_type != "numbers" ) {
-        width = 34;
     }
     catacurses::window w_target = catacurses::newwin( height, width, point( TERMX - width, top ) );
 
@@ -1521,16 +1461,13 @@ std::vector<tripoint> target_handler::target_ui( player &pc, target_mode mode,
         }
         static const double recoil_per_deg = MAX_RECOIL / 180;
 
-        const double phi = std::fmod( std::abs( coord_to_angle( pc.pos(), dst ) -
-                                                coord_to_angle( pc.pos(), recoil_pos ) ),
-                                      360.0 );
+        const double phi = fmod( std::abs( coord_to_angle( pc.pos(), dst ) -
+                                           coord_to_angle( pc.pos(), recoil_pos ) ),
+                                 360.0 );
         const double angle = phi > 180.0 ? 360.0 - phi : phi;
 
         return std::min( recoil_pc + angle * recoil_per_deg, MAX_RECOIL );
     };
-
-    // FIXME: temporarily disable redrawing of lower UIs before this UI is migrated to `ui_adaptor`
-    ui_adaptor ui( ui_adaptor::disable_uis_below {} );
 
     bool redraw = true;
     const tripoint old_offset = pc.view_offset;
@@ -1540,11 +1477,11 @@ std::vector<tripoint> target_handler::target_ui( player &pc, target_mode mode,
         // This chunk of code handles shifting the aim point around
         // at maximum range when using circular distance.
         // The range > 1 check ensures that you can always at least hit adjacent squares.
-        if( trigdist && range > 1 && std::round( trig_dist( src, dst ) ) > range ) {
+        if( trigdist && range > 1 && round( trig_dist( src, dst ) ) > range ) {
             bool cont = true;
             tripoint cp = dst;
             for( size_t i = 0; i < ret.size() && cont; i++ ) {
-                if( std::round( trig_dist( src, ret[i] ) ) > range ) {
+                if( round( trig_dist( src, ret[i] ) ) > range ) {
                     ret.resize( i );
                     cont = false;
                 } else {
@@ -1571,7 +1508,6 @@ std::vector<tripoint> target_handler::target_ui( player &pc, target_mode mode,
             int line_number = 1;
             Creature *critter = g->critter_at( dst, true );
             const int relative_elevation = dst.z - pc.pos().z;
-            std::string label_range;
             if( dst != src ) {
                 // Only draw those tiles which are on current z-level
                 auto ret_this_zlevel = ret;
@@ -1583,20 +1519,14 @@ std::vector<tripoint> target_handler::target_ui( player &pc, target_mode mode,
                 // Provides feedback to the player, and avoids leaking information
                 // about tiles they can't see.
                 g->draw_line( dst, center, ret_this_zlevel );
-                label_range = string_format( "%d/%d", rl_dist( src, dst ), range );
-            } else {
-                label_range = string_format( "%d", range );
-            }
 
-            // Print to target window
-            if( ( panel_type == "compact" || panel_type == "labels-narrow" )
-                && display_type != "numbers" ) {
-                mvwprintw( w_target, point( 1, line_number++ ), _( "Range: %s Elevation: %d" ),
-                           label_range, relative_elevation );
-                mvwprintw( w_target, point( 1, line_number++ ), _( "Targets: %d" ), t.size() );
+                // Print to target window
+                mvwprintw( w_target, point( 1, line_number++ ), _( "Range: %d/%d Elevation: %d Targets: %d" ),
+                           rl_dist( src, dst ), range, relative_elevation, t.size() );
+
             } else {
-                mvwprintw( w_target, point( 1, line_number++ ), _( "Range: %s Elevation: %d Targets: %d" ),
-                           label_range, relative_elevation, t.size() );
+                mvwprintw( w_target, point( 1, line_number++ ), _( "Range: %d Elevation: %d Targets: %d" ), range,
+                           relative_elevation, t.size() );
             }
 
             // Skip blank lines if we're short on space.
@@ -2079,10 +2009,6 @@ std::vector<tripoint> target_handler::target_ui( spell &casting, const bool no_f
     };
     const std::string fx = casting.effect();
     const tripoint old_offset = pc.view_offset;
-
-    // FIXME: temporarily disable redrawing of lower UIs before this UI is migrated to `ui_adaptor`
-    ui_adaptor ui( ui_adaptor::disable_uis_below {} );
-
     do {
         ret = g->m.find_clear_path( src, dst );
 
@@ -2099,11 +2025,11 @@ std::vector<tripoint> target_handler::target_ui( spell &casting, const bool no_f
         // This chunk of code handles shifting the aim point around
         // at maximum range when using circular distance.
         // The range > 1 check ensures that you can always at least hit adjacent squares.
-        if( trigdist && range > 1 && std::round( trig_dist( src, dst ) ) > range ) {
+        if( trigdist && range > 1 && round( trig_dist( src, dst ) ) > range ) {
             bool cont = true;
             tripoint cp = dst;
             for( size_t i = 0; i < ret.size() && cont; i++ ) {
-                if( std::round( trig_dist( src, ret[i] ) ) > range ) {
+                if( round( trig_dist( src, ret[i] ) ) > range ) {
                     ret.resize( i );
                     cont = false;
                 } else {
@@ -2380,7 +2306,6 @@ static projectile make_gun_projectile( const item &gun )
         }
 
         const auto &ammo = gun.ammo_data()->ammo;
-        proj.critical_multiplier = ammo->critical_multiplier;
         if( ammo->drop != "null" && x_in_y( ammo->drop_chance, 1.0 ) ) {
             item drop( ammo->drop );
             if( ammo->drop_active ) {
@@ -2425,7 +2350,7 @@ static void cycle_action( item &weap, const tripoint &pos )
     if( weap.ammo_data() && weap.ammo_data()->ammo->casing ) {
         const itype_id casing = *weap.ammo_data()->ammo->casing;
         if( weap.has_flag( "RELOAD_EJECT" ) || weap.gunmod_find( "brass_catcher" ) ) {
-            weap.put_in( item( casing ).set_flag( "CASING" ) );
+            weap.contents.push_back( item( casing ).set_flag( "CASING" ) );
         } else {
             if( cargo.empty() ) {
                 g->m.add_item_or_charges( eject, item( casing ) );
@@ -2444,7 +2369,7 @@ static void cycle_action( item &weap, const tripoint &pos )
         item linkage( *mag->type->magazine->linkage, calendar::turn, 1 );
         if( weap.gunmod_find( "brass_catcher" ) ) {
             linkage.set_flag( "CASING" );
-            weap.put_in( linkage );
+            weap.contents.push_back( linkage );
         } else if( cargo.empty() ) {
             g->m.add_item_or_charges( eject, linkage );
         } else {
@@ -2714,7 +2639,7 @@ double player::gun_value( const item &weap, int ammo ) const
     float capacity = gun.clip > 0 ? std::min<float>( gun.clip, ammo ) : ammo;
     // How much until dry and a new weapon is needed
     capacity += std::min<float>( 1.0, ammo / 20.0 );
-    double capacity_factor = multi_lerp( capacity_thresholds, capacity );
+    float capacity_factor = multi_lerp( capacity_thresholds, capacity );
 
     double gun_value = damage_and_accuracy * capacity_factor;
 

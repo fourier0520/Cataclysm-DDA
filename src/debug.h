@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_DEBUG_H
-#define CATA_SRC_DEBUG_H
+#ifndef DEBUG_H
+#define DEBUG_H
 
 #include "string_formatter.h"
 
@@ -188,6 +188,28 @@ bool debug_has_error_been_observed();
 // See documentation at the top.
 std::ostream &DebugLog( DebugLevel, DebugClass );
 
+// OStream operators                                                {{{1
+// ---------------------------------------------------------------------
+
+template<typename C, typename A>
+std::ostream &operator<<( std::ostream &out, const std::vector<C, A> &elm )
+{
+    bool first = true;
+    for( typename std::vector<C>::const_iterator
+         it = elm.begin(),
+         end = elm.end();
+         it != end; ++it ) {
+        if( first ) {
+            first = false;
+        } else {
+            out << ",";
+        }
+        out << *it;
+    }
+
+    return out;
+}
+
 /**
  * Extended debugging mode, can be toggled during game.
  * If enabled some debug message in the normal player message log are shown,
@@ -203,4 +225,4 @@ void debug_write_backtrace( std::ostream &out );
 #endif
 
 // vim:tw=72:sw=4:fdm=marker:fdl=0:
-#endif // CATA_SRC_DEBUG_H
+#endif

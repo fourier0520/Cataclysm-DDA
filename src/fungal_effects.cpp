@@ -1,20 +1,14 @@
 #include "fungal_effects.h"
 
-#include <algorithm>
 #include <memory>
+#include <algorithm>
 #include <ostream>
 #include <string>
 
 #include "avatar.h"
-#include "bodypart.h"
-#include "calendar.h"
 #include "creature.h"
-#include "debug.h"
-#include "enums.h"
-#include "field_type.h"
+#include "field.h"
 #include "game.h"
-#include "item.h"
-#include "item_stack.h"
 #include "map.h"
 #include "map_iterator.h"
 #include "mapdata.h"
@@ -22,11 +16,18 @@
 #include "monster.h"
 #include "mtype.h"
 #include "player.h"
-#include "point.h"
+#include "bodypart.h"
+#include "calendar.h"
+#include "enums.h"
+#include "item.h"
+#include "item_stack.h"
 #include "rng.h"
-#include "string_formatter.h"
 #include "translations.h"
 #include "type_id.h"
+#include "colony.h"
+#include "debug.h"
+#include "point.h"
+#include "string_formatter.h"
 
 static const efftype_id effect_spores( "spores" );
 static const efftype_id effect_stunned( "stunned" );
@@ -70,7 +71,7 @@ void fungal_effects::fungalize( const tripoint &p, Creature *origin, double spor
         if( !critter.make_fungus() ) {
             // Don't insta-kill non-fungables. Jabberwocks, for example
             critter.add_effect( effect_stunned, rng( 1_turns, 3_turns ) );
-            critter.apply_damage( origin, bodypart_id( "torso" ), rng( 25, 50 ) );
+            critter.apply_damage( origin, bp_torso, rng( 25, 50 ) );
         }
     } else if( gm.u.pos() == p ) {
         // TODO: Make this accept NPCs when they understand fungals

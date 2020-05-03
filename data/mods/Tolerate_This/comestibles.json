@@ -2,7 +2,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gffish_sandwich",
-    "name": { "str": "gluten free fish sandwich", "str_pl": "gluten free fish sandwiches" },
+    "name": "gluten free fish sandwich",
+    "name_plural": "gluten free fish sandwiches",
     "weight": "222 g",
     "color": "yellow",
     "spoils_in": 24,
@@ -21,7 +22,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_veggy",
-    "name": { "str": "gluten free vegetable sandwich", "str_pl": "gluten free vegetable sandwiches" },
+    "name": "gluten free vegetable sandwich",
+    "name_plural": "gluten free vegetable sandwiches",
     "weight": "190 g",
     "color": "light_gray",
     "spoils_in": 48,
@@ -62,7 +64,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_t",
-    "name": { "str": "gluten free meat sandwich", "str_pl": "gluten free meat sandwiches" },
+    "name": "gluten free meat sandwich",
+    "name_plural": "gluten free meat sandwiches",
     "weight": "186 g",
     "color": "light_gray",
     "spoils_in": 36,
@@ -80,7 +83,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_pb",
-    "name": { "str": "gluten free peanut butter sandwich", "str_pl": "gluten free peanut butter sandwiches" },
+    "name": "gluten free peanut butter sandwich",
+    "name_plural": "gluten free peanut butter sandwiches",
     "weight": "186 g",
     "color": "brown",
     "spoils_in": 36,
@@ -98,7 +102,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_pbj",
-    "name": { "str": "gluten free PB&J sandwich", "str_pl": "gluten free PB&J sandwiches" },
+    "name": "gluten free PB&J sandwich",
+    "name_plural": "gluten free PB&J sandwiches",
     "weight": "186 g",
     "color": "brown",
     "spoils_in": 36,
@@ -116,7 +121,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_pbh",
-    "name": { "str": "gluten free PB&H sandwich", "str_pl": "gluten free PB&H sandwiches" },
+    "name": "gluten free PB&H sandwich",
+    "name_plural": "gluten free PB&H sandwiches",
     "weight": "186 g",
     "color": "brown",
     "spoils_in": 36,
@@ -134,7 +140,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_pbm",
-    "name": { "str": "gluten free PB&M sandwich", "str_pl": "gluten free PB&M sandwiches" },
+    "name": "gluten free PB&M sandwich",
+    "name_plural": "gluten free PB&M sandwiches",
     "weight": "186 g",
     "color": "brown",
     "spoils_in": 36,
@@ -211,7 +218,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gffruit_pancakes",
-    "name": { "str": "gluten free fruit pancake" },
+    "name": "gluten free fruit pancake",
+    "name_plural": "gluten free fruit pancakes",
     "weight": "354 g",
     "color": "brown",
     "spoils_in": 240,
@@ -230,7 +238,8 @@
   {
     "type": "COMESTIBLE",
     "id": "lffruit_pancakes",
-    "name": { "str": "lactose free fruit pancake" },
+    "name": "lactose free fruit pancake",
+    "name_plural": "lactose free fruit pancakes",
     "weight": "354 g",
     "color": "brown",
     "spoils_in": 240,
@@ -249,7 +258,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gflffruit_pancakes",
-    "name": { "str": "gluten free lactose free fruit pancake" },
+    "name": "gluten free lactose free fruit pancake",
+    "name_plural": "gluten free lactose free fruit pancakes",
     "weight": "354 g",
     "color": "brown",
     "spoils_in": 240,
@@ -268,7 +278,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfchoc_pancakes",
-    "name": { "str": "gluten free chocolate pancake" },
+    "name": "gluten free chocolate pancake",
+    "name_plural": "gluten free chocolate pancakes",
     "weight": "354 g",
     "color": "brown",
     "spoils_in": 240,
@@ -286,7 +297,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gffrenchtoast",
-    "name": { "str": "gluten free French toast" },
+    "name": "gluten free French toast",
+    "name_plural": "gluten free French toasts",
     "weight": "246 g",
     "color": "brown",
     "spoils_in": 240,
@@ -305,7 +317,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gflffrenchtoast",
-    "name": { "str": "gluten free lactose free French toast" },
+    "name": "gluten free lactose free French toast",
+    "name_plural": "gluten free lactose free French toasts",
     "weight": "246 g",
     "color": "brown",
     "spoils_in": 240,
@@ -569,7 +582,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsweetbread",
-    "name": { "str": "gluten free sweetbread" },
+    "name": "gluten free sweetbread",
+    "name_plural": "gluten free sweetbreads",
     "weight": "150 g",
     "color": "brown",
     "spoils_in": 48,
@@ -589,7 +603,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_cheese",
-    "name": { "str": "gluten free cheese sandwich", "str_pl": "gluten free cheese sandwiches" },
+    "name": "gluten free cheese sandwich",
+    "name_plural": "gluten free cheese sandwiches",
     "weight": "187 g",
     "color": "brown",
     "spoils_in": 36,
@@ -607,7 +622,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_cheese_grilled",
-    "name": { "str": "gluten free grilled cheese sandwich", "str_pl": "gluten free grilled cheese sandwiches" },
+    "name": "gluten free grilled cheese sandwich",
+    "name_plural": "gluten free grilled cheese sandwiches",
     "weight": "188 g",
     "color": "brown",
     "spoils_in": 34,
@@ -627,7 +643,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_deluxe",
-    "name": { "str": "gluten free deluxe sandwich", "str_pl": "gluten free deluxe sandwiches" },
+    "name": "gluten free deluxe sandwich",
+    "name_plural": "gluten free deluxe sandwiches",
     "weight": "340 g",
     "color": "brown",
     "spoils_in": 32,
@@ -648,7 +665,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_cucumber",
-    "name": { "str": "gluten free cucumber sandwich", "str_pl": "gluten free cucumber sandwiches" },
+    "name": "gluten free cucumber sandwich",
+    "name_plural": "gluten free cucumber sandwiches",
     "weight": "187 g",
     "color": "light_green",
     "spoils_in": 36,
@@ -669,7 +687,8 @@
   {
     "type": "COMESTIBLE",
     "id": "sandwich_cheese",
-    "name": { "str": "cheese sandwich", "str_pl": "cheese sandwiches" },
+    "name": "cheese sandwich",
+    "name_plural": "cheese sandwiches",
     "weight": "187 g",
     "color": "brown",
     "spoils_in": 36,
@@ -687,7 +706,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_jam",
-    "name": { "str": "gluten free jam sandwich", "str_pl": "gluten free jam sandwiches" },
+    "name": "gluten free jam sandwich",
+    "name_plural": "gluten free jam sandwiches",
     "weight": "189 g",
     "color": "brown",
     "spoils_in": 37,
@@ -705,7 +725,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_honey",
-    "name": { "str": "gluten free honey sandwich", "str_pl": "gluten free honey sandwiches" },
+    "name": "gluten free honey sandwich",
+    "name_plural": "gluten free honey sandwiches",
     "weight": "189 g",
     "color": "brown",
     "spoils_in": 240,
@@ -724,7 +745,8 @@
   {
     "type": "COMESTIBLE",
     "id": "gfsandwich_sauce",
-    "name": { "str": "gluten free boring sandwich", "str_pl": "gluten free boring sandwiches" },
+    "name": "gluten free boring sandwich",
+    "name_plural": "gluten free boring sandwiches",
     "weight": "187 g",
     "color": "brown",
     "spoils_in": 46,
@@ -852,7 +874,8 @@
   {
     "type": "COMESTIBLE",
     "id": "rice_milk",
-    "name": { "str_sp": "rice milk" },
+    "name": "rice milk",
+    "name_plural": "rice milk",
     "weight": "263 g",
     "color": "white",
     "spoils_in": 24,
@@ -874,7 +897,8 @@
   {
     "type": "COMESTIBLE",
     "id": "coconut_water",
-    "name": { "str_sp": "coconut water" },
+    "name": "coconut water",
+    "name_plural": "coconut water",
     "weight": "263 g",
     "color": "white",
     "spoils_in": 24,
@@ -896,7 +920,8 @@
   {
     "type": "COMESTIBLE",
     "id": "jar_cream_coconut",
-    "name": { "str_sp": "jarred coconut milk" },
+    "name": "jarred coconut milk",
+    "name_plural": "jarred coconut milk",
     "weight": "258 g",
     "color": "white",
     "spoils_in": 24,
@@ -915,7 +940,8 @@
   {
     "type": "COMESTIBLE",
     "id": "rice_flour",
-    "name": { "str_sp": "rice flour" },
+    "name": "rice flour",
+    "name_plural": "rice flour",
     "weight": "45 g",
     "color": "white",
     "container": "box_small",

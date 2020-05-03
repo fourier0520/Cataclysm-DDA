@@ -1,8 +1,6 @@
 #include "point.h"
 
-#include <algorithm>
 #include <sstream>
-#include <utility>
 
 #include "cata_utility.h"
 

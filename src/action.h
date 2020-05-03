@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_ACTION_H
-#define CATA_SRC_ACTION_H
+#ifndef ACTION_H
+#define ACTION_H
 
 #include <functional>
 #include <map>
@@ -606,4 +606,4 @@ bool can_move_vertical_at( const tripoint &p, int movez );
  */
 bool can_examine_at( const tripoint &p );
 
-#endif // CATA_SRC_ACTION_H
+#endif

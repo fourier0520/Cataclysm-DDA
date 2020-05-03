@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_SUBMAP_H
-#define CATA_SRC_SUBMAP_H
+#ifndef SUBMAP_H
+#define SUBMAP_H
 
 #include <cstddef>
 #include <cstdint>
@@ -349,4 +349,4 @@ struct maptile {
         }
 };
 
-#endif // CATA_SRC_SUBMAP_H
+#endif

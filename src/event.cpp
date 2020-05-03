@@ -26,7 +26,6 @@ std::string enum_to_string<event_type>( event_type data )
         case event_type::character_loses_effect: return "character_loses_effect";
         case event_type::character_takes_damage: return "character_takes_damage";
         case event_type::character_triggers_trap: return "character_triggers_trap";
-        case event_type::character_wakes_up: return "character_wakes_up";
         case event_type::consumes_marloss_item: return "consumes_marloss_item";
         case event_type::crosses_marloss_threshold: return "crosses_marloss_threshold";
         case event_type::crosses_mutation_threshold: return "crosses_mutation_threshold";
@@ -92,7 +91,7 @@ constexpr std::array<std::pair<const char *, cata_variant_type>,
 constexpr std::array<std::pair<const char *, cata_variant_type>,
           event_spec_character::fields.size()> event_spec_character::fields;
 
-static_assert( static_cast<int>( event_type::num_event_types ) == 62,
+static_assert( static_cast<int>( event_type::num_event_types ) == 61,
                "This static_assert is a reminder to add a definition below when you add a new "
                "event_type.  If your event_spec specialization inherits from another struct for "
                "its fields definition then you probably don't need a definition here." );
@@ -115,7 +114,6 @@ DEFINE_EVENT_FIELDS( character_kills_monster )
 DEFINE_EVENT_FIELDS( character_loses_effect )
 DEFINE_EVENT_FIELDS( character_takes_damage )
 DEFINE_EVENT_FIELDS( character_triggers_trap )
-DEFINE_EVENT_FIELDS( character_wakes_up )
 DEFINE_EVENT_FIELDS( consumes_marloss_item )
 DEFINE_EVENT_FIELDS( crosses_mutation_threshold )
 DEFINE_EVENT_FIELDS( dies_from_drug_overdose )
@@ -140,7 +138,7 @@ DEFINE_EVENT_FIELDS( teleports_into_wall )
 } // namespace event_detail
 
 template<event_type Type>
-static void get_fields_if_match( event_type type, event::fields_type &out )
+static void get_fields_if_match( event_type type, std::map<std::string, cata_variant_type> &out )
 {
     if( Type == type ) {
         out = { event_detail::event_spec<Type>::fields.begin(),
@@ -150,10 +148,10 @@ static void get_fields_if_match( event_type type, event::fields_type &out )
 }
 
 template<int... I>
-static event::fields_type
+static std::map<std::string, cata_variant_type>
 get_fields_helper( event_type type, std::integer_sequence<int, I...> )
 {
-    event::fields_type result;
+    std::map<std::string, cata_variant_type> result;
     bool discard[] = {
         ( get_fields_if_match<static_cast<event_type>( I )>( type, result ), true )...
     };
@@ -161,7 +159,7 @@ get_fields_helper( event_type type, std::integer_sequence<int, I...> )
     return result;
 }
 
-event::fields_type event::get_fields( event_type type )
+std::map<std::string, cata_variant_type> event::get_fields( event_type type )
 {
     return get_fields_helper(
                type, std::make_integer_sequence<int, static_cast<int>( event_type::num_event_types )> {} );

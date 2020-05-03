@@ -1,27 +1,26 @@
-#include <algorithm>
 #include <cstddef>
 #include <iomanip>
+#include <sstream>
+#include <algorithm>
 #include <list>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "avatar.h"
-#include "calendar.h"
 #include "catch/catch.hpp"
-#include "character.h"
-#include "field.h"
 #include "game.h"
-#include "game_constants.h"
-#include "item.h"
-#include "lightmap.h"
+#include "field.h"
 #include "map.h"
 #include "map_helpers.h"
-#include "point.h"
+#include "calendar.h"
+#include "item.h"
+#include "lightmap.h"
 #include "shadowcasting.h"
 #include "type_id.h"
+#include "game_constants.h"
+#include "point.h"
 
 enum class vision_test_flags {
     none = 0,

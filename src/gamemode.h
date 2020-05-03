@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_GAMEMODE_H
-#define CATA_SRC_GAMEMODE_H
+#ifndef GAMEMODE_H
+#define GAMEMODE_H
 
 #include <memory>
 #include <string>
@@ -8,6 +8,11 @@
 #include "enums.h"
 
 enum action_id : int;
+namespace catacurses
+{
+class window;
+} // namespace catacurses
+
 struct special_game;
 
 std::string special_game_name( special_game_id id );
@@ -34,4 +39,4 @@ struct special_game {
 
 };
 
-#endif // CATA_SRC_GAMEMODE_H
+#endif // GAMEMODE_H

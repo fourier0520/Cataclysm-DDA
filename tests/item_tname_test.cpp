@@ -1,16 +1,9 @@
-#include <memory>
-#include <set>
-#include <string>
-
 #include "avatar.h"
-#include "calendar.h"
 #include "catch/catch.hpp"
 #include "game.h"
 #include "item.h"
 #include "itype.h"
 #include "options_helpers.h"
-#include "type_id.h"
-#include "value_ptr.h"
 
 static const std::string flag_COLD( "COLD" );
 static const std::string flag_DIAMOND( "DIAMOND" );
@@ -47,7 +40,7 @@ static const skill_id skill_survival( "survival" );
 
 TEST_CASE( "food with hidden effects", "[item][tname][hidden]" )
 {
-    g->u.clear_mutations();
+    g->u.empty_traits();
 
     GIVEN( "food with hidden poison" ) {
         item coffee = item( "coffee_pod" );
@@ -384,12 +377,6 @@ TEST_CASE( "weapon fouling", "[item][tname][fouling][dirt]" )
 {
     GIVEN( "a gun with potential fouling" ) {
         item gun( "hk_mp5" );
-
-        // Ensure the player and gun are normal size to prevent "too big" or "too small" suffix in tname
-        g->u.clear_mutations();
-        REQUIRE( gun.get_sizing( g-> u, true ) == item::sizing::human_sized_human_char );
-        REQUIRE_FALSE( gun.has_flag( "OVERSIZE" ) );
-        REQUIRE_FALSE( gun.has_flag( "UNDERSIZE" ) );
 
         WHEN( "it is perfectly clean" ) {
             gun.set_var( "dirt", 0 );

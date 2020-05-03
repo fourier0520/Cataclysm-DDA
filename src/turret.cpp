@@ -1,12 +1,10 @@
 #include "vehicle.h" // IWYU pragma: associated
 
 #include <algorithm>
+#include <numeric>
 #include <memory>
 
 #include "avatar.h"
-#include "creature.h"
-#include "debug.h"
-#include "enums.h"
 #include "game.h"
 #include "gun_mode.h"
 #include "item.h"
@@ -19,10 +17,12 @@
 #include "string_formatter.h"
 #include "translations.h"
 #include "ui.h"
-#include "value_ptr.h"
 #include "veh_type.h"
 #include "vehicle_selector.h"
-#include "vpart_position.h"
+#include "creature.h"
+#include "debug.h"
+#include "optional.h"
+#include "enums.h"
 #include "vpart_range.h"
 
 static const itype_id fuel_type_battery( "battery" );

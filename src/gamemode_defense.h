@@ -1,16 +1,13 @@
 #pragma once
-#ifndef CATA_SRC_GAMEMODE_DEFENSE_H
-#define CATA_SRC_GAMEMODE_DEFENSE_H
+#ifndef GAMEMODE_DEFENSE_H
+#define GAMEMODE_DEFENSE_H
 
-#include <string>
 #include <vector>
 
-#include "calendar.h"
-#include "cursesdef.h"
-#include "enums.h"
 #include "gamemode.h"
-#include "omdata.h"
+#include "calendar.h"
 #include "point.h"
+#include "omdata.h"
 #include "type_id.h"
 
 enum action_id : int;
@@ -131,4 +128,4 @@ struct defense_game : public special_game {
         overmap_special_id defloc_special;
 };
 
-#endif // CATA_SRC_GAMEMODE_DEFENSE_H
+#endif // GAMEMODE_DEFENSE_H

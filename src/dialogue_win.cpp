@@ -1,13 +1,12 @@
 #include "dialogue_win.h"
 
 #include <algorithm>
-#include <memory>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "input.h"
 #include "output.h"
-#include "point.h"
 #include "translations.h"
 
 void dialogue_window::open_dialogue( bool text_only )

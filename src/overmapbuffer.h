@@ -1,40 +1,42 @@
 #pragma once
-#ifndef CATA_SRC_OVERMAPBUFFER_H
-#define CATA_SRC_OVERMAPBUFFER_H
+#ifndef OVERMAPBUFFER_H
+#define OVERMAPBUFFER_H
 
-#include <array>
-#include <functional>
 #include <memory>
 #include <set>
-#include <string>
 #include <unordered_map>
-#include <utility>
 #include <vector>
+#include <array>
+#include <functional>
+#include <string>
+#include <utility>
 
 #include "enums.h"
-#include "memory_fast.h"
 #include "omdata.h"
-#include "optional.h"
-#include "overmap.h"
 #include "overmap_types.h"
+#include "optional.h"
+#include "type_id.h"
 #include "point.h"
 #include "string_id.h"
-#include "type_id.h"
+#include "memory_fast.h"
 
-class basecamp;
 class character_id;
-class map_extra;
+struct mongroup;
 class monster;
 class npc;
-class vehicle;
-struct mongroup;
+struct om_vehicle;
+class overmap_special_batch;
+class overmap;
+struct radio_tower;
 struct regional_settings;
+class vehicle;
+class basecamp;
+class map_extra;
 
 struct path_type {
     bool only_road = false;
     bool only_water = false;
     bool amphibious = false;
-    bool only_air = false;
     bool avoid_danger = false;
 };
 
@@ -530,4 +532,4 @@ class overmapbuffer
 
 extern overmapbuffer overmap_buffer;
 
-#endif // CATA_SRC_OVERMAPBUFFER_H
+#endif

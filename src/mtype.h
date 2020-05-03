@@ -1,20 +1,18 @@
 #pragma once
-#ifndef CATA_SRC_MTYPE_H
-#define CATA_SRC_MTYPE_H
+#ifndef MTYPE_H
+#define MTYPE_H
 
 #include <map>
 #include <set>
-#include <string>
 #include <vector>
+#include <string>
 
-#include "behavior.h"
-#include "calendar.h"
 #include "color.h"
+#include "optional.h"
 #include "damage.h"
 #include "enum_bitset.h"
 #include "enums.h"
 #include "mattack_common.h"
-#include "optional.h"
 #include "pathfinding.h"
 #include "translations.h"
 #include "type_id.h"
@@ -22,9 +20,9 @@
 
 class Creature;
 class monster;
+template <typename E> struct enum_traits;
 struct dealt_projectile_attack;
 struct species_type;
-template <typename E> struct enum_traits;
 
 enum body_part : int;
 enum m_size : int;
@@ -167,7 +165,6 @@ enum m_flag : int {
     MF_PET_HARNESSABLE,     // This monster can be harnessed when tamed.
     MF_DOGFOOD,             // This monster will become friendly when fed dog food.
     MF_MILKABLE,            // This monster is milkable.
-    MF_SHEARABLE,           // This monster is shearable.
     MF_NO_BREED,            // This monster doesn't breed, even though it has breed data
     MF_PET_WONT_FOLLOW,     // This monster won't follow the player automatically when tamed.
     MF_DRIPS_NAPALM,        // This monster ocassionally drips napalm on move
@@ -215,8 +212,6 @@ struct mtype {
         enum_bitset<mon_trigger> anger;
         enum_bitset<mon_trigger> fear;
         enum_bitset<mon_trigger> placate;
-
-        behavior::node_t goals;
 
         void add_special_attacks( const JsonObject &jo, const std::string &member_name,
                                   const std::string &src );
@@ -390,9 +385,6 @@ struct mtype {
         int get_meat_chunks_count() const;
         std::string get_description() const;
         std::string get_footsteps() const;
-        void set_strategy();
-        void add_goal( const std::string &goal_id );
-        const behavior::node_t *get_goals() const;
 
         // Historically located in monstergenerator.cpp
         void load( const JsonObject &jo, const std::string &src );
@@ -400,4 +392,4 @@ struct mtype {
 
 mon_effect_data load_mon_effect_data( const JsonObject &e );
 
-#endif // CATA_SRC_MTYPE_H
+#endif

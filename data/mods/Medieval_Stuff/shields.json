@@ -128,7 +128,8 @@
   {
     "id": "shield_scutum",
     "type": "ARMOR",
-    "name": { "str": "scutum", "str_pl": "scuta" },
+    "name": "scutum",
+    "name_plural": "scuta",
     "category": "armor",
     "description": "A rectangular shield from ancient Rome, made of wood and iron.  Perfect for fighting in formation, but not ideal for facing zombies alone.",
     "weight": "4535 g",

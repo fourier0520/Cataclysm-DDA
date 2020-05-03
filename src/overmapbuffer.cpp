@@ -1,25 +1,20 @@
 #include "overmapbuffer.h"
 
+#include <climits>
 #include <algorithm>
 #include <cassert>
-#include <climits>
+#include <cstdlib>
 #include <iterator>
 #include <list>
 #include <map>
 
 #include "avatar.h"
 #include "basecamp.h"
-#include "calendar.h"
 #include "cata_utility.h"
-#include "character_id.h"
-#include "color.h"
-#include "common_types.h"
 #include "coordinate_conversions.h"
 #include "debug.h"
 #include "filesystem.h"
 #include "game.h"
-#include "game_constants.h"
-#include "int_id.h"
 #include "line.h"
 #include "map.h"
 #include "mongroup.h"
@@ -27,14 +22,20 @@
 #include "npc.h"
 #include "optional.h"
 #include "overmap.h"
+#include "map_iterator.h"
 #include "overmap_connection.h"
 #include "overmap_types.h"
+#include "string_formatter.h"
+#include "vehicle.h"
+#include "calendar.h"
+#include "common_types.h"
+#include "game_constants.h"
 #include "rng.h"
 #include "simple_pathfinding.h"
-#include "string_formatter.h"
 #include "string_id.h"
 #include "translations.h"
-#include "vehicle.h"
+#include "int_id.h"
+#include "color.h"
 
 class map_extra;
 
@@ -175,7 +176,7 @@ void overmapbuffer::fix_npcs( overmap &new_overmap )
             point max = om_to_sm_copy( loc + point_south_east ) - point_south_east;
             npc_sm.x = clamp( npc_sm.x, min.x, max.x );
             npc_sm.y = clamp( npc_sm.y, min.y, max.y );
-            np.spawn_at_sm( tripoint( npc_sm, np.posz() ) );
+            np.spawn_at_sm( npc_sm.x, npc_sm.y, np.posz() );
             new_overmap.npcs.push_back( ptr );
             continue;
         }
@@ -599,8 +600,7 @@ void overmapbuffer::remove_vehicle( const vehicle *veh )
 
 void overmapbuffer::add_vehicle( vehicle *veh )
 {
-    const point abs_pos = g->m.getabs( veh->global_pos3().xy() );
-    const point omt = ms_to_omt_copy( abs_pos );
+    const point omt = ms_to_omt_copy( g->m.getabs( veh->global_pos3().xy() ) );
     const overmap_with_local_coords om_loc = get_om_global( omt );
     int id = om_loc.om->vehicles.size() + 1;
     // this *should* be unique but just in case
@@ -709,6 +709,7 @@ std::vector<tripoint> overmapbuffer::get_npc_path( const tripoint &src, const tr
     const auto get_ter_at = [&]( const point & p ) {
         return ter( base + p );
     };
+
     const auto estimate = [&]( const pf::node & cur, const pf::node * ) {
         int res = 0;
         const oter_id oter = get_ter_at( cur.pos );
@@ -726,17 +727,9 @@ std::vector<tripoint> overmapbuffer::get_npc_path( const tripoint &src, const tr
                                   is_ot_match( "bridge", oter, ot_match_type::type ) ) ) {
             return pf::rejected;
         }
-        if( ptype.only_air && ( !is_ot_match( "open_air", oter, ot_match_type::type ) ) ) {
+        if( is_ot_match( "empty_rock", oter, ot_match_type::type ) ||
+            is_ot_match( "open_air", oter, ot_match_type::type ) ) {
             return pf::rejected;
-        }
-        if( is_ot_match( "empty_rock", oter, ot_match_type::type ) ) {
-            return pf::rejected;
-        } else if( is_ot_match( "open_air", oter, ot_match_type::type ) ) {
-            if( ptype.only_air ) {
-                travel_cost += 1;
-            } else {
-                return pf::rejected;
-            }
         } else if( is_ot_match( "forest", oter, ot_match_type::type ) ) {
             travel_cost = 10;
         } else if( is_ot_match( "forest_water", oter, ot_match_type::type ) ) {
@@ -1041,14 +1034,8 @@ shared_ptr_fast<npc> overmapbuffer::find_npc( character_id id )
 cata::optional<basecamp *> overmapbuffer::find_camp( const point &p )
 {
     for( auto &it : overmaps ) {
-        const int x = p.x;
-        const int y = p.y;
-        for( int x2 = x - 3; x2 < x + 3; x2++ ) {
-            for( int y2 = y - 3; y2 < y + 3; y2++ ) {
-                if( cata::optional<basecamp *> camp = it.second->find_camp( point( x2, y2 ) ) ) {
-                    return camp;
-                }
-            }
+        if( cata::optional<basecamp *> camp = it.second->find_camp( p ) ) {
+            return camp;
         }
     }
     return cata::nullopt;

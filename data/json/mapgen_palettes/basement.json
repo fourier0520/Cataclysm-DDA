@@ -157,7 +157,6 @@
       "%": "t_wall_w"
     },
     "furniture": {
-      "a": "f_fireplace",
       "A": "f_stool",
       "F": "f_home_furnace",
       "J": "f_counter",

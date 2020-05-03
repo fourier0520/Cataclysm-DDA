@@ -1,21 +1,19 @@
 #include "effect.h"
 
-#include <algorithm>
-#include <cstddef>
 #include <map>
+#include <algorithm>
 #include <memory>
 #include <unordered_set>
 
-#include "color.h"
 #include "debug.h"
-#include "enums.h"
 #include "json.h"
 #include "messages.h"
 #include "output.h"
 #include "player.h"
 #include "rng.h"
 #include "string_formatter.h"
-#include "string_id.h"
+#include "color.h"
+#include "enums.h"
 #include "units.h"
 
 static const efftype_id effect_beartrap( "beartrap" );

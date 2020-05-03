@@ -1,84 +1,78 @@
 #include "faction_camp.h" // IWYU pragma: associated
 
-#include <algorithm>
 #include <cstddef>
+#include <algorithm>
+#include <string>
+#include <vector>
 #include <list>
 #include <map>
 #include <memory>
 #include <set>
-#include <string>
 #include <unordered_set>
-#include <vector>
 
 #include "activity_handlers.h"
 #include "avatar.h"
-#include "basecamp.h"
-#include "calendar.h"
-#include "cata_utility.h"
+#include "bionics.h"
 #include "catacharset.h"
 #include "clzones.h"
-#include "colony.h"
-#include "color.h"
 #include "compatibility.h" // needed for the workaround for the std::to_string bug in some compilers
 #include "coordinate_conversions.h"
-#include "cursesdef.h"
 #include "debug.h"
 #include "editmap.h"
-#include "enums.h"
-#include "faction.h"
 #include "game.h"
-#include "game_constants.h"
 #include "iexamine.h"
 #include "input.h"
-#include "int_id.h"
-#include "inventory.h"
-#include "item.h"
-#include "item_contents.h"
 #include "item_group.h"
-#include "item_stack.h"
 #include "itype.h"
-#include "kill_tracker.h"
 #include "line.h"
+#include "kill_tracker.h"
 #include "map.h"
 #include "map_iterator.h"
 #include "mapdata.h"
 #include "mapgen_functions.h"
-#include "memory_fast.h"
 #include "messages.h"
 #include "mission.h"
 #include "mission_companion.h"
 #include "npc.h"
 #include "npctalk.h"
-#include "optional.h"
 #include "output.h"
 #include "overmap.h"
 #include "overmap_ui.h"
 #include "overmapbuffer.h"
-#include "player_activity.h"
-#include "point.h"
 #include "recipe.h"
 #include "recipe_groups.h"
 #include "requirements.h"
 #include "rng.h"
 #include "skill.h"
-#include "stomach.h"
-#include "string_formatter.h"
-#include "string_id.h"
 #include "string_input_popup.h"
 #include "translations.h"
-#include "type_id.h"
-#include "ui.h"
-#include "ui_manager.h"
-#include "units.h"
-#include "value_ptr.h"
 #include "veh_type.h"
 #include "vehicle.h"
-#include "vpart_position.h"
 #include "vpart_range.h"
-#include "weather.h"
+#include "basecamp.h"
+#include "calendar.h"
+#include "color.h"
+#include "cursesdef.h"
+#include "enums.h"
+#include "faction.h"
+#include "game_constants.h"
+#include "int_id.h"
+#include "inventory.h"
+#include "item.h"
+#include "optional.h"
+#include "pimpl.h"
+#include "player_activity.h"
+#include "string_formatter.h"
+#include "string_id.h"
+#include "ui.h"
+#include "units.h"
 #include "weighted_list.h"
-
-class character_id;
+#include "type_id.h"
+#include "colony.h"
+#include "item_stack.h"
+#include "point.h"
+#include "vpart_position.h"
+#include "weather.h"
 
 static const activity_id ACT_MOVE_LOOT( "ACT_MOVE_LOOT" );
 
@@ -154,7 +148,7 @@ struct miss_data {
 recipe_id select_camp_option( const std::map<recipe_id, translation> &pos_options,
                               const std::string &option );
 
-// eventually this will move to JSON
+// enventually this will move to JSON
 std::map<std::string, miss_data> miss_info = {{
         {
             "_faction_upgrade_camp", {
@@ -178,10 +172,10 @@ std::map<std::string, miss_data> miss_info = {{
             }
         },
         {
-            "traveling", {
-                "Traveling", to_translation( "Traveling" ),
-                to_translation( "Busy traveling!\n" ),
-                "Recall ally from traveling", to_translation( "Recall ally from traveling" )
+            "travelling", {
+                "Travelling", to_translation( "Travelling" ),
+                to_translation( "Busy travelling!\n" ),
+                "Recall ally from travelling", to_translation( "Recall ally from travelling" )
             }
         },
         {
@@ -1306,9 +1300,6 @@ void basecamp::get_available_missions( mission_data &mission_key )
                                   "\n\nRisk: None\n"
                                   "Time: Ongoing" ) );
         mission_key.add( "Assign Jobs", _( "Assign Jobs" ), entry );
-        entry = string_format( _( "Notes:\n"
-                                  "Assign followers to work at this camp." ) );
-        mission_key.add( "Assign Workers", _( "Assign Workers" ), entry );
         entry = _( "Notes:\nAbandon this camp" );
         mission_key.add( "Abandon Camp", _( "Abandon Camp" ), entry );
     }
@@ -1364,9 +1355,6 @@ bool basecamp::handle_mission( const std::string &miss_id,
 
     if( miss_id == "Assign Jobs" ) {
         job_assignment_ui();
-    }
-    if( miss_id == "Assign Workers" ) {
-        worker_assignment_ui();
     }
     if( miss_id == "Abandon Camp" ) {
         abandon_camp();
@@ -1634,145 +1622,45 @@ void basecamp::abandon_camp()
         talk_function::stop_guard( *guy );
     }
     overmap_buffer.remove_camp( *this );
-    g->m.remove_submap_camp( g->m.getlocal( bb_pos ) );
+    g->m.remove_submap_camp( bb_pos );
     add_msg( m_info, _( "You abandon %s." ), name );
-}
-
-void basecamp::worker_assignment_ui()
-{
-    int entries_per_page = 0;
-    catacurses::window w_followers;
-
-    ui_adaptor ui;
-    ui.on_screen_resize( [&]( ui_adaptor & ui ) {
-        const int term_x = TERMY > FULL_SCREEN_HEIGHT ? ( TERMY - FULL_SCREEN_HEIGHT ) / 2 : 0;
-        const int term_y = TERMX > FULL_SCREEN_WIDTH ? ( TERMX - FULL_SCREEN_WIDTH ) / 2 : 0;
-
-        w_followers = catacurses::newwin( FULL_SCREEN_HEIGHT, FULL_SCREEN_WIDTH,
-                                          point( term_y, term_x ) );
-        entries_per_page = FULL_SCREEN_HEIGHT - 4;
-
-        ui.position_from_window( w_followers );
-    } );
-    ui.mark_resize();
-
-    size_t selection = 0;
-    input_context ctxt( "FACTION MANAGER" );
-    ctxt.register_updown();
-    ctxt.register_action( "CONFIRM" );
-    ctxt.register_action( "QUIT" );
-    ctxt.register_action( "HELP_KEYBINDINGS" );
-    validate_assignees();
-    g->validate_npc_followers();
-
-    std::vector<npc *> followers;
-    npc *cur_npc = nullptr;
-
-    ui.on_redraw( [&]( const ui_adaptor & ) {
-        werase( w_followers );
-
-        // entries_per_page * page number
-        const size_t top_of_page = entries_per_page * ( selection / entries_per_page );
-
-        for( int i = 0; i < FULL_SCREEN_HEIGHT - 1; i++ ) {
-            mvwputch( w_followers, point( 45, i ), BORDER_COLOR, LINE_XOXO );
-        }
-        draw_border( w_followers );
-        const nc_color col = c_white;
-        const std::string no_npcs = _( "You have no companions following you." );
-        if( !followers.empty() ) {
-            draw_scrollbar( w_followers, selection, entries_per_page, followers.size(),
-                            point( 0, 3 ) );
-            for( size_t i = top_of_page; i < followers.size(); i++ ) {
-                const int y = i - top_of_page + 3;
-                trim_and_print( w_followers, point( 1, y ), 43, selection == i ? hilite( col ) : col,
-                                followers[i]->disp_name() );
-            }
-        } else {
-            mvwprintz( w_followers, point( 1, 4 ), c_light_red, no_npcs );
-        }
-        mvwprintz( w_followers, point( 1, FULL_SCREEN_HEIGHT - 1 ), c_light_gray,
-                   _( "Press %s to assign this follower to this camp." ), ctxt.get_desc( "CONFIRM" ) );
-        wrefresh( w_followers );
-    } );
-
-    while( true ) {
-        // create a list of npcs stationed at this camp
-        followers.clear();
-        for( const character_id &elem : g->get_follower_list() ) {
-            shared_ptr_fast<npc> npc_to_get = overmap_buffer.find_npc( elem );
-            if( !npc_to_get || !npc_to_get->is_following() ) {
-                continue;
-            }
-            npc *npc_to_add = npc_to_get.get();
-            followers.push_back( npc_to_add );
-        }
-        cur_npc = nullptr;
-        if( !followers.empty() ) {
-            cur_npc = followers[selection];
-        }
-
-        ui_manager::redraw();
-        const std::string action = ctxt.handle_input();
-        if( action == "DOWN" ) {
-            selection++;
-            if( selection >= followers.size() ) {
-                selection = 0;
-            }
-        } else if( action == "UP" ) {
-            if( selection == 0 ) {
-                selection = followers.empty() ? 0 : followers.size() - 1;
-            } else {
-                selection--;
-            }
-        } else if( action == "CONFIRM" ) {
-            if( !followers.empty() && cur_npc ) {
-                talk_function::assign_camp( *cur_npc );
-            }
-        } else if( action == "QUIT" ) {
-            break;
-        }
-    }
 }
 
 void basecamp::job_assignment_ui()
 {
-    int entries_per_page = 0;
-    catacurses::window w_jobs;
+    int term_x = TERMY > FULL_SCREEN_HEIGHT ? ( TERMY - FULL_SCREEN_HEIGHT ) / 2 : 0;
+    int term_y = TERMX > FULL_SCREEN_WIDTH ? ( TERMX - FULL_SCREEN_WIDTH ) / 2 : 0;
 
-    ui_adaptor ui;
-    ui.on_screen_resize( [&]( ui_adaptor & ui ) {
-        const int term_x = TERMY > FULL_SCREEN_HEIGHT ? ( TERMY - FULL_SCREEN_HEIGHT ) / 2 : 0;
-        const int term_y = TERMX > FULL_SCREEN_WIDTH ? ( TERMX - FULL_SCREEN_WIDTH ) / 2 : 0;
-
-        w_jobs = catacurses::newwin( FULL_SCREEN_HEIGHT, FULL_SCREEN_WIDTH,
-                                     point( term_y, term_x ) );
-
-        entries_per_page = FULL_SCREEN_HEIGHT - 4;
-
-        ui.position_from_window( w_jobs );
-    } );
-    ui.mark_resize();
-
+    catacurses::window w_jobs = catacurses::newwin( FULL_SCREEN_HEIGHT, FULL_SCREEN_WIDTH,
+                                point( term_y, term_x ) );
+    const int entries_per_page = FULL_SCREEN_HEIGHT - 4;
     size_t selection = 0;
     input_context ctxt( "FACTION MANAGER" );
+    ctxt.register_cardinal();
     ctxt.register_updown();
+    ctxt.register_action( "ANY_INPUT" );
     ctxt.register_action( "CONFIRM" );
     ctxt.register_action( "QUIT" );
-    ctxt.register_action( "HELP_KEYBINDINGS" );
-    validate_assignees();
-
-    std::vector<npc *> stationed_npcs;
-    npc *cur_npc = nullptr;
-
-    ui.on_redraw( [&]( const ui_adaptor & ) {
+    while( true ) {
         werase( w_jobs );
+        // create a list of npcs stationed at this camp
+        std::vector<npc *> stationed_npcs;
+        for( const auto &elem : get_npcs_assigned() ) {
+            if( elem ) {
+                stationed_npcs.push_back( elem.get() );
+            }
+        }
+        npc *cur_npc = nullptr;
+        // entries_per_page * page number
         const size_t top_of_page = entries_per_page * ( selection / entries_per_page );
+        if( !stationed_npcs.empty() ) {
+            cur_npc = stationed_npcs[selection];
+        }
+
         for( int i = 0; i < FULL_SCREEN_HEIGHT - 1; i++ ) {
             mvwputch( w_jobs, point( 45, i ), BORDER_COLOR, LINE_XOXO );
         }
         draw_border( w_jobs );
-        mvwprintz( w_jobs, point( 46, 1 ), c_white, _( "Job/Priority" ) );
         const nc_color col = c_white;
         const std::string no_npcs = _( "There are no npcs stationed here" );
         if( !stationed_npcs.empty() ) {
@@ -1784,20 +1672,14 @@ void basecamp::job_assignment_ui()
                                 stationed_npcs[i]->disp_name() );
             }
             if( selection < stationed_npcs.size() ) {
-                int start_y = 3;
-                if( cur_npc ) {
-                    if( cur_npc->has_job() ) {
-                        for( activity_id &elem : cur_npc->job.get_prioritised_vector() ) {
-                            const int priority = cur_npc->job.get_priority_of_job( elem );
-                            player_activity test_act = player_activity( elem );
-                            mvwprintz( w_jobs, point( 46, start_y ), c_light_gray, string_format( _( "%s : %s" ),
-                                       test_act.get_verb(), std::to_string( priority ) ) );
-                            start_y++;
-                        }
-                    } else {
-                        mvwprintz( w_jobs, point( 46, start_y ), c_light_red, _( "No current job." ) );
-                    }
+                std::string job_description;
+                if( cur_npc && cur_npc->has_job() ) {
+                    // get the current NPCs job
+                    job_description = npc_job_name( cur_npc->get_job() );
+                } else {
+                    job_description = _( "No particular job" );
                 }
+                mvwprintz( w_jobs, point( 46, 3 ), c_light_gray, job_description );
             } else {
                 mvwprintz( w_jobs, point( 46, 4 ), c_light_red, no_npcs );
             }
@@ -1805,26 +1687,8 @@ void basecamp::job_assignment_ui()
             mvwprintz( w_jobs, point( 46, 4 ), c_light_red, no_npcs );
         }
         mvwprintz( w_jobs, point( 1, FULL_SCREEN_HEIGHT - 1 ), c_light_gray,
-                   _( "Press %s to change this workers job priorities." ), ctxt.get_desc( "CONFIRM" ) );
+                   _( "Press %s to change this workers job." ), ctxt.get_desc( "CONFIRM" ) );
         wrefresh( w_jobs );
-    } );
-
-    while( true ) {
-        // create a list of npcs stationed at this camp
-        stationed_npcs.clear();
-        for( const auto &elem : get_npcs_assigned() ) {
-            if( elem ) {
-                stationed_npcs.push_back( elem.get() );
-            }
-        }
-        cur_npc = nullptr;
-        // entries_per_page * page number
-        if( !stationed_npcs.empty() ) {
-            cur_npc = stationed_npcs[selection];
-        }
-
-        ui_manager::redraw();
-
         const std::string action = ctxt.handle_input();
         if( action == "DOWN" ) {
             selection++;
@@ -1838,45 +1702,25 @@ void basecamp::job_assignment_ui()
                 selection--;
             }
         } else if( action == "CONFIRM" ) {
-            if( cur_npc ) {
-                while( true ) {
-                    uilist smenu;
-                    smenu.text = _( "Assign job priority ( 0 to disable )" );
-                    int count = 0;
-                    std::vector<activity_id> job_vec = cur_npc->job.get_prioritised_vector();
-                    smenu.addentry( count, true, 'C', _( "Clear all priorities" ) );
-                    count++;
-                    for( const activity_id &elem : job_vec ) {
-                        player_activity test_act = player_activity( elem );
-                        const int priority = cur_npc->job.get_priority_of_job( elem );
-                        smenu.addentry( count, true, MENU_AUTOASSIGN, string_format( _( "%s : %s" ), test_act.get_verb(),
-                                        std::to_string( priority ) ) );
-                        count++;
-                    }
-                    smenu.query();
-                    if( smenu.ret == UILIST_CANCEL ) {
-                        break;
-                    } else if( smenu.ret == 0 ) {
-                        cur_npc->job.clear_all_priorities();
-                    } else if( smenu.ret > 0 && smenu.ret <= static_cast<int>( job_vec.size() ) ) {
-                        activity_id sel_job = job_vec[smenu.ret - 1];
-                        player_activity test_act = player_activity( sel_job );
-                        const std::string formatted = string_format( _( "Priority for %s " ), test_act.get_verb() );
-                        const int amount = string_input_popup()
-                                           .title( formatted )
-                                           .width( 20 )
-                                           .only_digits( true )
-                                           .query_int();
-                        cur_npc->job.set_task_priority( sel_job, amount );
-                    } else {
-                        break;
-                    }
+            if( !stationed_npcs.empty() ) {
+                uilist smenu;
+                smenu.text = _( "Assign which job?" );
+                int count = 0;
+                for( const auto &entry : all_jobs() ) {
+                    smenu.addentry( count++, true, MENU_AUTOASSIGN, entry );
+                }
+
+                smenu.query();
+                if( smenu.ret >= 0 ) {
+                    cur_npc->set_job( static_cast<npc_job>( smenu.ret ) );
                 }
             }
         } else if( action == "QUIT" ) {
             break;
         }
     }
+
+    g->refresh_all();
 }
 
 void basecamp::start_menial_labor()
@@ -2804,12 +2648,11 @@ void basecamp::recruit_return( const std::string &task, int score )
         description += string_format( _( "Perception:      %10d\n\n" ), recruit->per_max );
         description += _( "Top 3 Skills:\n" );
 
-        const auto skillslist = Skill::get_skills_sorted_by(
-        [&]( const Skill & a, const Skill & b ) {
+        const auto skillslist = Skill::get_skills_sorted_by( [&]( const Skill & a,
+        const Skill & b ) {
             const int level_a = recruit->get_skill_level( a.ident() );
             const int level_b = recruit->get_skill_level( b.ident() );
-            return localized_compare( std::make_pair( -level_a, a.name() ),
-                                      std::make_pair( -level_b, b.name() ) );
+            return level_a > level_b || ( level_a == level_b && a.name() < b.name() );
         } );
 
         description += string_format( "%s:          %4d\n", right_justify( skillslist[0]->name(), 12 ),
@@ -3581,7 +3424,7 @@ bool basecamp::validate_sort_points()
     if( g->m.check_vehicle_zones( g->get_levz() ) ) {
         mgr.cache_vzones();
     }
-    tripoint src_loc = g->m.getlocal( bb_pos ) + point_north;
+    tripoint src_loc = bb_pos + point_north;
     const tripoint abspos = g->m.getabs( g->u.pos() );
     if( !mgr.has_near( zone_type_camp_storage, abspos, 60 ) ||
         !mgr.has_near( zone_type_camp_food, abspos, 60 ) ) {
@@ -3911,7 +3754,7 @@ bool basecamp::distribute_food()
         for( item &i : initial_items ) {
             if( i.is_container() && i.get_contained().is_food() ) {
                 auto comest = i.get_contained();
-                i.contents.clear_items();
+                i.contents.clear();
                 //NPCs are lazy bastards who leave empties all around the camp fire
                 tripoint litter_spread = p_litter;
                 litter_spread.x += rng( -3, 3 );

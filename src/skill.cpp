@@ -1,20 +1,18 @@
 #include "skill.h"
 
-#include <algorithm>
-#include <array>
 #include <cstddef>
+#include <algorithm>
 #include <iterator>
+#include <array>
 #include <memory>
 #include <utility>
 
-#include "cata_utility.h"
 #include "debug.h"
 #include "item.h"
 #include "json.h"
 #include "options.h"
 #include "recipe.h"
 #include "rng.h"
-#include "string_id.h"
 #include "translations.h"
 
 // TODO: a map, for Barry's sake make this a map.

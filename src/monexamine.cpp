@@ -1,51 +1,43 @@
 #include "monexamine.h"
 
 #include <climits>
-#include <map>
-#include <memory>
 #include <string>
 #include <utility>
+#include <list>
+#include <map>
+#include <memory>
 #include <vector>
 
 #include "avatar.h"
-#include "bodypart.h"
 #include "calendar.h"
-#include "cata_utility.h"
-#include "character.h"
-#include "compatibility.h"
-#include "debug.h"
-#include "enums.h"
+#include "creature_tracker.h"
 #include "game.h"
 #include "game_inventory.h"
+#include "handle_liquid.h"
 #include "item.h"
-#include "item_location.h"
 #include "itype.h"
 #include "iuse.h"
 #include "map.h"
-#include "material.h"
 #include "messages.h"
 #include "monster.h"
 #include "mtype.h"
 #include "npc.h"
 #include "output.h"
-#include "player_activity.h"
-#include "point.h"
-#include "rng.h"
-#include "string_formatter.h"
 #include "string_input_popup.h"
 #include "translations.h"
+#include "ui.h"
+#include "units.h"
+#include "bodypart.h"
+#include "debug.h"
+#include "enums.h"
+#include "player_activity.h"
+#include "rng.h"
+#include "string_formatter.h"
 #include "type_id.h"
 #include "pimpl.h"
 #include "point.h"
 #include "custom_activity.h"
 #include "options.h"
-#include "ui.h"
-#include "units.h"
-#include "value_ptr.h"
-
-static const quality_id qual_shear( "SHEAR" );
-
-static const efftype_id effect_sheared( "sheared" );
 
 static const activity_id ACT_MILK( "ACT_MILK" );
 static const activity_id ACT_PLAY_WITH_PET( "ACT_PLAY_WITH_PET" );
@@ -89,6 +81,7 @@ const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_frien
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
 static const skill_id skill_survival( "survival" );
+
 static const species_id ZOMBIE( "ZOMBIE" );
 static const species_id SPECIES_CUBI( "CUBI" );
 
@@ -108,7 +101,6 @@ bool monexamine::pet_menu( monster &z )
         play_with_pet,
         pheromone,
         milk,
-        shear,
         pay,
         attach_saddle,
         remove_saddle,
@@ -178,24 +170,6 @@ bool monexamine::pet_menu( monster &z )
 
     if( z.has_flag( MF_MILKABLE ) ) {
         amenu.addentry( milk, true, 'm', _( "Milk %s" ), pet_name );
-    }
-    if( z.has_flag( MF_SHEARABLE ) ) {
-        bool available = true;
-        if( season_of_year( calendar::turn ) == WINTER ) {
-            amenu.addentry( shear, false, 'S',
-                            _( "This animal would freeze if you shear it during winter." ) );
-            available = false;
-        } else if( z.has_effect( effect_sheared ) ) {
-            amenu.addentry( shear, false, 'S', _( "This animal is not ready to be sheared again yet." ) );
-            available = false;
-        }
-        if( available ) {
-            if( g->u.has_quality( qual_shear, 1 ) ) {
-                amenu.addentry( shear, true, 'S', _( "Shear %s." ), pet_name );
-            } else {
-                amenu.addentry( shear, false, 'S', _( "You cannot shear this animal without shears." ) );
-            }
-        }
     }
     if( z.has_flag( MF_PET_MOUNTABLE ) && !z.has_effect( effect_saddled ) &&
         g->u.has_item_with_flag( "TACK" ) && g->u.get_skill_level( skill_survival ) >= 1 ) {
@@ -348,9 +322,6 @@ bool monexamine::pet_menu( monster &z )
         case milk:
             milk_source( z );
             break;
-        case shear:
-            shear_animal( z );
-            break;
         case pay:
             pay_bot( z );
             break;
@@ -389,22 +360,6 @@ bool monexamine::pet_menu( monster &z )
     return true;
 }
 
-void monexamine::shear_animal( monster &z )
-{
-    const int moves = to_moves<int>( time_duration::from_minutes( 30 / g->u.max_quality(
-                                         qual_shear ) ) );
-
-    g->u.assign_activity( activity_id( "ACT_SHEAR" ), moves, -1 );
-    g->u.activity.coords.push_back( g->m.getabs( z.pos() ) );
-    // pin the sheep in place if it isn't already
-    if( !z.has_effect( effect_tied ) ) {
-        z.add_effect( effect_tied, 1_turns, num_bp, true );
-        g->u.activity.str_values.push_back( "temp_tie" );
-    }
-    g->u.activity.targets.push_back( item_location( g->u, g->u.best_quality_item( qual_shear ) ) );
-    add_msg( _( "You start shearing the %s." ), z.get_name() );
-}
-
 static item_location pet_armor_loc( monster &z )
 {
     auto filter = [z]( const item & it ) {
@@ -434,7 +389,7 @@ void monexamine::remove_battery( monster &z )
 void monexamine::insert_battery( monster &z )
 {
     if( z.battery_item ) {
-        // already has a battery, shouldn't be called with one, but just incase.
+        // already has a battery, shouldnt be called with one, but just incase.
         return;
     }
     std::vector<item *> bat_inv = g->u.items_with( []( const item & itm ) {
@@ -779,7 +734,7 @@ void monexamine::play_with( monster &z )
 
 void monexamine::kill_zslave( monster &z )
 {
-    z.apply_damage( &g->u, bodypart_id( "torso" ), 100 ); // damage the monster (and its corpse)
+    z.apply_damage( &g->u, bp_torso, 100 ); // damage the monster (and its corpse)
     z.die( &g->u ); // and make sure it's really dead
 
     g->u.moves -= 150;

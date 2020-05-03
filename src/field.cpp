@@ -4,7 +4,8 @@
 #include <utility>
 
 #include "calendar.h"
-#include "int_id.h"
+#include "debug.h"
+#include "effect.h"
 
 int field_entry::move_cost() const
 {

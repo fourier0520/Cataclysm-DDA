@@ -1,15 +1,15 @@
 [
   {
     "type": "start_location",
-    "id": "sloc_forest",
-    "copy-from": "sloc_forest",
-    "extend": { "terrain": [ "forest_thick" ] }
+    "ident": "forest",
+    "copy-from": "forest",
+    "target": "forest_thick"
   },
   {
     "type": "start_location",
-    "id": "sloc_swamp",
+    "ident": "swamp",
     "name": "Swamp",
-    "terrain": [ "forest_water" ],
+    "target": "forest_water",
     "flags": [ "ALLOW_OUTSIDE" ]
   }
 ]

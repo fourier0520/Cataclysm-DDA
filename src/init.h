@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_INIT_H
-#define CATA_SRC_INIT_H
+#ifndef INIT_H
+#define INIT_H
 
 #include <functional>
 #include <list>
@@ -163,4 +163,4 @@ class DynamicDataLoader
         }
 };
 
-#endif // CATA_SRC_INIT_H
+#endif

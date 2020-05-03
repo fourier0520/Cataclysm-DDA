@@ -1,26 +1,26 @@
 #pragma once
-#ifndef CATA_SRC_TRAP_H
-#define CATA_SRC_TRAP_H
+#ifndef TRAP_H
+#define TRAP_H
 
 #include <cstddef>
 #include <functional>
+#include <vector>
 #include <string>
 #include <tuple>
-#include <utility>
-#include <vector>
 
 #include "color.h"
-#include "magic.h"
+#include "int_id.h"
+#include "string_id.h"
 #include "translations.h"
 #include "type_id.h"
 #include "units.h"
 
 class Creature;
-class JsonObject;
 class item;
-class map;
 class player;
+class map;
 struct tripoint;
+class JsonObject;
 
 namespace trapfunc
 {
@@ -62,7 +62,6 @@ bool shadow( const tripoint &p, Creature *c, item *i );
 bool map_regen( const tripoint &p, Creature *c, item *i );
 bool drain( const tripoint &p, Creature *c, item *i );
 bool snake( const tripoint &p, Creature *c, item *i );
-bool cast_spell( const tripoint &p, Creature *critter, item * );
 } // namespace trapfunc
 
 struct vehicle_handle_trap_data {
@@ -117,8 +116,6 @@ struct trap {
         // For disassembly?
         std::vector<std::tuple<std::string, int, int>> components;
     public:
-        // data required for trapfunc::spell()
-        fake_spell spell_data;
         int comfort = 0;
         int floor_bedding_warmth = 0;
     public:
@@ -299,4 +296,4 @@ tr_shadow,
 tr_drain,
 tr_snake;
 
-#endif // CATA_SRC_TRAP_H
+#endif

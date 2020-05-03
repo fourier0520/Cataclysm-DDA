@@ -1,28 +1,30 @@
 #pragma once
-#ifndef CATA_SRC_ITEM_FACTORY_H
-#define CATA_SRC_ITEM_FACTORY_H
+#ifndef ITEM_FACTORY_H
+#define ITEM_FACTORY_H
 
 #include <functional>
 #include <list>
 #include <map>
 #include <memory>
-#include <set>
 #include <string>
 #include <unordered_map>
-#include <utility>
 #include <vector>
+#include <iosfwd>
+#include <set>
+#include <utility>
 
-#include "item.h"
 #include "itype.h"
+#include "item.h"
+#include "item_category.h"
 #include "iuse.h"
 #include "type_id.h"
 
 class Item_group;
 class Item_spawn_data;
-class relic;
 
 namespace cata
 {
+template <typename T> class optional;
 template <typename T> class value_ptr;
 }  // namespace cata
 
@@ -33,8 +35,8 @@ using Group_tag = std::string;
 using Item_list = std::vector<item>;
 
 class Item_factory;
-class JsonArray;
 class JsonObject;
+class JsonArray;
 
 extern std::unique_ptr<Item_factory> item_controller;
 
@@ -295,13 +297,12 @@ class Item_factory
         void load( islot_magazine &slot, const JsonObject &jo, const std::string &src );
         void load( islot_battery &slot, const JsonObject &jo, const std::string &src );
         void load( islot_bionic &slot, const JsonObject &jo, const std::string &src );
+        void load( islot_ammo &slot, const JsonObject &jo, const std::string &src );
         void load( islot_seed &slot, const JsonObject &jo, const std::string &src );
         void load( islot_artifact &slot, const JsonObject &jo, const std::string &src );
         void load( relic &slot, const JsonObject &jo, const std::string &src );
 
         //json data handlers
-        void emplace_usage( std::map<std::string, use_function> &container, const std::string &iuse_id );
-
         void set_use_methods_from_json( const JsonObject &jo, const std::string &member,
                                         std::map<std::string, use_function> &use_methods );
 
@@ -370,4 +371,4 @@ class Item_factory
         std::set<std::string> repair_actions;
 };
 
-#endif // CATA_SRC_ITEM_FACTORY_H
+#endif

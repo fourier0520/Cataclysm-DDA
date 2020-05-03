@@ -1,25 +1,27 @@
 #pragma once
-#ifndef CATA_SRC_EFFECT_H
-#define CATA_SRC_EFFECT_H
+#ifndef EFFECT_H
+#define EFFECT_H
 
-#include <set>
-#include <string>
-#include <tuple>
+#include <cstddef>
 #include <unordered_map>
-#include <utility>
+#include <tuple>
 #include <vector>
+#include <string>
+#include <utility>
+#include <set>
 
 #include "bodypart.h"
 #include "calendar.h"
-#include "hash_utils.h"
+#include "string_id.h"
 #include "translations.h"
+#include "hash_utils.h"
 #include "type_id.h"
 
 class player;
 
 enum game_message_type : int;
-class JsonIn;
 class JsonObject;
+class JsonIn;
 class JsonOut;
 
 /** Handles the large variety of weed messages. */
@@ -303,4 +305,4 @@ class effects_map : public
 {
 };
 
-#endif // CATA_SRC_EFFECT_H
+#endif

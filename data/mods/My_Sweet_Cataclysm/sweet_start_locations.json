@@ -1,8 +1,8 @@
 [
   {
     "type": "start_location",
-    "id": "sloc_candy_shop",
+    "ident": "s_candy",
     "name": "Candy Shop",
-    "terrain": [ "candy_shop", "candy_shop_1" ]
+    "target": "candy_shop"
   }
 ]

@@ -1,24 +1,14 @@
-#include <map>
-#include <memory>
-#include <set>
-#include <string>
-#include <utility>
-#include <vector>
+#include "magic_ter_furn_transform.h"
 
 #include "creature.h"
-#include "enums.h"
+#include "point.h"
 #include "game.h"
 #include "generic_factory.h"
-#include "json.h"
-#include "magic_ter_furn_transform.h"
+#include "magic.h"
 #include "map.h"
 #include "mapdata.h"
-#include "optional.h"
-#include "string_id.h"
+#include "messages.h"
 #include "type_id.h"
-
-struct tripoint;
-template <typename T> struct weighted_int_list;
 
 namespace
 {

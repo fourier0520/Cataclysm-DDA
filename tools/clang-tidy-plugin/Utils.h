@@ -1,26 +1,11 @@
-#ifndef CATA_TOOLS_CLANG_TIDY_PLUGIN_UTILS_H
-#define CATA_TOOLS_CLANG_TIDY_PLUGIN_UTILS_H
+#ifndef CATA_TOOLS_CLANG_TIDY_UTILS_H
+#define CATA_TOOLS_CLANG_TIDY_UTILS_H
 
-#include <clang/AST/ASTContext.h>
-#include <clang/AST/ASTTypeTraits.h>
-#include <clang/AST/Decl.h>
-#include <clang/AST/DeclCXX.h>
-#include <clang/AST/ExprCXX.h>
-#include <clang/ASTMatchers/ASTMatchFinder.h>
-#include <clang/ASTMatchers/ASTMatchers.h>
-#include <clang/ASTMatchers/ASTMatchersInternal.h>
-#include <clang/Basic/LLVM.h>
-#include <clang/Basic/SourceLocation.h>
 #include <clang/Lex/Lexer.h>
-#include <llvm/ADT/StringRef.h>
-#include <llvm/Support/Casting.h>
-#include <string>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
 
 namespace clang
 {
-class Decl;
-class Stmt;
-
 namespace tidy
 {
 namespace cata
@@ -68,15 +53,6 @@ static const FunctionDecl *getContainingFunction(
     return nullptr;
 }
 
-inline bool isPointType( const CXXRecordDecl *R )
-{
-    if( !R ) {
-        return false;
-    }
-    StringRef name = R->getName();
-    return name == "point" || name == "tripoint";
-}
-
 inline auto isPointType()
 {
     using namespace clang::ast_matchers;
@@ -113,21 +89,13 @@ inline auto isXParam()
     return matchesName( "[xX]" );
 }
 
-inline auto isYParam()
+inline bool isPointType( const CXXRecordDecl *R )
 {
-    using namespace clang::ast_matchers;
-    return matchesName( "[yY]" );
-}
-
-inline bool isPointMethod( const FunctionDecl *d )
-{
-    if( const CXXMethodDecl *Method = dyn_cast_or_null<CXXMethodDecl>( d ) ) {
-        const CXXRecordDecl *Record = Method->getParent();
-        if( isPointType( Record ) ) {
-            return true;
-        }
+    if( !R ) {
+        return false;
     }
-    return false;
+    StringRef name = R->getName();
+    return name == "point" || name == "tripoint";
 }
 
 // Struct to help identify and construct names of associated points and
@@ -144,7 +112,7 @@ class NameConvention
             None
         };
 
-        MatchResult Match( StringRef name ) const;
+        MatchResult Match( StringRef name );
 
         bool operator!() const {
             return !valid;
@@ -160,4 +128,4 @@ class NameConvention
 } // namespace tidy
 } // namespace clang
 
-#endif // CATA_TOOLS_CLANG_TIDY_PLUGIN_UTILS_H
+#endif // CATA_TOOLS_CLANG_TIDY_UTILS_H

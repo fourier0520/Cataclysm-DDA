@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_ARTIFACT_H
-#define CATA_SRC_ARTIFACT_H
+#ifndef ARTIFACT_H
+#define ARTIFACT_H
 
 #include <string>
 
@@ -132,4 +132,4 @@ bool save_artifacts( const std::string &path );
 
 bool check_art_charge_req( item &it );
 
-#endif // CATA_SRC_ARTIFACT_H
+#endif

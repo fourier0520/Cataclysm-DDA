@@ -4,7 +4,6 @@
 
 #include "catch/catch.hpp"
 #include "cata_utility.h"
-#include "rng.h"
 
 TEST_CASE( "fast_floor", "[math]" )
 {
@@ -24,8 +23,12 @@ TEST_CASE( "fast_floor", "[math]" )
     REQUIRE( fast_floor( 2.1 ) ==  2 );
     REQUIRE( fast_floor( 2.9 ) ==  2 );
 
+    std::random_device rd;
+    std::mt19937 mt( rd() );
+    std::uniform_real_distribution<double> dist( -10.0, 10.0 );
+
     for( size_t i = 0; i != 1000; ++i ) {
-        double val = rng_float( -10, 10 );
+        double val = dist( mt );
         REQUIRE( fast_floor( val ) == std::floor( val ) );
     }
 }

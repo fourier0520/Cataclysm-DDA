@@ -15,7 +15,6 @@
     "reliability": 10,
     "//": "mods will need to expand",
     "ammo_type": "charcoal",
-    "price": 3000,
-    "price_postapoc": 100
+    "price": 3000
   }
 ]

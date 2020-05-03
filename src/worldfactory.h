@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_WORLDFACTORY_H
-#define CATA_SRC_WORLDFACTORY_H
+#ifndef WORLDFACTORY_H
+#define WORLDFACTORY_H
 
 #include <cstddef>
 #include <functional>
@@ -135,12 +135,9 @@ class worldfactory
         void load_last_world_info();
 
         std::string pick_random_name();
-        int show_worldgen_tab_options( const catacurses::window &win, WORLDPTR world,
-                                       const std::function<bool()> &on_quit );
-        int show_worldgen_tab_modselection( const catacurses::window &win, WORLDPTR world,
-                                            const std::function<bool()> &on_quit );
-        int show_worldgen_tab_confirm( const catacurses::window &win, WORLDPTR world,
-                                       const std::function<bool()> &on_quit );
+        int show_worldgen_tab_options( const catacurses::window &win, WORLDPTR world );
+        int show_worldgen_tab_modselection( const catacurses::window &win, WORLDPTR world );
+        int show_worldgen_tab_confirm( const catacurses::window &win, WORLDPTR world );
 
         void draw_modselection_borders( const catacurses::window &win, const input_context &ctxtp );
         void draw_mod_list( const catacurses::window &w, int &start, size_t cursor,
@@ -152,8 +149,7 @@ class worldfactory
         pimpl<mod_manager> mman;
         pimpl<mod_ui> mman_ui;
 
-        using worldgen_display = std::function<int ( const catacurses::window &, WORLDPTR,
-                                 const std::function<bool()> )>;
+        using worldgen_display = std::function<int ( const catacurses::window &, WORLDPTR )>;
 
         std::vector<worldgen_display> tabs;
 };
@@ -165,4 +161,4 @@ void load_external_option( const JsonObject &jo );
 
 extern std::unique_ptr<worldfactory> world_generator;
 
-#endif // CATA_SRC_WORLDFACTORY_H
+#endif

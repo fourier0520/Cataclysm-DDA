@@ -4,10 +4,5 @@
     "id": "CHURN",
     "name": "churn",
     "//": "Delete this when you mainline Dairy products existing PR"
-  },
-  {
-    "type": "tool_quality",
-    "id": "BIONIC_ASSEMBLY",
-    "name": "bionic assembly"
   }
 ]

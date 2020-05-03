@@ -1,8 +1,7 @@
 #if !defined(TILES) && defined(_WIN32)
 #define UNICODE 1
-#ifndef CMAKE
 #define _UNICODE 1
-#endif
+
 #include "cursesport.h" // IWYU pragma: associated
 
 #include <cstdlib>
@@ -25,7 +24,6 @@
 #include "font_loader.h"
 #include "platform_win.h"
 #include "mmsystem.h"
-#include "ui_manager.h"
 #include "wcwidth.h"
 
 //***********************************
@@ -121,9 +119,12 @@ static bool WinCreate()
                                     WindowX, WindowY,
                                     WndRect.right - WndRect.left,
                                     WndRect.bottom - WndRect.top,
-                                    nullptr, nullptr, WindowINST, nullptr );
-    return WindowHandle != nullptr;
+                                    0, 0, WindowINST, nullptr );
+    if( WindowHandle == nullptr ) {
+        return false;
+    }
 
+    return true;
 }
 
 // Unregisters, releases the DC if needed, and destroys the window.
@@ -132,7 +133,7 @@ static void WinDestroy()
     if( ( WindowDC != nullptr ) && ( ReleaseDC( WindowHandle, WindowDC ) == 0 ) ) {
         WindowDC = nullptr;
     }
-    if( WindowHandle != nullptr && ( !( DestroyWindow( WindowHandle ) ) ) ) {
+    if( ( !WindowHandle == nullptr ) && ( !( DestroyWindow( WindowHandle ) ) ) ) {
         WindowHandle = nullptr;
     }
     if( !( UnregisterClassW( szWindowClass, WindowINST ) ) ) {
@@ -162,8 +163,7 @@ static void create_backbuffer()
     bmi.bmiHeader.biSizeImage    = WindowWidth * WindowHeight * 1;
     bmi.bmiHeader.biClrUsed      = color_loader<RGBQUAD>::COLOR_NAMES_COUNT; // Colors in the palette
     bmi.bmiHeader.biClrImportant = color_loader<RGBQUAD>::COLOR_NAMES_COUNT; // Colors in the palette
-    backbit = CreateDIBSection( nullptr, &bmi, DIB_RGB_COLORS, reinterpret_cast<void **>( &dcbits ),
-                                nullptr,
+    backbit = CreateDIBSection( 0, &bmi, DIB_RGB_COLORS, reinterpret_cast<void **>( &dcbits ), nullptr,
                                 0 );
     DeleteObject( SelectObject( backbuffer, backbit ) ); //load the buffer into DC
 }
@@ -189,7 +189,6 @@ bool handle_resize( int, int )
             throw std::runtime_error( "SetDIBColorTable failed" );
         }
         catacurses::refresh();
-        ui_manager::screen_resized();
     }
 
     return true;
@@ -373,9 +372,6 @@ LRESULT CALLBACK ProcessMessages( HWND__ *hWnd, unsigned int Msg,
 
         case WM_PAINT:
             BitBlt( WindowDC, 0, 0, WindowWidth, WindowHeight, backbuffer, 0, 0, SRCCOPY );
-            ui_manager::invalidate( rectangle( point_zero, point( getmaxx( catacurses::stdscr ),
-                                               getmaxy( catacurses::stdscr ) ) ) );
-            ui_manager::redraw();
             ValidateRect( WindowHandle, nullptr );
             return 0;
 
@@ -545,7 +541,7 @@ void cata_cursesport::curses_drawwindow( const catacurses::window &w )
 static void CheckMessages()
 {
     MSG msg;
-    while( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) ) {
+    while( PeekMessage( &msg, 0, 0, 0, PM_REMOVE ) ) {
         TranslateMessage( &msg );
         DispatchMessage( &msg );
     }

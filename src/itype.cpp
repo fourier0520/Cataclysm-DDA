@@ -1,13 +1,12 @@
 #include "itype.h"
 
-#include <cstdlib>
 #include <utility>
 
 #include "debug.h"
-#include "item.h"
 #include "player.h"
-#include "ret_val.h"
 #include "translations.h"
+#include "item.h"
+#include "ret_val.h"
 
 struct tripoint;
 

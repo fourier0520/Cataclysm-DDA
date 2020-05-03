@@ -5,6 +5,7 @@
 # file and tile image.
 
 import argparse
+import copy
 import json
 import math
 import os
@@ -299,6 +300,8 @@ class PngRefs(object):
 
     def get_all_data(self, tileset_dirname, delete_pathname):
         self.tileset_pathname = tileset_dirname
+        if not tileset_dirname.startswith("gfx/"):
+            self.tileset_pathname = "gfx/" + tileset_dirname
 
         try:
             os.stat(self.tileset_pathname)
@@ -394,7 +397,7 @@ class PngRefs(object):
 
 args = argparse.ArgumentParser(description="Split a tileset's tile_config.json into a directory per tile containing the tile data and png.")
 args.add_argument("tileset_dir", action="store",
-                  help="local name of the tileset directory")
+                  help="local name of the tileset directory under gfx/")
 args.add_argument("--delete_file", dest="del_path", action="store",
                   help="local name of file containing lists of ranges of indices to delete")
 argsDict = vars(args.parse_args())

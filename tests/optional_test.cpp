@@ -1,3 +1,4 @@
+#include <type_traits>
 #include <utility>
 
 #include "catch/catch.hpp"

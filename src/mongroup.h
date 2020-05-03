@@ -1,23 +1,24 @@
 #pragma once
-#ifndef CATA_SRC_MONGROUP_H
-#define CATA_SRC_MONGROUP_H
+#ifndef MONGROUP_H
+#define MONGROUP_H
 
 #include <map>
 #include <set>
-#include <string>
 #include <vector>
+#include <string>
 
 #include "calendar.h"
 #include "io_tags.h"
 #include "monster.h"
-#include "point.h"
+#include "string_id.h"
 #include "type_id.h"
+#include "point.h"
 
-class JsonIn;
-class JsonObject;
-class JsonOut;
 // from overmap.h
 class overmap;
+class JsonObject;
+class JsonIn;
+class JsonOut;
 struct MonsterGroupEntry;
 
 using FreqDef = std::vector<MonsterGroupEntry>;
@@ -107,6 +108,10 @@ struct mongroup {
         , radius( prad )
         , population( ppop ) {
     }
+    mongroup( const mongroup_id &ptype, int pposx, int pposy, int pposz,
+              unsigned int prad, unsigned int ppop )
+        : mongroup( ptype, tripoint( pposx, pposy, pposz ), prad, ppop )
+    {}
     mongroup( const std::string &ptype, tripoint ppos, unsigned int prad, unsigned int ppop,
               tripoint ptarget, int pint, bool pdie, bool phorde, bool pdiff ) :
         type( ptype ), pos( ppos ), radius( prad ), population( ppop ), target( ptarget ),
@@ -115,9 +120,9 @@ struct mongroup {
     bool is_safe() const;
     bool empty() const;
     void clear();
-    void set_target( const point &p ) {
-        target.x = p.x;
-        target.y = p.y;
+    void set_target( int x, int y ) {
+        target.x = x;
+        target.y = y;
     }
     void wander( const overmap & );
     void inc_interest( int inc ) {
@@ -189,4 +194,4 @@ class MonsterGroupManager
         static t_string_set monster_categories_whitelist;
 };
 
-#endif // CATA_SRC_MONGROUP_H
+#endif

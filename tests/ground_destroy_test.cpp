@@ -1,11 +1,11 @@
-#include <memory>
 #include <set>
+#include <string>
 #include <vector>
+#include <memory>
 
 #include "avatar.h"
 #include "catch/catch.hpp"
 #include "game.h"
-#include "int_id.h"
 #include "item.h"
 #include "itype.h"
 #include "map.h"
@@ -13,8 +13,9 @@
 #include "map_iterator.h"
 #include "mapdata.h"
 #include "options.h"
-#include "point.h"
+#include "int_id.h"
 #include "type_id.h"
+#include "point.h"
 
 // Destroying pavement with a pickaxe should not leave t_flat_roof.
 // See issue #24707:

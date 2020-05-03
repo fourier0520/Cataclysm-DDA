@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_SIMPLE_PATHFINDING_H
-#define CATA_SRC_SIMPLE_PATHFINDING_H
+#ifndef SIMPLE_PATHFINDINDING_H
+#define SIMPLE_PATHFINDINDING_H
 
 #include <limits>
 #include <queue>
@@ -183,4 +183,4 @@ inline path straight_path( const point &source,
 
 } // namespace pf
 
-#endif // CATA_SRC_SIMPLE_PATHFINDING_H
+#endif

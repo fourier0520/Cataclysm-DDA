@@ -1,17 +1,17 @@
 #pragma once
-#ifndef CATA_SRC_MATERIAL_H
-#define CATA_SRC_MATERIAL_H
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
-#include <algorithm>
 #include <cstddef>
 #include <map>
 #include <set>
 #include <string>
-#include <utility>
 #include <vector>
+#include <utility>
 
 #include "fire.h"
 #include "optional.h"
+#include "string_id.h"
 #include "type_id.h"
 
 class material_type;
@@ -125,4 +125,4 @@ std::set<material_id> get_rotting();
 
 } // namespace materials
 
-#endif // CATA_SRC_MATERIAL_H
+#endif

@@ -1057,9 +1057,9 @@
   },
   {
     "type": "keybinding",
-    "id": "RANDOMIZE_CHAR_DESCRIPTION",
+    "id": "PICK_RANDOM_NAME",
     "category": "NEW_CHAR_DESCRIPTION",
-    "name": "Pick random character description",
+    "name": "Pick random character name",
     "bindings": [ { "input_method": "keyboard", "key": "*" } ]
   },
   {
@@ -1902,7 +1902,7 @@
   },
   {
     "type": "keybinding",
-    "name": "View Achievements, Scores, and Kills",
+    "name": "View Scores",
     "category": "DEFAULTMODE",
     "id": "scores",
     "bindings": [ { "input_method": "keyboard", "key": ")" } ]
@@ -2895,26 +2895,5 @@
       { "input_method": "keyboard", "key": "SPACE" },
       { "input_method": "keyboard", "key": "RETURN" }
     ]
-  },
-  {
-    "type": "keybinding",
-    "id": "CREATURE",
-    "category": "EXTENDED_DESCRIPTION",
-    "name": "Describe creature",
-    "bindings": [ { "input_method": "keyboard", "key": "c" } ]
-  },
-  {
-    "type": "keybinding",
-    "id": "FURNITURE",
-    "category": "EXTENDED_DESCRIPTION",
-    "name": "Describe furniture",
-    "bindings": [ { "input_method": "keyboard", "key": "f" } ]
-  },
-  {
-    "type": "keybinding",
-    "id": "TERRAIN",
-    "category": "EXTENDED_DESCRIPTION",
-    "name": "Describe terrain",
-    "bindings": [ { "input_method": "keyboard", "key": "t" } ]
   }
 ]

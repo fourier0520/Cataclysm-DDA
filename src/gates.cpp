@@ -1,37 +1,36 @@
 #include "gates.h"
 
 #include <algorithm>
-#include <array>
-#include <memory>
-#include <set>
 #include <string>
 #include <vector>
+#include <memory>
+#include <set>
 
 #include "avatar.h"
-#include "character.h"
-#include "colony.h"
-#include "creature.h"
-#include "debug.h"
-#include "enums.h"
 #include "game.h" // TODO: This is a circular dependency
 #include "generic_factory.h"
 #include "iexamine.h"
-#include "int_id.h"
-#include "item.h"
 #include "json.h"
 #include "map.h"
 #include "mapdata.h"
 #include "messages.h"
-#include "optional.h"
 #include "player.h"
-#include "player_activity.h"
-#include "point.h"
-#include "string_id.h"
-#include "translations.h"
-#include "type_id.h"
-#include "units.h"
 #include "vehicle.h"
 #include "vpart_position.h"
+#include "character.h"
+#include "creature.h"
+#include "debug.h"
+#include "enums.h"
+#include "int_id.h"
+#include "item.h"
+#include "optional.h"
+#include "player_activity.h"
+#include "string_id.h"
+#include "translations.h"
+#include "units.h"
+#include "type_id.h"
+#include "colony.h"
+#include "point.h"
 
 static const activity_id ACT_OPEN_GATE( "ACT_OPEN_GATE" );
 
@@ -77,7 +76,7 @@ gate_id get_gate_id( const tripoint &pos )
     return gate_id( g->m.ter( pos ).id().str() );
 }
 
-generic_factory<gate_data> gates_data( "gate type" );
+generic_factory<gate_data> gates_data( "gate type", "handle", "other_handles" );
 
 } // namespace
 

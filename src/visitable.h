@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CATA_SRC_VISITABLE_H
-#define CATA_SRC_VISITABLE_H
+#ifndef VISITABLE_H
+#define VISITABLE_H
 
 #include <climits>
 #include <functional>
@@ -114,4 +114,4 @@ class visitable
         item remove_item( item &it );
 };
 
-#endif // CATA_SRC_VISITABLE_H
+#endif

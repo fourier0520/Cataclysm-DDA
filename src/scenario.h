@@ -1,20 +1,19 @@
 #pragma once
-#ifndef CATA_SRC_SCENARIO_H
-#define CATA_SRC_SCENARIO_H
+#ifndef SCENARIO_H
+#define SCENARIO_H
 
-#include <algorithm>
 #include <set>
-#include <string>
 #include <vector>
+#include <string>
 
-#include "pldata.h"
 #include "string_id.h"
 #include "translations.h"
 #include "type_id.h"
 
-class JsonObject;
 class profession;
+class JsonObject;
 
+enum add_type : int;
 template<typename T>
 class generic_factory;
 
@@ -50,10 +49,7 @@ class scenario
         std::string _map_extra;
         std::vector<mission_type_id> _missions;
 
-        vproto_id _starting_vehicle = vproto_id::NULL_ID();
-
         void load( const JsonObject &jo, const std::string &src );
-        bool scenario_traits_conflict_with_profession_traits( const profession &p ) const;
 
     public:
         //these three aren't meant for external use, but had to be made public regardless
@@ -79,10 +75,6 @@ class scenario
         start_location_id start_location() const;
         start_location_id random_start_location() const;
         std::string start_name() const;
-        int start_location_count() const;
-        int start_location_targets_count() const;
-
-        vproto_id vehicle() const;
 
         const profession *weighted_random_profession() const;
         std::vector<string_id<profession>> permitted_professions() const;
@@ -129,4 +121,4 @@ struct scen_blacklist {
 
 void reset_scenarios_blacklist();
 
-#endif // CATA_SRC_SCENARIO_H
+#endif

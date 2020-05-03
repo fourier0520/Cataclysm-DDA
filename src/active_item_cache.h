@@ -1,14 +1,13 @@
 #pragma once
-#ifndef CATA_SRC_ACTIVE_ITEM_CACHE_H
-#define CATA_SRC_ACTIVE_ITEM_CACHE_H
+#ifndef ACTIVE_ITEM_CACHE_H
+#define ACTIVE_ITEM_CACHE_H
 
-#include <iosfwd>
 #include <list>
 #include <unordered_map>
 #include <vector>
 
-#include "point.h"
 #include "safe_reference.h"
+#include "point.h"
 
 class item;
 
@@ -84,4 +83,4 @@ class active_item_cache
         void rotate_locations( int turns, const point &dim );
 };
 
-#endif // CATA_SRC_ACTIVE_ITEM_CACHE_H
+#endif

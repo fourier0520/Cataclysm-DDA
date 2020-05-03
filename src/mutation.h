@@ -1,33 +1,31 @@
 #pragma once
-#ifndef CATA_SRC_MUTATION_H
-#define CATA_SRC_MUTATION_H
+#ifndef MUTATION_H
+#define MUTATION_H
 
 #include <map>
 #include <set>
-#include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <memory>
+#include <string>
 
 #include "bodypart.h"
 #include "calendar.h"
 #include "character.h"
 #include "damage.h"
+#include "string_id.h"
 #include "hash_utils.h"
-#include "memory_fast.h"
-#include "optional.h"
-#include "point.h"
 #include "translations.h"
 #include "type_id.h"
+#include "point.h"
 
-class JsonObject;
-class Trait_group;
-class item;
 class nc_color;
+class JsonObject;
 class player;
 struct dream;
-template <typename E> struct enum_traits;
-template <typename T> class string_id;
+class Trait_group;
+class item;
 
 using itype_id = std::string;
 class JsonArray;
@@ -74,20 +72,6 @@ struct mut_attack {
 
     /** Should be true when and only when this attack needs hardcoded handling */
     bool hardcoded_effect = false;
-};
-
-struct mut_transform {
-
-    trait_id target;
-
-    /** displayed if player sees transformation with %s replaced by item name */
-    translation msg_transform;
-    /** used to set the active property of the transformed @ref target */
-    bool active = false;
-    /** subtracted from @ref Creature::moves when transformation is successful */
-    int moves = 0;
-    mut_transform();
-    bool load( const JsonObject &jsobj, const std::string &member );
 };
 
 struct mutation_branch {
@@ -145,7 +129,6 @@ struct mutation_branch {
         float str_modifier = 0.0f;
         //melee bonuses
         int cut_dmg_bonus = 0;
-        float pierce_dmg_bonus = 0.0;
         std::pair<int, int> rand_cut_bonus;
         int bash_dmg_bonus = 0;
         std::pair<int, int> rand_bash_bonus;
@@ -165,10 +148,6 @@ struct mutation_branch {
         cata::optional<int> scent_intensity;
         cata::optional<int> scent_mask;
         int bleed_resist = 0;
-
-        int butchering_quality = 0;
-
-        cata::value_ptr<mut_transform> transform;
 
         /**Map of crafting skills modifiers, can be negative*/
         std::map<skill_id, int> craft_skill_bonus;
@@ -249,8 +228,6 @@ struct mutation_branch {
         float mana_regen_multiplier = 1.0f;
         // spells learned and their associated level when gaining the mutation
         std::map<spell_id, int> spells_learned;
-        /** mutation enchantments */
-        std::vector<enchantment_id> enchantments;
     private:
         std::string raw_spawn_item_message;
     public:
@@ -488,13 +465,6 @@ std::vector<trait_id> get_mutations_in_types( const std::set<std::string> &ids )
 std::vector<trait_id> get_mutations_in_type( const std::string &id );
 bool trait_display_sort( const trait_id &a, const trait_id &b ) noexcept;
 
-bool are_conflicting_traits( const trait_id &trait_a, const trait_id &trait_b );
-bool b_is_lower_trait_of_a( const trait_id &trait_a, const trait_id &trait_b );
-bool b_is_higher_trait_of_a( const trait_id &trait_a, const trait_id &trait_b );
-bool are_opposite_traits( const trait_id &trait_a, const trait_id &trait_b );
-bool are_same_type_traits( const trait_id &trait_a, const trait_id &trait_b );
-bool contains_trait( std::vector<string_id<mutation_branch>> traits, const trait_id &trait );
-
 enum class mutagen_technique : int {
     consumed_mutagen,
     injected_mutagen,
@@ -521,9 +491,9 @@ struct mutagen_attempt {
     int charges_used;
 };
 
-mutagen_attempt mutagen_common_checks( Character &guy, const item &it, bool strong,
+mutagen_attempt mutagen_common_checks( player &p, const item &it, bool strong,
                                        mutagen_technique technique );
 
 void test_crossing_threshold( Character &guy, const mutation_category_trait &m_category );
 
-#endif // CATA_SRC_MUTATION_H
+#endif

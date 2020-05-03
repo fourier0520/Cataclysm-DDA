@@ -11,7 +11,7 @@
   },
   {
     "type": "overmap_terrain",
-    "id": [ "fema", "fema_1_3", "fema_2_1", "fema_2_2", "fema_2_3", "fema_3_1", "fema_3_2", "fema_3_3" ],
+    "id": "fema",
     "name": "fema camp",
     "sym": "F",
     "color": "i_blue",
@@ -159,21 +159,6 @@
     "sym": "+",
     "color": "white",
     "see_cost": 2
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "shelter_vandal",
-    "copy-from": "shelter"
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "shelter_1_vandal",
-    "copy-from": "shelter_1"
-  },
-  {
-    "type": "overmap_terrain",
-    "id": "shelter_2_vandal",
-    "copy-from": "shelter_2"
   },
   {
     "type": "overmap_terrain",

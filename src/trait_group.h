@@ -1,17 +1,18 @@
 #pragma once
-#ifndef CATA_SRC_TRAIT_GROUP_H
-#define CATA_SRC_TRAIT_GROUP_H
+#ifndef TRAIT_GROUP_H
+#define TRAIT_GROUP_H
 
 #include <memory>
-#include <string>
 #include <vector>
+#include <string>
 
 #include "string_id.h"
 #include "type_id.h"
 
 class JsonObject;
-class JsonValue;
+class JsonIn;
 class Trait_group;
+class JsonValue;
 
 namespace trait_group
 {
@@ -201,4 +202,4 @@ class Trait_group_distribution : public Trait_group
         void add_entry( std::unique_ptr<Trait_creation_data> ptr ) override;
 };
 
-#endif // CATA_SRC_TRAIT_GROUP_H
+#endif

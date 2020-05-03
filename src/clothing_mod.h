@@ -1,17 +1,18 @@
 #pragma once
-#ifndef CATA_SRC_CLOTHING_MOD_H
-#define CATA_SRC_CLOTHING_MOD_H
+#ifndef CLOTHING_MOD_H
+#define CLOTHING_MOD_H
 
-#include <algorithm>
-#include <array>
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <array>
 
 #include "type_id.h"
 
 class JsonObject;
+class player;
 class item;
+
 template<typename T> struct enum_traits;
 
 enum clothing_mod_type : int {
@@ -82,4 +83,4 @@ std::string string_from_clothing_mod_type( clothing_mod_type type );
 
 } // namespace clothing_mods
 
-#endif // CATA_SRC_CLOTHING_MOD_H
+#endif

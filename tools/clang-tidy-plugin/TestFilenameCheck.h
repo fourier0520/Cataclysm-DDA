@@ -1,18 +1,12 @@
-#ifndef CATA_TOOLS_CLANG_TIDY_PLUGIN_TESTFILENAMECHECK_H
-#define CATA_TOOLS_CLANG_TIDY_PLUGIN_TESTFILENAMECHECK_H
-
-#include <llvm/ADT/StringRef.h>
+#ifndef CATA_TOOLS_CLANG_TIDY_TESTFILENAMECHECK_H
+#define CATA_TOOLS_CLANG_TIDY_TESTFILENAMECHECK_H
 
 #include "ClangTidy.h"
 
 namespace clang
 {
-class CompilerInstance;
-
 namespace tidy
 {
-class ClangTidyContext;
-
 namespace cata
 {
 
@@ -29,4 +23,4 @@ class TestFilenameCheck : public ClangTidyCheck
 } // namespace tidy
 } // namespace clang
 
-#endif // CATA_TOOLS_CLANG_TIDY_PLUGIN_TESTFILENAMECHECK_H
+#endif // CATA_TOOLS_CLANG_TIDY_TESTFILENAMECHECK_H

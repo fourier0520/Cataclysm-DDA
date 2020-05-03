@@ -8,12 +8,11 @@ num_jobs=3
 
 function run_tests
 {
-    # The grep suppresses lines that begin with "0.0## s:", which are timing lines for tests with a very short duration.
+    # The grep supresses lines that begin with "0.0## s:", which are timing lines for tests with a very short duration.
     $WINE "$@" -d yes --use-colour yes --rng-seed time $EXTRA_TEST_OPTS | grep -Ev "^0\.0[0-9]{2} s:"
 }
 
-# We might need binaries installed via pip, so ensure that our personal bin dir is on the PATH
-export PATH=$HOME/.local/bin:$PATH
+date +%s > build-start-time
 
 if [ -n "$TEST_STAGE" ]
 then
@@ -46,35 +45,26 @@ then
         build_type=Debug
     fi
 
-    cmake_extra_opts=()
+    cmake_extra_opts=
 
     if [ "$CATA_CLANG_TIDY" = "plugin" ]
     then
-        cmake_extra_opts+=("-DCATA_CLANG_TIDY_PLUGIN=ON")
+        cmake_extra_opts="$cmake_extra_opts -DCATA_CLANG_TIDY_PLUGIN=ON"
         # Need to specify the particular LLVM / Clang versions to use, lest it
         # use the llvm-7 that comes by default on the Travis Xenial image.
-        cmake_extra_opts+=("-DLLVM_DIR=/usr/lib/llvm-8/lib/cmake/llvm")
-        cmake_extra_opts+=("-DClang_DIR=/usr/lib/llvm-8/lib/cmake/clang")
-    fi
-
-    if [ "$COMPILER" = "clang++-8" -a -n "$GITHUB_WORKFLOW" -a -n "$CATA_CLANG_TIDY" ]
-    then
-        # This is a hacky workaround for the fact that the custom clang-tidy we are
-        # using is built for Travis CI, so it's not using the correct include directories
-        # for GitHub workflows.
-        cmake_extra_opts+=("-DCMAKE_CXX_FLAGS=-isystem /usr/include/clang/8.0.0/include")
+        cmake_extra_opts="$cmake_extra_opts -DLLVM_DIR=/usr/lib/llvm-8/lib/cmake/llvm"
+        cmake_extra_opts="$cmake_extra_opts -DClang_DIR=/usr/lib/llvm-8/lib/cmake/clang"
     fi
 
     mkdir build
     cd build
     cmake \
         -DBACKTRACE=ON \
-        ${COMPILER:+-DCMAKE_CXX_COMPILER=$COMPILER} \
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         -DCMAKE_BUILD_TYPE="$build_type" \
         -DTILES=${TILES:-0} \
         -DSOUND=${SOUND:-0} \
-        "${cmake_extra_opts[@]}" \
+        $cmake_extra_opts \
         ..
     if [ -n "$CATA_CLANG_TIDY" ]
     then
@@ -95,11 +85,6 @@ then
 
         "$CATA_CLANG_TIDY" --version
 
-        # Show compiler C++ header search path
-        ${COMPILER:-clang++} -v -x c++ /dev/null -c
-        # And the same for clang-tidy
-        "$CATA_CLANG_TIDY" ../src/version.cpp -- -v
-
         # Run clang-tidy analysis instead of regular build & test
         # We could use CMake to create compile_commands.json, but that's super
         # slow, so use compiledb <https://github.com/nickdiego/compiledb>
@@ -111,7 +96,6 @@ then
 
         # We want to first analyze all files that changed in this PR, then as
         # many others as possible, in a random order.
-        set +x
         all_cpp_files="$( \
             grep '"file": "' build/compile_commands.json | \
             sed "s+.*$PWD/++;s+\"$++")"
@@ -124,7 +108,6 @@ then
         else
             remaining_cpp_files="$all_cpp_files"
         fi
-        set -x
 
         function analyze_files_in_random_order
         {
@@ -157,13 +140,13 @@ then
 
     # Tweak the ccache compiler analysis.  We're using the compiler from the
     # Android NDK which has an unpredictable mtime, so we need to hash the
-    # content rather than the size+mtime (which is ccache's default behavior).
+    # content rather than the size+mtime (which is ccache's default behaviour).
     export CCACHE_COMPILERCHECK=content
 
     cd android
-    # Specify dumb terminal to suppress gradle's constant output of time spent building, which
+    # Specify dumb terminal to suppress gradle's constatnt output of time spent building, which
     # fills the log with nonsense.
-    TERM=dumb ./gradlew assembleExperimentalRelease -Pj=$num_jobs -Plocalize=false -Pabi_arm_32=false -Pabi_arm_64=true -Pdeps=/home/travis/build/CleverRaven/Cataclysm-DDA/android/app/deps.zip
+    TERM=dumb ./gradlew assembleRelease -Pj=$num_jobs -Plocalize=false -Pabi_arm_32=false -Pabi_arm_64=true -Pdeps=/home/travis/build/CleverRaven/Cataclysm-DDA/android/app/deps.zip
 else
     make -j "$num_jobs" RELEASE=1 CCACHE=1 BACKTRACE=1 CROSS="$CROSS_COMPILATION" LINTJSON=0
 

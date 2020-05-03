@@ -14,7 +14,6 @@
     "bashing": 19,
     "category": "veh_parts",
     "price": 3000,
-    "price_postapoc": 100,
     "qualities": [ [ "HAMMER", 1 ] ]
   },
   {
@@ -30,8 +29,7 @@
     "to_hit": -1,
     "bashing": 2,
     "category": "veh_parts",
-    "price": 6000,
-    "price_postapoc": 100
+    "price": 6000
   },
   {
     "type": "GENERIC",
@@ -45,13 +43,12 @@
     "material": [ "steel" ],
     "volume": "3500 ml",
     "category": "veh_parts",
-    "price": 800,
-    "price_postapoc": 100
+    "price": 800
   },
   {
     "type": "GENERIC",
     "id": "chimes",
-    "name": { "str_sp": "chime loudspeakers" },
+    "name": { "str": "chime loudspeakers", "str_pl": "chime loudspeakers" },
     "description": "A stereo system with loudspeakers and a built-in set of simple melodies that it will play.  Commonly used by ice cream trucks to draw the attention of children in the days when children wanted ice cream more than brains.",
     "weight": "2600 g",
     "to_hit": -2,
@@ -60,7 +57,6 @@
     "material": [ "steel" ],
     "volume": "4 L",
     "category": "veh_parts",
-    "price": 5000,
-    "price_postapoc": 250
+    "price": 5000
   }
 ]

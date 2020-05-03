@@ -1,15 +1,11 @@
-#include <memory>
+#include "catch/catch.hpp"
 
 #include "calendar.h"
-#include "catch/catch.hpp"
 #include "game.h"
 #include "map.h"
 #include "map_helpers.h"
-#include "mapdata.h"
 #include "monster.h"
 #include "options_helpers.h"
-
-struct tripoint;
 
 static monster &spawn_and_clear( const tripoint &pos, bool set_floor )
 {
@@ -20,6 +16,8 @@ static monster &spawn_and_clear( const tripoint &pos, bool set_floor )
 }
 
 static const time_point midday = calendar::turn_zero + 12_hours;
+
+extern bool fov_3d;
 
 TEST_CASE( "monsters shouldn't see through floors", "[vision]" )
 {
@@ -58,6 +56,7 @@ TEST_CASE( "monsters shouldn't see through floors", "[vision]" )
     // Two intervening floor between monsters, and offset two tiles horizontally.
     CHECK( !distant.sees( deep ) );
     CHECK( !deep.sees( distant ) );
+
 
     // Then cases where they should be able to see each other.
     // No floor between monsters

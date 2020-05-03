@@ -1,6 +1,8 @@
 #pragma once
-#ifndef CATA_SRC_AVATAR_ACTION_H
-#define CATA_SRC_AVATAR_ACTION_H
+#ifndef AVATAR_ACTION_H
+#define AVATAR_ACTION_H
+
+#include <climits>
 
 #include "optional.h"
 #include "point.h"
@@ -11,6 +13,7 @@ class item;
 class item_location;
 class map;
 class turret_data;
+struct targeting_data;
 
 namespace avatar_action
 {
@@ -24,7 +27,11 @@ bool eat_here( avatar &you );
 
 // Standard movement; handles attacks, traps, &c. Returns false if auto move
 // should be canceled
-bool move( avatar &you, map &m, const tripoint &d );
+bool move( avatar &you, map &m, int dx, int dy, int dz = 0 );
+inline bool move( avatar &you, map &m, const tripoint &d )
+{
+    return move( you, m, d.x, d.y, d.z );
+}
 inline bool move( avatar &you, map &m, const point &d )
 {
     return move( you, m, tripoint( d, 0 ) );
@@ -73,4 +80,4 @@ void use_item( avatar &you, item_location &loc );
 void use_item( avatar &you );
 } // namespace avatar_action
 
-#endif // CATA_SRC_AVATAR_ACTION_H
+#endif // !AVATAR_MOVE_H

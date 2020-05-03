@@ -1,16 +1,14 @@
 #include "submap.h"
 
 #include <algorithm>
-#include <array>
-#include <iterator>
 #include <memory>
-#include <utility>
+#include <iterator>
+#include <array>
 
 #include "basecamp.h"
-#include "int_id.h"
 #include "mapdata.h"
-#include "tileray.h"
 #include "trap.h"
+#include "tileray.h"
 #include "vehicle.h"
 
 template<int sx, int sy>

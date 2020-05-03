@@ -1,56 +1,52 @@
 #include "mondeath.h"
 
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <cstdlib>
+#include <algorithm>
+#include <cmath>
+#include <vector>
+#include <array>
 #include <map>
 #include <memory>
-#include <set>
 #include <string>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include "avatar.h"
-#include "bodypart.h"
-#include "calendar.h"
-#include "colony.h"
-#include "creature.h"
-#include "enums.h"
 #include "explosion.h"
-#include "field_type.h"
+#include "timed_event.h"
+#include "field.h"
 #include "fungal_effects.h"
 #include "game.h"
 #include "harvest.h"
-#include "item.h"
-#include "item_stack.h"
 #include "itype.h"
-#include "iuse.h"
 #include "iuse_actor.h"
 #include "kill_tracker.h"
 #include "line.h"
 #include "map.h"
 #include "map_iterator.h"
-#include "mattack_actors.h"
-#include "mattack_common.h"
 #include "messages.h"
 #include "monster.h"
 #include "morale_types.h"
 #include "mtype.h"
 #include "player.h"
-#include "pldata.h"
-#include "point.h"
 #include "rng.h"
 #include "sounds.h"
 #include "string_formatter.h"
-#include "string_id.h"
-#include "timed_event.h"
 #include "translations.h"
-#include "type_id.h"
+#include "bodypart.h"
+#include "calendar.h"
+#include "creature.h"
+#include "enums.h"
+#include "item.h"
+#include "item_stack.h"
+#include "iuse.h"
+#include "pldata.h"
 #include "units.h"
-#include "value_ptr.h"
 #include "weighted_list.h"
+#include "type_id.h"
+#include "colony.h"
+#include "point.h"
+#include "mattack_actors.h"
 
 static const efftype_id effect_amigara( "amigara" );
 static const efftype_id effect_boomered( "boomered" );
@@ -126,7 +122,7 @@ static void scatter_chunks( const std::string &chunk_name, int chunk_amt, monste
     pile_size = std::max( pile_size, 1 );
     // can't have more items in a pile than total items
     pile_size = std::min( chunk_amt, pile_size );
-    distance = std::abs( distance );
+    distance = abs( distance );
     const item chunk( chunk_name, calendar::turn, pile_size );
     for( int i = 0; i < chunk_amt; i += pile_size ) {
         bool drop_chunks = true;
@@ -194,15 +190,15 @@ void mdeath::splatter( monster &z )
         }
     }
     // 1% of the weight of the monster is the base, with overflow damage as a multiplier
-    int gibbed_weight = rng( 0, std::round( to_gram( z.get_weight() ) / 100.0 *
-                                            ( overflow_damage / max_hp + 1 ) ) );
+    int gibbed_weight = rng( 0, round( to_gram( z.get_weight() ) / 100.0 *
+                                       ( overflow_damage / max_hp + 1 ) ) );
     const int z_weight = to_gram( z.get_weight() );
     // limit gibbing to 15%
     gibbed_weight = std::min( gibbed_weight, z_weight * 15 / 100 );
 
     if( pulverized && gibbable ) {
         float overflow_ratio = overflow_damage / max_hp + 1;
-        int gib_distance = std::round( rng( 2, 4 ) );
+        int gib_distance = round( rng( 2, 4 ) );
         for( const auto &entry : *z.type->harvest ) {
             // only flesh and bones survive.
             if( entry.type == "flesh" || entry.type == "bone" ) {
@@ -247,11 +243,11 @@ void mdeath::boomer( monster &z )
 {
     std::string explode = string_format( _( "a %s explode!" ), z.name() );
     sounds::sound( z.pos(), 24, sounds::sound_t::combat, explode, false, "explosion", "small" );
-    for( const tripoint &dest : g->m.points_in_radius( z.pos(), 1 ) ) { // *NOPAD*
+    for( auto &&dest : g->m.points_in_radius( z.pos(), 1 ) ) { // *NOPAD*
         g->m.bash( dest, 10 );
-        if( monster *const target = g->critter_at<monster>( dest ) ) {
-            target->stumble();
-            target->moves -= 250;
+        if( monster *const z = g->critter_at<monster>( dest ) ) {
+            z->stumble();
+            z->moves -= 250;
         }
     }
 
@@ -267,11 +263,11 @@ void mdeath::boomer_glow( monster &z )
     std::string explode = string_format( _( "a %s explode!" ), z.name() );
     sounds::sound( z.pos(), 24, sounds::sound_t::combat, explode, false, "explosion", "small" );
 
-    for( const tripoint &dest : g->m.points_in_radius( z.pos(), 1 ) ) { // *NOPAD*
+    for( auto &&dest : g->m.points_in_radius( z.pos(), 1 ) ) { // *NOPAD*
         g->m.bash( dest, 10 );
-        if( monster *const target = g->critter_at<monster>( dest ) ) {
-            target->stumble();
-            target->moves -= 250;
+        if( monster *const z = g->critter_at<monster>( dest ) ) {
+            z->stumble();
+            z->moves -= 250;
         }
         if( Creature *const critter = g->critter_at( dest ) ) {
             critter->add_env_effect( effect_boomered, bp_eyes, 5, 25_turns );
@@ -320,9 +316,9 @@ void mdeath::vine_cut( monster &z )
         if( tmp == z.pos() ) {
             continue; // Skip ourselves
         }
-        if( monster *const neighbor = g->critter_at<monster>( tmp ) ) {
-            if( neighbor->type->id == mon_creeper_vine ) {
-                vines.push_back( neighbor );
+        if( monster *const z = g->critter_at<monster>( tmp ) ) {
+            if( z->type->id == mon_creeper_vine ) {
+                vines.push_back( z );
             }
         }
     }
@@ -360,7 +356,7 @@ void mdeath::fungus( monster &z )
     sounds::sound( z.pos(), 10, sounds::sound_t::combat, _( "Pouf!" ), false, "misc", "puff" );
 
     fungal_effects fe( *g, g->m );
-    for( const tripoint &sporep : g->m.points_in_radius( z.pos(), 1 ) ) { // *NOPAD*
+    for( auto &&sporep : g->m.points_in_radius( z.pos(), 1 ) ) { // *NOPAD*
         if( g->m.impassable( sporep ) ) {
             continue;
         }

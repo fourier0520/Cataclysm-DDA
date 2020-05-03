@@ -56,7 +56,7 @@
     "replace": "pistol_machine"
   },
   {
-    "id": [ "deagle_44", "m1911-460", "draco" ],
+    "id": [ "deagle_44", "m1911-460" ],
     "type": "MIGRATION",
     "replace": "pistol_magnum_automag"
   },
@@ -114,11 +114,7 @@
       "kpf9",
       "walther_ppq_9mm",
       "hptc9",
-      "cz75",
-      "90two",
-      "px4",
-      "90two40",
-      "px4_40"
+      "cz75"
     ],
     "type": "MIGRATION",
     "replace": "pistol_medium"
@@ -251,8 +247,6 @@
       "arx160",
       "mosin91_30",
       "ar15",
-      "oa93",
-      "ar_pistol",
       "ruger_mini",
       "sig552",
       "steyr_aug",
@@ -261,9 +255,7 @@
       "fn_fal",
       "m1a",
       "sks",
-      "mosin44",
-      "famas",
-      "aksemi"
+      "mosin44"
     ],
     "type": "MIGRATION",
     "replace": "rifle_sporter"
@@ -298,7 +290,6 @@
       "shotgun_410",
       "browning_a5",
       "ksg",
-      "ksg-25",
       "m1014",
       "mossberg_500",
       "mossberg_500_security",

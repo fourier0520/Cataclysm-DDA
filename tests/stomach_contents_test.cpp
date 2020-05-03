@@ -85,46 +85,40 @@ static void eat_all_nutrients( player &p )
 
 // how long does it take to starve to death
 // player does not thirst or tire or require vitamins
-TEST_CASE( "starve_test", "[starve][slow]" )
+TEST_CASE( "starve_test", "[starve]" )
 {
+    // change this bool when editing the test
+    const bool print_tests = false;
     player &dummy = g->u;
     reset_time();
     clear_stomach( dummy );
-
-    CAPTURE( dummy.metabolic_rate_base() );
-    CAPTURE( dummy.activity_level_str() );
-    CAPTURE( dummy.base_height() );
-    CAPTURE( dummy.get_size() );
-    CAPTURE( dummy.height() );
-    CAPTURE( dummy.get_bmi() );
-    CAPTURE( dummy.bodyweight() );
-    CAPTURE( dummy.age() );
-    CAPTURE( dummy.get_bmr() );
-
-    // A specific BMR isn't the real target of this test, the number of days
-    // is, but it helps to debug the test faster if this value is wrong.
-    REQUIRE( dummy.get_bmr() == 2087 );
-
+    if( print_tests ) {
+        printf( "\n\n" );
+    }
     constexpr int expected_day = 30;
     int day = 0;
-    std::vector<std::string> results;
-
     do {
-        results.push_back( string_format( "\nday %d: %d", day, dummy.get_stored_kcal() ) );
+        if( print_tests ) {
+            printf( "day %d: %d\n", day, dummy.get_stored_kcal() );
+        }
         pass_time( dummy, 1_days );
         dummy.set_thirst( 0 );
         dummy.set_fatigue( 0 );
         set_all_vitamins( 0, dummy );
         day++;
     } while( dummy.get_stored_kcal() > 0 && day < expected_day * 2 );
-    CAPTURE( results );
+    if( print_tests ) {
+        printf( "\n\n" );
+    }
     CHECK( day == expected_day );
 }
 
 // how long does it take to starve to death with extreme metabolism
 // player does not thirst or tire or require vitamins
-TEST_CASE( "starve_test_hunger3", "[starve][slow]" )
+TEST_CASE( "starve_test_hunger3", "[starve]" )
 {
+    // change this bool when editing the test
+    const bool print_tests = false;
     player &dummy = g->u;
     reset_time();
     clear_stomach( dummy );
@@ -132,35 +126,29 @@ TEST_CASE( "starve_test_hunger3", "[starve][slow]" )
         dummy.mutate_towards( trait_id( "HUNGER3" ) );
     }
     clear_stomach( dummy );
-
-    CAPTURE( dummy.metabolic_rate_base() );
-    CAPTURE( dummy.activity_level_str() );
-    CAPTURE( dummy.base_height() );
-    CAPTURE( dummy.height() );
-    CAPTURE( dummy.get_bmi() );
-    CAPTURE( dummy.bodyweight() );
-    CAPTURE( dummy.age() );
-    CAPTURE( dummy.get_bmr() );
-
-    std::vector<std::string> results;
+    if( print_tests ) {
+        printf( "\n\n" );
+    }
     unsigned int day = 0;
-
     do {
-        results.push_back( string_format( "\nday %d: %d", day, dummy.get_stored_kcal() ) );
+        if( print_tests ) {
+            printf( "day %u: %d\n", day, dummy.get_stored_kcal() );
+        }
         pass_time( dummy, 1_days );
         dummy.set_thirst( 0 );
         dummy.set_fatigue( 0 );
         set_all_vitamins( 0, dummy );
         day++;
     } while( dummy.get_stored_kcal() > 0 );
-
-    CAPTURE( results );
+    if( print_tests ) {
+        printf( "\n\n" );
+    }
     CHECK( day <= 11 );
     CHECK( day >= 10 );
 }
 
 // does eating enough food per day keep you alive
-TEST_CASE( "all_nutrition_starve_test", "[starve][slow]" )
+TEST_CASE( "all_nutrition_starve_test", "[starve]" )
 {
     // change this bool when editing the test
     const bool print_tests = false;

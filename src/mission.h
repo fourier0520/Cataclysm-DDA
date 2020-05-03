@@ -1,39 +1,38 @@
 #pragma once
-#ifndef CATA_SRC_MISSION_H
-#define CATA_SRC_MISSION_H
+#ifndef MISSION_H
+#define MISSION_H
 
-#include <algorithm>
 #include <functional>
+#include <iosfwd>
 #include <map>
+#include <unordered_map>
 #include <string>
-#include <utility>
 #include <vector>
 
-#include "basecamp.h"
 #include "calendar.h"
 #include "character_id.h"
 #include "enums.h"
-#include "game_constants.h"
 #include "npc_favor.h"
+#include "overmap.h"
+#include "item_group.h"
+#include "string_id.h"
+#include "mtype.h"
+#include "type_id.h"
+#include "game_constants.h"
 #include "omdata.h"
 #include "optional.h"
-#include "overmap.h"
 #include "point.h"
-#include "string_id.h"
-#include "translations.h"
-#include "type_id.h"
 
+class avatar;
+class mission;
 class Creature;
+class JsonObject;
 class JsonArray;
 class JsonIn;
-class JsonObject;
 class JsonOut;
-class avatar;
-class item;
-class mission;
-class npc;
 class overmapbuffer;
-class player;
+class item;
+class npc;
 template<typename T> struct enum_traits;
 
 enum npc_mission : int;
@@ -474,4 +473,4 @@ struct enum_traits<mission::mission_status> {
     static constexpr mission::mission_status last = mission::mission_status::num_mission_status;
 };
 
-#endif // CATA_SRC_MISSION_H
+#endif

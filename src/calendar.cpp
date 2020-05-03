@@ -1,11 +1,9 @@
 #include "calendar.h"
 
-#include <algorithm>
 #include <array>
-#include <cassert>
 #include <cmath>
-#include <cstddef>
 #include <limits>
+#include <algorithm>
 
 #include "debug.h"
 #include "options.h"
@@ -27,7 +25,6 @@ const time_point calendar::before_time_starts = time_point::from_turn( -1 );
 const time_point calendar::turn_zero = time_point::from_turn( 0 );
 
 time_point calendar::start_of_cataclysm = calendar::turn_zero;
-time_point calendar::start_of_game = calendar::turn_zero;
 time_point calendar::turn = calendar::turn_zero;
 season_type calendar::initial_season = SPRING;
 
@@ -69,13 +66,11 @@ moon_phase get_moon_phase( const time_point &p )
     const int num_middays = to_days<int>( p - calendar::turn_zero + 1_days / 2 );
     const time_duration nearest_midnight = num_middays * 1_days;
     const double phase_change = nearest_midnight / moon_phase_duration;
-    const int current_phase = static_cast<int>( std::round( phase_change * MOON_PHASE_MAX ) ) %
+    const int current_phase = static_cast<int>( round( phase_change * MOON_PHASE_MAX ) ) %
                               static_cast<int>( MOON_PHASE_MAX );
     return static_cast<moon_phase>( current_phase );
 }
 
-// TODO: Refactor sunrise / sunset
-// The only difference between them is the start_hours array
 time_point sunrise( const time_point &p )
 {
     static_assert( static_cast<int>( SPRING ) == 0,
@@ -133,32 +128,23 @@ bool is_night( const time_point &p )
     const time_duration sunrise = time_past_midnight( ::sunrise( p ) );
     const time_duration sunset = time_past_midnight( ::sunset( p ) );
 
-    return now >= sunset + twilight_duration || now <= sunrise;
+    return now > sunset + twilight_duration || now < sunrise;
 }
 
-bool is_day( const time_point &p )
-{
-    const time_duration now = time_past_midnight( p );
-    const time_duration sunrise = time_past_midnight( ::sunrise( p ) );
-    const time_duration sunset = time_past_midnight( ::sunset( p ) );
-
-    return now >= sunrise + twilight_duration && now <= sunset;
-}
-
-bool is_dusk( const time_point &p )
+bool is_sunset_now( const time_point &p )
 {
     const time_duration now = time_past_midnight( p );
     const time_duration sunset = time_past_midnight( ::sunset( p ) );
 
-    return now >= sunset && now <= sunset + twilight_duration;
+    return now > sunset && now < sunset + twilight_duration;
 }
 
-bool is_dawn( const time_point &p )
+bool is_sunrise_now( const time_point &p )
 {
     const time_duration now = time_past_midnight( p );
     const time_duration sunrise = time_past_midnight( ::sunrise( p ) );
 
-    return now >= sunrise && now <= sunrise + twilight_duration;
+    return now > sunrise && now < sunrise + twilight_duration;
 }
 
 double current_daylight_level( const time_point &p )
@@ -205,12 +191,13 @@ float sunlight( const time_point &p, const bool vision )
     const int moonlight = vision ? 1 + static_cast<int>( current_phase * moonlight_per_quarter ) :
                           0;
 
-    if( is_night( p ) ) {
+    if( now > sunset + twilight_duration || now < sunrise ) {
+        // Night
         return moonlight;
-    } else if( is_dawn( p ) ) {
+    } else if( now >= sunrise && now <= sunrise + twilight_duration ) {
         const double percent = ( now - sunrise ) / twilight_duration;
         return static_cast<double>( moonlight ) * ( 1. - percent ) + daylight_level * percent;
-    } else if( is_dusk( p ) ) {
+    } else if( now >= sunset && now <= sunset + twilight_duration ) {
         const double percent = ( now - sunset ) / twilight_duration;
         return daylight_level * ( 1. - percent ) + static_cast<double>( moonlight ) * percent;
     } else {
@@ -563,7 +550,7 @@ std::string to_string( const time_point &p )
         //~ 1 is the year, 2 is the day (of the *year*), 3 is the time of the day in its usual format
         return string_format( _( "Year %1$d, day %2$d %3$s" ), year, day, time );
     } else {
-        const int day = day_of_season<int>( p ) + 1;
+        const int day = day_of_season<int>( p );
         //~ 1 is the year, 2 is the season name, 3 is the day (of the season), 4 is the time of the day in its usual format
         return string_format( _( "Year %1$d, %2$s, day %3$d %4$s" ), year,
                               calendar::name_season( season_of_year( p ) ), day, time );

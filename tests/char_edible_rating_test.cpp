@@ -1,16 +1,11 @@
-#include <memory>
-#include <string>
+#include <vector>
 
 #include "avatar.h"
-#include "calendar.h"
-#include "catch/catch.hpp"
 #include "character.h"
-#include "flat_set.h"
-#include "item.h"
 #include "itype.h"
-#include "ret_val.h"
 #include "type_id.h"
-#include "value_ptr.h"
+
+#include "catch/catch.hpp"
 
 // Character "edible rating" tests, covering the `can_eat` and `will_eat` functions
 
@@ -40,6 +35,7 @@ static void expect_will_eat( avatar &dummy, item &food, std::string expect_conse
     CHECK( rate_will.str() == expect_consequence );
     CHECK( rate_will.value() == expect_rating );
 }
+
 
 TEST_CASE( "cannot eat non-comestible", "[can_eat][will_eat][edible_rating][nonfood]" )
 {

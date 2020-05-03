@@ -2,11 +2,6 @@
 
 #include "getpost.h"
 
-#if defined(_MSC_VER)
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
 #include <cstdlib>
 #include <fstream>
 #include <functional>
@@ -16,7 +11,7 @@
 
 static void format( JsonIn &jsin, JsonOut &jsout, int depth = -1, bool force_wrap = false );
 
-#if defined(MSYS2) || defined(_MSC_VER)
+#ifdef MSYS2
 static void erase_char( std::string &s, const char &c )
 {
     size_t pos = std::string::npos;
@@ -214,26 +209,17 @@ int main( int argc, char *argv[] )
         std::cout << out.str();
     } else {
         std::string in_str = in.str();
-#if defined(MSYS2) || defined(_MSC_VER)
+#ifdef MSYS2
         erase_char( in_str, '\r' );
 #endif
-
-#if defined(_MSC_VER)
-        bool supports_color = _isatty( _fileno( stdout ) );
-#else
-        bool supports_color = isatty( STDOUT_FILENO );
-#endif
-        std::string color_good = supports_color ? "\x1b[32m" : std::string();
-        std::string color_bad = supports_color ? "\x1b[31m" : std::string();
-        std::string color_end = supports_color ? "\x1b[0m" : std::string();
         if( in_str == out.str() ) {
-            std::cout << color_good << "Well formatted: " << color_end << filename << std::endl;
+            std::cout << "Unformatted " << filename << std::endl;
             exit( EXIT_SUCCESS );
         } else {
             std::ofstream fout( filename, std::ios::binary | std::ios::trunc );
             fout << out.str();
             fout.close();
-            std::cout << color_bad << "Needs linting : " << color_end << filename << std::endl;
+            std::cout << filename << " needs to be linted" << std::endl;
             std::cout << "Please read doc/JSON_STYLE.md" << std::endl;
             exit( EXIT_FAILURE );
         }

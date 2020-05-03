@@ -1,9 +1,8 @@
 #include "dependency_tree.h"
 
 #include <algorithm>
-#include <array>
-#include <ostream>
 #include <set>
+#include <array>
 #include <utility>
 
 #include "debug.h"
