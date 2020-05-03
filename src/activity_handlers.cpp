@@ -99,6 +99,7 @@
 #include "weather.h"
 #include "speech.h"
 #include "custom_activity.h"
+#include "options.h"
 
 #define dbg(x) DebugLog((x),D_GAME) << __FILE__ << ":" << __LINE__ << ": "
 

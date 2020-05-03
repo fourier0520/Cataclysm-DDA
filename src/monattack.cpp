@@ -72,6 +72,7 @@
 #include "material.h"
 #include "point.h"
 #include "units.h"
+#include "options.h"
 
 static const activity_id ACT_RELOAD( "ACT_RELOAD" );
 
@@ -6002,6 +6003,19 @@ bool mattack::seduce( monster *z )
     target->gain_corrupt( rng( 1, 20 ), 100_turns );
     target->add_effect( effect_lust, 4_turns );
 
+    if( get_option<bool>( "HENTAI_EXTEND" ) ) {
+        if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
+            // if extend is on and succubus is allowed friendlyfire, check going heaven as same as in wife_u
+            if( target->get_effect_int( effect_lust ) >= 100 ) {
+                target->add_msg_player_or_npc( m_info,
+                                               _( "You go to heaven!" ),
+                                               _( "<npcname> goes to heaven!" ) );
+                target->remove_effect( effect_lust );
+                target->mod_moves( -50 );
+                g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
+            }
+        }
+    }
     return true;
 }
 

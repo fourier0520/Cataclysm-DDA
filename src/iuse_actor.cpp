@@ -76,6 +76,7 @@
 #include "point.h"
 #include "clothing_mod.h"
 #include "npc.h"
+#include "options.h"
 
 static const activity_id ACT_FIRSTAID( "ACT_FIRSTAID" );
 static const activity_id ACT_MAKE_ZLAVE( "ACT_MAKE_ZLAVE" );
@@ -5019,6 +5020,11 @@ int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
         monster &mon = *mon_;
         if( !query_yn( string_format( get_text( "hentai_yiff_query_monster" ), mon.name() ) ) ) {
             return 0;
+        }
+        if( get_option<bool>( "HENTAI_EXTEND" ) ) {
+            if( query_yn( string_format( get_text( "hentai_yiff_query_no_dev_monster" ), mon.name(), it.display_name() ) ) ) {
+                device = INT_MIN;
+            }
         }
         p.unset_mutation( trait_hentai_VIRGIN );
 
