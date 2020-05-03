@@ -141,6 +141,7 @@ const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 // for hentai mod
 static const efftype_id effect_lust( "lust" );
 static const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
+static const efftype_id effect_went_heaven( "went_heaven" );
 
 static const skill_id skill_gun( "gun" );
 static const skill_id skill_launcher( "launcher" );
@@ -6013,7 +6014,7 @@ bool mattack::seduce( monster *z )
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
         if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
-            // if extend is on and succubus is allowed friendlyfire, check going heaven as same as in wife_u
+            // if extend is on and succubus is allowed friendlyfire, check going heaven like in wife_u
             if( target->get_effect_int( effect_lust ) >= 100 ) {
                 target->add_msg_player_or_npc( m_info,
                                                _( "You go to heaven!" ),
@@ -6021,6 +6022,8 @@ bool mattack::seduce( monster *z )
                 target->remove_effect( effect_lust );
                 target->mod_moves( -50 );
                 g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
+                // additional effect
+                target->add_effect( effect_went_heaven, 60_turns );
             }
         }
     }
