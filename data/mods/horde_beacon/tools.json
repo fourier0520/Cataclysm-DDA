@@ -175,6 +175,40 @@
     "revert_to": "horde_beacon_elemental_off",
     "use_action": "HORDE_BEACON_ON",
     "magazine_well": 4
+  },
+
+  {
+    "id": "horde_beacon_north_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(北)(オフ)" },
+    "description": "北からのみゾンビを呼び出すホードビーコンです。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": "steel",
+    "symbol": ";",
+    "color": "red",
+    "ammo": "battery",
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ [ "item_id_to_turn_on", "horde_beacon_north_on" ] ],
+    "use_action": "HORDE_BEACON_OFF",
+    "magazines": [
+      [ "battery", [ "heavy_battery_cell", "heavy_plus_battery_cell", "heavy_atomic_battery_cell", "heavy_disposable_cell" ] ]
+    ],
+    "magazine_well": 4
+  },
+  {
+    "id": "horde_beacon_north_on",
+    "copy-from": "horde_beacon_off",
+    "type": "TOOL",
+    "name": { "str": "ホードビーコン(北)(オン)" },
+    "description": "電源の入ったホードビーコンです。ゾンビを呼び出し続けます。",
+    "power_draw": 100000,
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "properties": [ [ "item_id_to_turn_off", "horde_beacon_north_off" ], [ "monster_group", "GROUP_VANILLA" ], [ "turn_per_summon", "30" ], ["direction_horde_from", "north"] ],
+    "revert_to": "horde_beacon_north_off",
+    "use_action": "HORDE_BEACON_ON",
+    "magazine_well": 4
   }
 
 ]

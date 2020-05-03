@@ -87,5 +87,24 @@
       [ [ "noise_emitter", 1 ] ],
       [ [ "scrap", 3 ] ]
     ]
+  },
+  
+  {
+    "result": "horde_beacon_north_off",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_TOOLS",
+    "skill_used": "electronics",
+    "difficulty": 3,
+    "time": "20 m",
+    "autolearn": true,
+    "using": [ [ "soldering_standard", 5 ] ],
+    "qualities": [ { "id": "SCREW", "level": 1 } ],
+    "components": [ 
+      [ [ "pheromone", 1 ] ],
+      [ [ "directional_antenna", 1 ] ],
+      [ [ "noise_emitter", 1 ] ],
+      [ [ "scrap", 3 ] ]
+    ]
   }
 ]

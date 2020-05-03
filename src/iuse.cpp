@@ -9850,15 +9850,39 @@ int iuse::horde_beacon_on( player *p, item *it, bool t, const tripoint &pos )
                 }
             }
 
+            const float PI = 3.14159;
+            const float SPAWN_ANGLE_WIDTH = 0.125;
+            float direction_radian = -1;
+            if( it->has_property( "direction_horde_from" ) ) {
+                // ambigius answer means FALSE.
+                if( it->get_property_string( "direction_horde_from" ) == "East" ||
+                    it->get_property_string( "direction_horde_from" ) == "east"){
+                    direction_radian = rng_float( PI * (0 - SPAWN_ANGLE_WIDTH ) , PI * (0 + SPAWN_ANGLE_WIDTH )  );
+                } else if( it->get_property_string( "direction_horde_from" ) == "North" ||
+                           it->get_property_string( "direction_horde_from" ) == "north"){
+                    direction_radian = rng_float( PI * (1.5 - SPAWN_ANGLE_WIDTH ) , PI * (1.5 + SPAWN_ANGLE_WIDTH )  );
+                } else if( it->get_property_string( "direction_horde_from" ) == "West" ||
+                           it->get_property_string( "direction_horde_from" ) == "west"){
+                    direction_radian = rng_float( PI * (1 - SPAWN_ANGLE_WIDTH ) , PI * (1 + SPAWN_ANGLE_WIDTH )  );
+                } else if( it->get_property_string( "direction_horde_from" ) == "South" ||
+                           it->get_property_string( "diredirection_horde_fromction" ) == "south"){
+                    direction_radian = rng_float( PI * (0.5 - SPAWN_ANGLE_WIDTH ) , PI * (0.5 + SPAWN_ANGLE_WIDTH )  );
+                } else {
+                    debugmsg( "direction_horde_from is invalid value! ja: Beacon No properties No direction_horde_from Ga Machigatte imasu" );
+                    direction_radian = rng_float( 0, PI * 2);
+                }
+            } else {
+                direction_radian = rng_float( 0, PI * 2);
+            }
+
             const mongroup_id group_id = mongroup_id( mongroup_name_str );
             const mtype_id &mon_type = MonsterGroupManager::GetRandomMonsterFromGroup( group_id );
 
             const int spawn_range_shortest = 50;
             const int spawn_range_random = 5;
-            float radian = rng_float( 0, 3.14159 * 2) ;
             int radius = spawn_range_shortest + rng( 0, spawn_range_random );
-            int dist_x = roll_remainder(std::cos( radian ) * radius);
-            int dist_y = roll_remainder(std::sin( radian ) * radius);
+            int dist_x = roll_remainder(std::cos( direction_radian ) * radius);
+            int dist_y = roll_remainder(std::sin( direction_radian ) * radius);
 
             tripoint spawn_pos = tripoint( pos.x + dist_x, pos.y + dist_y, pos.z );
             monster *mon = g->place_critter_around( mon_type, spawn_pos , 3);
