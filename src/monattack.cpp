@@ -122,6 +122,7 @@ const efftype_id effect_littlemaid_talk( "littlemaid_talk" );
 // littlemaid order status things
 const efftype_id effect_littlemaid_stay( "littlemaid_stay" );
 const efftype_id effect_littlemaid_speak_off( "littlemaid_speak_off" );
+const efftype_id effect_littlemaid_wipe_liquid( "littlemaid_wipe_liquid" );
 
 // littlemaid play things
 const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
@@ -5727,6 +5728,25 @@ bool mattack::littlemaid_action( monster *maid )
         } else {
             speech_id = "mon_little_maid_R18_milk_sanpo";
         }
+    } else if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_wipe_liquid )) {
+        if( !g->m.has_flag( "LIQUIDCONT", maid->pos() )){
+            // wiping floor liquid
+            auto items = g->m.i_at( maid->pos() );
+            auto new_end = std::remove_if( items.begin(), items.end(), []( const item & it ) {
+                return it.made_of( LIQUID );
+            } );
+            bool is_maid_wiped = new_end != items.end();
+            while( new_end != items.end() ) {
+                new_end = items.erase( new_end );
+            }
+            if( is_maid_wiped ) {
+                speech_id = "mon_little_maid_R18_milk_sanpo_wiped_liquid_on_floor";
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     } else {
         return true;
     }
@@ -5817,6 +5837,25 @@ bool mattack::shoggothmaid_action( monster *maid )
             speech_id = "mon_shoggoth_maid_altanate";
         } else {
             speech_id = "mon_shoggoth_maid";
+        }
+    } else if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_wipe_liquid )) {
+        if( !g->m.has_flag( "LIQUIDCONT", maid->pos() )){
+            // wiping floor liquid
+            auto items = g->m.i_at( maid->pos() );
+            auto new_end = std::remove_if( items.begin(), items.end(), []( const item & it ) {
+                return it.made_of( LIQUID );
+            } );
+            bool is_maid_wiped = new_end != items.end();
+            while( new_end != items.end() ) {
+                new_end = items.erase( new_end );
+            }
+            if( is_maid_wiped ) {
+                speech_id = "mon_shoggoth_maid_wiped_liquid_on_floor";
+            } else {
+                return true;
+            }
+        } else {
+            return true;
         }
     } else {
         return true;

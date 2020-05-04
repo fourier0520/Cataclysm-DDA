@@ -38,6 +38,7 @@ void milk_source( monster &source_mon );
 void maid_stay_or_follow( monster &z );
 void maid_itemize( monster &z );
 void maid_toggle_speak( monster &z );
+void maid_toggle_wipe_floor( monster &z );
 void maid_play( monster &z );
 void maid_change_costume( monster &z );
 void start_custom_activity( monster &z, custom_activity *c_act);

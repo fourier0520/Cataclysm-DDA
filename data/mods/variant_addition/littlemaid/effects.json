@@ -13,6 +13,12 @@
   },
   {
     "type": "effect_type",
+    "id": "littlemaid_wipe_liquid",
+    "name": [ "littlemaid_wipe_liquid" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
     "id": "happiness",
     "name": [ "Happiness" ],
     "desc": [ "You are feeling happiness." ],

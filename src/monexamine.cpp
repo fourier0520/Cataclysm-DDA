@@ -57,6 +57,7 @@ static const efftype_id effect_tied( "tied" );
 const efftype_id effect_littlemaid_play( "littlemaid_play" );
 const efftype_id effect_littlemaid_itemize( "littlemaid_itemize" );
 const efftype_id effect_littlemaid_talk( "littlemaid_talk" );
+const efftype_id effect_littlemaid_wipe_liquid( "littlemaid_wipe_liquid" );
 
 // littlemaid order status things
 const efftype_id effect_littlemaid_stay( "littlemaid_stay" );
@@ -113,6 +114,7 @@ bool monexamine::pet_menu( monster &z )
         littlemaid_itemize,
         littlemaid_toggle_speak,
         littlemaid_stay,
+        littlemaid_wipe_floor,
         littlemaid_play,
         custom_activity_choice,
         cubi_toggle_seduce_friend,
@@ -237,6 +239,12 @@ bool monexamine::pet_menu( monster &z )
         } else {
             amenu.addentry( littlemaid_stay, true, 'f', _( "Stay here" ));
         }
+        if( z.has_effect( effect_littlemaid_wipe_liquid ) ){
+            amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Stop wipe floor" ));
+        } else {
+            amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Wipe floor" ));
+        }
+
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
     if( z.has_flag( MF_SHOGGOTH_MAID ) ) {
@@ -248,6 +256,12 @@ bool monexamine::pet_menu( monster &z )
         } else {
             amenu.addentry( littlemaid_stay, true, 'f', _( "Stay here" ));
         }
+        if( z.has_effect( effect_littlemaid_wipe_liquid ) ){
+            amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Stop wipe floor" ));
+        } else {
+            amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Wipe floor" ));
+        }
+
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
 
@@ -344,6 +358,9 @@ bool monexamine::pet_menu( monster &z )
             break;
         case littlemaid_toggle_speak:
             maid_toggle_speak( z );
+            break;
+        case littlemaid_wipe_floor:
+            maid_toggle_wipe_floor( z );
             break;
         case littlemaid_change_costume:
             maid_change_costume( z );
@@ -867,6 +884,17 @@ void monexamine::maid_toggle_speak( monster &z )
     } else {
         add_msg( _("stop littlemaid speak.") );
         z.add_effect( effect_littlemaid_speak_off, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::maid_toggle_wipe_floor( monster &z )
+{
+    if( z.has_effect( effect_littlemaid_wipe_liquid) ) {
+        add_msg( _("Ordered to stop wipe floor to maid.") );
+        z.remove_effect( effect_littlemaid_wipe_liquid );
+    } else {
+        add_msg( _("Ordered to wipe floor to maid.") );
+        z.add_effect( effect_littlemaid_wipe_liquid, 1_turns, num_bp, true );
     }
 }
 
