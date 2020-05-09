@@ -1989,6 +1989,16 @@ void options_manager::add_options_debug()
          translate_marker( "If true, file path names are going to be transcoded from system encoding to UTF-8 when reading and will be transcoded back when writing.  Mainly for CJK Windows users." ),
          true
        );
+
+    add_empty_line();
+
+    add( "SAVE_DEBUG_MENU_WARNING", "debug", translate_marker( "Save after touched debug menu warning" ),
+         translate_marker( "If true, appear warning at saving after you touched debug menu." ),
+         true
+       );
+
+
+
 }
 
 void options_manager::add_options_world_default()
