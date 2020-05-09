@@ -2424,15 +2424,8 @@ void Item_factory::load_basic_info( const JsonObject &jo, itype &def, const std:
         m_templates[ def.id ] = def;
     }
 
-    if( jo.has_member( "toiletpaper_message" ) ) {
-        jo.read( "toiletpaper_message", def.toiletpaper_message );
-    }
-
-    if( jo.has_member( "toiletpaper_morale" ) ) {
-        jo.read( "toiletpaper_morale", def.toiletpaper_morale );
-    } else {
-        def.toiletpaper_morale = 0;
-    }
+    def.toiletpaper_message = jo.get_string( "toiletpaper_message", "" );
+    def.toiletpaper_morale = jo.get_int( "toiletpaper_morale", 0 );
 
 }
 

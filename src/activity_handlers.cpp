@@ -4986,30 +4986,28 @@ int activity_handlers::use_toilet_paper( player *p ) {
 
     if( 0 <= choice ){
         const item *using_paper = &(paper_list.at(choice)->front());
-        item used_paper = g->u.inv.remove_item(using_paper);
-        used_paper.set_flag( flag_FILTHY );
-        put_into_vehicle_or_drop(*p, item_drop_reason::tumbling, { used_paper });
 
         paper_morale = 10;
-
         // process specific toilet paper item status
-        /// XXX ignore below minus 200 million to avoid probably INT_MIN when value was unset
-        if( used_paper.type->toiletpaper_morale != 0 && -200000000 < used_paper.type->toiletpaper_morale){
-            paper_morale += used_paper.type->toiletpaper_morale;
+        if( using_paper->type->toiletpaper_morale != 0 ){
+            paper_morale += using_paper->type->toiletpaper_morale;
         }
-        if( !used_paper.type->toiletpaper_message.empty()){
+        if( !using_paper->type->toiletpaper_message.empty() ){
             if( paper_morale < 10 ){
-                p->add_msg_if_player( m_bad,  used_paper.type->toiletpaper_message );
+                p->add_msg_if_player( m_bad, _( using_paper->type->toiletpaper_message ));
             } else if( paper_morale == 10 ){
-                p->add_msg_if_player( m_neutral,  used_paper.type->toiletpaper_message );
+                p->add_msg_if_player( m_neutral, _( using_paper->type->toiletpaper_message ));
             } else {
-                p->add_msg_if_player( m_good,  used_paper.type->toiletpaper_message  );
+                p->add_msg_if_player( m_good, _( using_paper->type->toiletpaper_message ));
             }
         }
         p->add_morale( MORALE_USE_TOILETPAPER, paper_morale, paper_morale * 2, 180_minutes );
-    } else {
 
+        item used_paper = g->u.inv.remove_item(using_paper);
+        used_paper.set_flag( flag_FILTHY );
+        put_into_vehicle_or_drop(*p, item_drop_reason::tumbling, { used_paper });
     }
+
     return paper_morale;
 }
 
