@@ -2906,7 +2906,7 @@ spell_events &game::spell_events_subscriber()
 
 bool game::save()
 {
-    if( is_debug_touched ) {
+    if( get_option<bool>( "SAVE_DEBUG_MENU_WARNING" ) && is_debug_touched ) {
         if ( !query_yn( _("You touched debug menu in this session, are you sure to save?") ) ) {
             add_msg( m_warning ,_( "Aborted saving game." ) );
             return false;
