@@ -3441,7 +3441,7 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
                                                   0 ) ) ) );
     }
 
-    if ( get_source_mod_id() != "dda" ) {
+    if ( get_source_mod_id() != "dda" && get_source_mod_id() != "" ) {
         insert_separation_line( info );
         std::string mod_name = mod_id( get_source_mod_id() ).obj().name();
         info.push_back( iteminfo( "DESCRIPTION",
