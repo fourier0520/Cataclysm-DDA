@@ -2418,14 +2418,16 @@ void Item_factory::load_basic_info( const JsonObject &jo, itype &def, const std:
         def.snippet_category = jo.get_string( "snippet_category", "" );
     }
 
+    def.toiletpaper_message = jo.get_string( "toiletpaper_message", "" );
+    def.toiletpaper_morale = jo.get_int( "toiletpaper_morale", 0 );
+
+    def.source_mod_id = src;
+
     if( jo.has_string( "abstract" ) ) {
         m_abstracts[ def.id ] = def;
     } else {
         m_templates[ def.id ] = def;
     }
-
-    def.toiletpaper_message = jo.get_string( "toiletpaper_message", "" );
-    def.toiletpaper_morale = jo.get_int( "toiletpaper_morale", 0 );
 
 }
 

@@ -2200,6 +2200,11 @@ class item : public visitable<item>
         bool has_clothing_mod() const;
         float get_clothing_mod_val( clothing_mod_type type ) const;
         void update_clothing_mod_val();
+
+        const std::string &get_toiletpaper_message() const;
+        int get_toiletpaper_morale() const;
+        const std::string &get_source_mod_id() const;
+
 };
 
 bool item_compare_by_charges( const item &left, const item &right );

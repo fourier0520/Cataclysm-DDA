@@ -85,6 +85,7 @@
 #include "faction.h"
 #include "magic.h"
 #include "clothing_mod.h"
+#include "mod_manager.h"
 
 static const std::string GUN_MODE_VAR_NAME( "item::mode" );
 static const std::string CLOTHING_MOD_VAR_PREFIX( "clothing_mod_" );
@@ -3438,6 +3439,16 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
                                              "and has <info>%d</info> sides." ),
                                           static_cast<int>( this->get_var( "die_num_sides",
                                                   0 ) ) ) );
+    }
+
+    if ( get_source_mod_id() != "dda" ) {
+        insert_separation_line( info );
+        std::string mod_name = mod_id( get_source_mod_id() ).obj().name();
+        info.push_back( iteminfo( "DESCRIPTION",
+          string_format( _( "This item came from mod named: %s" ), mod_name ) ) );
+
+
+
     }
 
     // list recipes you could use it in
@@ -9784,4 +9795,20 @@ void item::update_clothing_mod_val()
         }
         set_var( key, tmp );
     }
+}
+
+
+const std::string &item::get_toiletpaper_message() const
+{
+    return type->toiletpaper_message;
+}
+
+int item::get_toiletpaper_morale() const
+{
+    return type->toiletpaper_morale;
+}
+
+const std::string &item::get_source_mod_id() const
+{
+    return type->source_mod_id;
 }

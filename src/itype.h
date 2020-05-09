@@ -1012,6 +1012,7 @@ struct itype {
 
         std::string toiletpaper_message; // message when use as toiletpaper
         int toiletpaper_morale; // morale when use as toiletpaper
+        std::string source_mod_id; // mod id this item came
 
         std::string get_item_type_string() const {
             if( tool ) {
