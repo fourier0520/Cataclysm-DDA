@@ -97,6 +97,9 @@ const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
 const efftype_id effect_littlemaid_in_petting( "littlemaid_in_petting" );
 const efftype_id effect_littlemaid_in_service( "littlemaid_in_service" );
 const efftype_id effect_littlemaid_in_special( "littlemaid_in_special" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
+
+
 
 // littlemaid playing status things
 const efftype_id effect_happiness( "happiness" );
@@ -1665,7 +1668,8 @@ bool monster::move_effects( bool )
 
     if( has_effect( effect_littlemaid_stay ) || has_effect( effect_littlemaid_goodnight) ||
         has_effect( effect_littlemaid_in_kiss ) || has_effect( effect_littlemaid_in_petting ) ||
-        has_effect( effect_littlemaid_in_service ) || has_effect( effect_littlemaid_in_special ) ) {
+        has_effect( effect_littlemaid_in_service ) || has_effect( effect_littlemaid_in_special ) ||
+        has_effect( effect_shoggothmaid_in_hug ) ) {
         return false;
     }
 

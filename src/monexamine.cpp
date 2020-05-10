@@ -38,6 +38,7 @@
 #include "point.h"
 #include "custom_activity.h"
 #include "options.h"
+#include "speech.h"
 
 static const activity_id ACT_MILK( "ACT_MILK" );
 static const activity_id ACT_PLAY_WITH_PET( "ACT_PLAY_WITH_PET" );
@@ -58,6 +59,8 @@ const efftype_id effect_littlemaid_play( "littlemaid_play" );
 const efftype_id effect_littlemaid_itemize( "littlemaid_itemize" );
 const efftype_id effect_littlemaid_talk( "littlemaid_talk" );
 const efftype_id effect_littlemaid_wipe_liquid( "littlemaid_wipe_liquid" );
+const efftype_id effect_littlemaid_allow_pickup_item( "littlemaid_allow_pickup_item" );
+const efftype_id effect_shoggothmaid_allow_cook( "shoggothmaid_allow_cook" );
 
 // littlemaid order status things
 const efftype_id effect_littlemaid_stay( "littlemaid_stay" );
@@ -68,6 +71,7 @@ const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
 const efftype_id effect_littlemaid_in_petting( "littlemaid_in_petting" );
 const efftype_id effect_littlemaid_in_service( "littlemaid_in_service" );
 const efftype_id effect_littlemaid_in_special( "littlemaid_in_special" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
 
 // littlemaid playing status things
 const efftype_id effect_happiness( "happiness" );
@@ -77,6 +81,7 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 
 const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
 const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
+const efftype_id effect_cubi_allow_seduce_player( "cubi_allow_seduce_player" );
 
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
@@ -115,9 +120,13 @@ bool monexamine::pet_menu( monster &z )
         littlemaid_toggle_speak,
         littlemaid_stay,
         littlemaid_wipe_floor,
+        littlemaid_toggle_pickup,
+        shoggothmaid_toggle_cook,
+        shoggothmaid_hug,
         littlemaid_play,
         custom_activity_choice,
         cubi_toggle_seduce_friend,
+        cubi_toggle_seduce_player,
     };
 
     uilist amenu;
@@ -228,6 +237,13 @@ bool monexamine::pet_menu( monster &z )
 
     if( z.has_flag( MF_LITTLE_MAID ) ) {
         amenu.addentry( littlemaid_itemize, true, 'i', _( "Itemize littlemaid" ));
+
+        if( !z.has_effect( effect_has_bag ) ) {
+            if( !z.inv.empty() ) {
+                amenu.addentry( drop_all, true, 'd', _( "Remove all items from bag" ) );
+            }
+        }
+
         amenu.addentry( littlemaid_change_costume, true, 'C', _( "Change costume" ));
         if( z.has_effect( effect_littlemaid_speak_off ) ){
             amenu.addentry( littlemaid_toggle_speak, true, 's', _( "Allow speak" ));
@@ -244,11 +260,23 @@ bool monexamine::pet_menu( monster &z )
         } else {
             amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Wipe floor" ));
         }
-
+        if( z.has_effect( effect_littlemaid_allow_pickup_item ) ){
+            amenu.addentry( littlemaid_toggle_pickup, true, 'w', _( "Stop pickup item" ));
+        } else {
+            amenu.addentry( littlemaid_toggle_pickup, true, 'w', _( "Pickup item" ));
+        }
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
     if( z.has_flag( MF_SHOGGOTH_MAID ) ) {
+
+        if( !z.has_effect( effect_has_bag ) ) {
+            if( !z.inv.empty() ) {
+                amenu.addentry( drop_all, true, 'd', _( "Remove all items from bag" ) );
+            }
+        }
+
         amenu.addentry( littlemaid_change_costume, true, 'C', _( "Change costume" ));
+
         amenu.addentry( littlemaid_toggle_speak, false, 's', _( "Shoggoth maid do not stop speak" ));
 
         if( z.has_effect( effect_littlemaid_stay ) ){
@@ -262,15 +290,29 @@ bool monexamine::pet_menu( monster &z )
             amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Wipe floor" ));
         }
 
+        if( z.has_effect( effect_shoggothmaid_allow_cook ) ){
+            amenu.addentry( shoggothmaid_toggle_cook, true, 'w', _( "Stop Cooking" ));
+        } else {
+            amenu.addentry( shoggothmaid_toggle_cook, true, 'w', _( "Allow Cooking" ));
+        }
+
+        amenu.addentry( shoggothmaid_hug, true, 'h', _( "Get hug" ));
+
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
         if( z.in_species( SPECIES_CUBI ) ){
             if( z.has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
-                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Stop seduce me" ));
+                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Stop seduce anyone" ));
             } else {
-                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Seduce me" ));
+                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Seduce anyone" ));
+            }
+
+            if( z.has_effect( effect_cubi_allow_seduce_player ) ){
+                amenu.addentry( cubi_toggle_seduce_player, true, 's', _( "Stop seduce me" ));
+            } else {
+                amenu.addentry( cubi_toggle_seduce_player, true, 's', _( "Seduce me" ));
             }
         }
     }
@@ -362,6 +404,9 @@ bool monexamine::pet_menu( monster &z )
         case littlemaid_wipe_floor:
             maid_toggle_wipe_floor( z );
             break;
+        case littlemaid_toggle_pickup:
+            maid_toggle_pickup( z );
+            break;
         case littlemaid_change_costume:
             maid_change_costume( z );
             break;
@@ -371,6 +416,16 @@ bool monexamine::pet_menu( monster &z )
         case cubi_toggle_seduce_friend:
             cubi_allow_seduce_friendlyfire( z );
             break;
+        case cubi_toggle_seduce_player:
+            cubi_allow_seduce_player( z );
+            break;
+        case shoggothmaid_toggle_cook:
+            shoggothmaid_toggle_cooking( z );
+            break;
+        case shoggothmaid_hug:
+            shoggothmaid_get_hug( z );
+            break;
+
         default:
             break;
     }
@@ -898,6 +953,28 @@ void monexamine::maid_toggle_wipe_floor( monster &z )
     }
 }
 
+void monexamine::maid_toggle_pickup( monster &z )
+{
+    if( z.has_effect( effect_littlemaid_allow_pickup_item) ) {
+        add_msg( _("Ordered to stop pickup item to maid.") );
+        z.remove_effect( effect_littlemaid_allow_pickup_item );
+    } else {
+        add_msg( _("Ordered to pickup item to maid.") );
+        z.add_effect( effect_littlemaid_allow_pickup_item, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::shoggothmaid_toggle_cooking( monster &z )
+{
+    if( z.has_effect( effect_shoggothmaid_allow_cook) ) {
+        add_msg( _("Ordered to stop cooking to maid.") );
+        z.remove_effect( effect_shoggothmaid_allow_cook );
+    } else {
+        add_msg( _("Ordered to cooking to maid. mount food storage tag to food cargo on your vehicle, and put wheat or egg (or sugar is optional) there. maid will pickup ingredents and cook it, then store meal to food storage.") );
+        z.add_effect( effect_shoggothmaid_allow_cook, 1_turns, num_bp, true );
+    }
+}
+
 void monexamine::maid_play( monster &z )
 {
 
@@ -943,6 +1020,16 @@ void monexamine::maid_play( monster &z )
     g->u.assign_activity(act);
 }
 
+void monexamine::shoggothmaid_get_hug( monster &maid ){
+    const SpeechBubble &speech = get_speech( "shoggoth_maid_hug_start" );
+    sounds::sound( maid.pos(), speech.volume, sounds::sound_t::speech, speech.text.translated(),
+                   false, "speech", maid.type->id.str() );
+    player_activity act = player_activity( activity_id( "ACT_SHOGGOTHMAID_GET_HUG" ),
+                        to_moves<int>( 15_minutes ),-1,0,"getting hug from shoggoth maid" );
+    act.monsters.emplace_back( g->shared_from( maid ) );
+    g->u.assign_activity(act);
+}
+
 void monexamine::start_custom_activity( monster &z, custom_activity *c_act){
 
 
@@ -973,10 +1060,22 @@ void monexamine::start_custom_activity( monster &z, custom_activity *c_act){
 void monexamine::cubi_allow_seduce_friendlyfire( monster &z )
 {
     if( z.has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
-        add_msg( _("Stop make %s to seduce you."), z.name() );
+        add_msg( _("Stop make %s to seduce anyone."), z.name() );
         z.remove_effect( effect_cubi_allow_seduce_friendlyfire );
     } else {
-        add_msg( _("Make %s to seduce you."), z.name() );
+        add_msg( _("Make %s to seduce anyone."), z.name() );
         z.add_effect( effect_cubi_allow_seduce_friendlyfire, 1_turns, num_bp, true );
     }
 }
+
+void monexamine::cubi_allow_seduce_player( monster &z )
+{
+    if( z.has_effect( effect_cubi_allow_seduce_player ) ) {
+        add_msg( _("Stop make %s to seduce you."), z.name() );
+        z.remove_effect( effect_cubi_allow_seduce_player );
+    } else {
+        add_msg( _("Make %s to seduce you."), z.name() );
+        z.add_effect( effect_cubi_allow_seduce_player, 1_turns, num_bp, true );
+    }
+}
+
