@@ -6073,27 +6073,33 @@ bool mattack::shoggothmaid_action( monster *maid )
 
             const static int INGREDENT_CAKE_SUGAR = 10;
             const static int INGREDENT_CAKE_WHEAT = 1;
-            const static int INGREDENT_CAKE_EGG   = 2;
+            const static int INGREDENT_CAKE_EGG   = 1;
+            const static int CAKE_QTY = 1;
 
             const static int INGREDENT_DONUT_SUGAR = 10;
             const static int INGREDENT_DONUT_WHEAT = 1;
             const static int INGREDENT_DONUT_EGG   = 0;
+            const static int DONUT_QTY   = 14;
 
             const static int INGREDENT_PANCAKE_SUGAR = 0;
             const static int INGREDENT_PANCAKE_WHEAT = 1;
             const static int INGREDENT_PANCAKE_EGG   = 1;
+            const static int PANCAKE_QTY   = 6;
 
             const static int INGREDENT_DELUXE_SUGAR = 10;
             const static int INGREDENT_DELUXE_WHEAT = 0;
             const static int INGREDENT_DELUXE_EGG   = 1;
+            const static int DELUXE_EGG_QTY   = 1;
 
             const static int INGREDENT_BREAD_SUGAR = 0;
             const static int INGREDENT_BREAD_WHEAT = 1;
             const static int INGREDENT_BREAD_EGG   = 0;
+            const static int BREAD_QTY   = 7;
 
             const static int INGREDENT_SCRAMBLE_SUGAR = 0;
             const static int INGREDENT_SCRAMBLE_WHEAT = 0;
             const static int INGREDENT_SCRAMBLE_EGG   = 1;
+            const static int SCRAMBLE_EGG_QTY   = 1;
 
             if( shoggoth_cake_in_storage < COOK_CAP_SHOGGOTH_CAKE_IN_STORAGE &&
                 INGREDENT_CAKE_SUGAR <= sugar_in_inv &&
@@ -6105,7 +6111,7 @@ bool mattack::shoggothmaid_action( monster *maid )
                             "It maybe not harmless, but It's recommended to report for developer.");
                 }
                 speech_id = "mon_shoggoth_maid_cook_cake";
-                maid->add_item( item("shoggoth_cake", calendar::turn) );
+                maid->add_item( item("shoggoth_cake", calendar::turn, CAKE_QTY) );
             } else if( donut_in_storage < COOK_CAP_DONUT_IN_STORAGE &&
                     INGREDENT_DONUT_SUGAR <= sugar_in_inv &&
                     INGREDENT_DONUT_WHEAT <= wheat_in_inv &&
@@ -6116,7 +6122,7 @@ bool mattack::shoggothmaid_action( monster *maid )
                             "It maybe not harmless, but It's recommended to report for developer.");
                 }
                 speech_id = "mon_shoggoth_maid_cook_donuts";
-                maid->add_item( item("donut_holes", calendar::turn) );
+                maid->add_item( item("donut_holes", calendar::turn, DONUT_QTY) );
             } else if( pancake_in_storage < COOK_CAP_PANCAKE_IN_STORAGE &&
                     INGREDENT_PANCAKE_SUGAR <= sugar_in_inv &&
                     INGREDENT_PANCAKE_WHEAT <= wheat_in_inv &&
@@ -6127,7 +6133,7 @@ bool mattack::shoggothmaid_action( monster *maid )
                             "It maybe not harmless, but It's recommended to report for developer.");
                 }
                 speech_id = "mon_shoggoth_maid_cook_pancakes";
-                maid->add_item( item("pancakes", calendar::turn) );
+                maid->add_item( item("pancakes", calendar::turn, PANCAKE_QTY) );
             } else if( deluxe_in_storage < COOK_CAP_DELUXE_IN_STORAGE &&
                     INGREDENT_DELUXE_SUGAR <= sugar_in_inv &&
                     INGREDENT_DELUXE_WHEAT <= wheat_in_inv &&
@@ -6138,7 +6144,7 @@ bool mattack::shoggothmaid_action( monster *maid )
                             "It maybe not harmless, but It's recommended to report for developer.");
                 }
                 speech_id = "mon_shoggoth_maid_cook_deluxe_eggs";
-                maid->add_item( item("deluxe_eggs", calendar::turn) );
+                maid->add_item( item("deluxe_eggs", calendar::turn, DELUXE_EGG_QTY) );
 
             } else if( bread_in_storage < COOK_CAP_BREAD_IN_STORAGE &&
                     INGREDENT_BREAD_SUGAR <= sugar_in_inv &&
@@ -6150,7 +6156,7 @@ bool mattack::shoggothmaid_action( monster *maid )
                             "It maybe not harmless, but It's recommended to report for developer.");
                 }
                 speech_id = "mon_shoggoth_maid_cook_bread";
-                maid->add_item( item("bread", calendar::turn) );
+                maid->add_item( item("bread", calendar::turn, BREAD_QTY) );
 
             } else if( scramble_in_storage < COOK_CAP_SCRAMBLE_IN_STORAGE &&
                     INGREDENT_SCRAMBLE_SUGAR <= sugar_in_inv &&
@@ -6162,7 +6168,7 @@ bool mattack::shoggothmaid_action( monster *maid )
                             "It maybe not harmless, but It's recommended to report for developer.");
                 }
                 speech_id = "mon_shoggoth_maid_cook_scrambled_eggs";
-                maid->add_item( item("scrambled_eggs", calendar::turn) );
+                maid->add_item( item("scrambled_eggs", calendar::turn, SCRAMBLE_EGG_QTY) );
             }
         }
         // if do nothing, even cooldown.
