@@ -1296,6 +1296,13 @@ void options_manager::add_options_general()
 
     add_empty_line();
 
+    add( "AUTO_SWAP_POSITION_WITH_NPC", "general", translate_marker( "Auto swap position with NPC" ),
+         translate_marker( "If true, when you move toward not hostile npc or friendly robot, automatically swap position without open menu." ),
+         false
+       );
+
+    add_empty_line();
+
     add( "SOUND_ENABLED", "general", translate_marker( "Sound Enabled" ),
          translate_marker( "If true, music and sound are enabled." ),
          true, COPT_NO_SOUND_HIDE
@@ -2130,7 +2137,7 @@ void options_manager::add_options_world_default()
        );
     add( "HENTAI_EXTEND", "world_default", translate_marker( "Hentai exteneds" ),
          translate_marker( "Extends feature of packed hentai mod more when it enabled. if false, like original hentai mod experience." ),
-         false
+         true
        );
 
     add_empty_line();

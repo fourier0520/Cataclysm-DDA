@@ -150,6 +150,14 @@ const efftype_id effect_shoggothmaid_cook_cooldown( "shoggothmaid_cook_cooldown"
 const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
 const efftype_id effect_shoggothmaid_allow_cook( "shoggothmaid_allow_cook" );
 
+// shoggoth maid cooking recipes control
+const efftype_id effect_shoggothmaid_ban_recipe_bread( "shoggothmaid_ban_recipe_bread" );
+const efftype_id effect_shoggothmaid_ban_recipe_scramble( "shoggothmaid_ban_recipe_scramble" );
+const efftype_id effect_shoggothmaid_ban_recipe_donuts( "shoggothmaid_ban_recipe_donuts" );
+const efftype_id effect_shoggothmaid_ban_recipe_pancake( "shoggothmaid_ban_recipe_pancake" );
+const efftype_id effect_shoggothmaid_ban_recipe_deluxe( "shoggothmaid_ban_recipe_deluxe" );
+const efftype_id effect_shoggothmaid_ban_recipe_cake( "shoggothmaid_ban_recipe_cake" );
+
 // for hentai mod
 static const efftype_id effect_lust( "lust" );
 static const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
@@ -6101,7 +6109,8 @@ bool mattack::shoggothmaid_action( monster *maid )
             const static int INGREDENT_SCRAMBLE_EGG   = 1;
             const static int SCRAMBLE_EGG_QTY   = 1;
 
-            if( shoggoth_cake_in_storage < COOK_CAP_SHOGGOTH_CAKE_IN_STORAGE &&
+            if( !maid->has_effect( effect_shoggothmaid_ban_recipe_cake ) &&
+                shoggoth_cake_in_storage < COOK_CAP_SHOGGOTH_CAKE_IN_STORAGE &&
                 INGREDENT_CAKE_SUGAR <= sugar_in_inv &&
                 INGREDENT_CAKE_WHEAT <= wheat_in_inv &&
                 INGREDENT_CAKE_EGG   <= egg_in_inv ) {
@@ -6112,7 +6121,8 @@ bool mattack::shoggothmaid_action( monster *maid )
                 }
                 speech_id = "mon_shoggoth_maid_cook_cake";
                 maid->add_item( item("shoggoth_cake", calendar::turn, CAKE_QTY) );
-            } else if( donut_in_storage < COOK_CAP_DONUT_IN_STORAGE &&
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_donuts ) &&
+                    donut_in_storage < COOK_CAP_DONUT_IN_STORAGE &&
                     INGREDENT_DONUT_SUGAR <= sugar_in_inv &&
                     INGREDENT_DONUT_WHEAT <= wheat_in_inv &&
                     INGREDENT_DONUT_EGG   <= egg_in_inv ) {
@@ -6123,7 +6133,8 @@ bool mattack::shoggothmaid_action( monster *maid )
                 }
                 speech_id = "mon_shoggoth_maid_cook_donuts";
                 maid->add_item( item("donut_holes", calendar::turn, DONUT_QTY) );
-            } else if( pancake_in_storage < COOK_CAP_PANCAKE_IN_STORAGE &&
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_pancake ) &&
+                    pancake_in_storage < COOK_CAP_PANCAKE_IN_STORAGE &&
                     INGREDENT_PANCAKE_SUGAR <= sugar_in_inv &&
                     INGREDENT_PANCAKE_WHEAT <= wheat_in_inv &&
                     INGREDENT_PANCAKE_EGG   <= egg_in_inv ) {
@@ -6134,7 +6145,8 @@ bool mattack::shoggothmaid_action( monster *maid )
                 }
                 speech_id = "mon_shoggoth_maid_cook_pancakes";
                 maid->add_item( item("pancakes", calendar::turn, PANCAKE_QTY) );
-            } else if( deluxe_in_storage < COOK_CAP_DELUXE_IN_STORAGE &&
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_deluxe ) &&
+                    deluxe_in_storage < COOK_CAP_DELUXE_IN_STORAGE &&
                     INGREDENT_DELUXE_SUGAR <= sugar_in_inv &&
                     INGREDENT_DELUXE_WHEAT <= wheat_in_inv &&
                     INGREDENT_DELUXE_EGG   <= egg_in_inv ) {
@@ -6146,7 +6158,8 @@ bool mattack::shoggothmaid_action( monster *maid )
                 speech_id = "mon_shoggoth_maid_cook_deluxe_eggs";
                 maid->add_item( item("deluxe_eggs", calendar::turn, DELUXE_EGG_QTY) );
 
-            } else if( bread_in_storage < COOK_CAP_BREAD_IN_STORAGE &&
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_bread ) &&
+                    bread_in_storage < COOK_CAP_BREAD_IN_STORAGE &&
                     INGREDENT_BREAD_SUGAR <= sugar_in_inv &&
                     INGREDENT_BREAD_WHEAT <= wheat_in_inv &&
                     INGREDENT_BREAD_EGG   <= egg_in_inv ) {
@@ -6158,7 +6171,8 @@ bool mattack::shoggothmaid_action( monster *maid )
                 speech_id = "mon_shoggoth_maid_cook_bread";
                 maid->add_item( item("bread", calendar::turn, BREAD_QTY) );
 
-            } else if( scramble_in_storage < COOK_CAP_SCRAMBLE_IN_STORAGE &&
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_scramble ) &&
+                    scramble_in_storage < COOK_CAP_SCRAMBLE_IN_STORAGE &&
                     INGREDENT_SCRAMBLE_SUGAR <= sugar_in_inv &&
                     INGREDENT_SCRAMBLE_WHEAT <= wheat_in_inv &&
                     INGREDENT_SCRAMBLE_EGG   <= egg_in_inv ) {
@@ -6421,11 +6435,23 @@ bool mattack::seduce( monster *z )
             std::list<Creature *> creature_list = g->m.get_creatures_in_radius( z->pos(), 1 );
             if( !creature_list.empty() ) {
                 target = *std::next( creature_list.begin(),  rng(0, creature_list.size() - 1) );
+                if( target == z ){
+                    target = nullptr;
+                }
             }
         }
 
-        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_player ) ){
+        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_player )  ){
             target = &( g->u );
+        }
+
+        Character *target_as_chara = dynamic_cast<Character *>( target );
+        if ( target_as_chara != nullptr ) {
+            if ( 900 < target_as_chara->get_thirst() ) {
+                // do not suck to kill ally!
+                // over "THIRSTY!", under "eyed feel dry."
+                return true;
+            }
         }
     }
 
@@ -6455,7 +6481,7 @@ bool mattack::seduce( monster *z )
     target->add_effect( effect_lust, 4_turns );
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
-        if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
+        if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) || z->has_effect( effect_cubi_allow_seduce_player )) {
             // if extend is on and succubus is allowed friendlyfire, check going heaven like in wife_u
             if( target->get_effect_int( effect_lust ) >= 100 ) {
                 target->add_msg_player_or_npc( m_info,
@@ -6463,7 +6489,9 @@ bool mattack::seduce( monster *z )
                                                _( "<npcname> goes to heaven!" ) );
                 target->remove_effect( effect_lust );
                 target->mod_moves( -50 );
-                g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
+                if ( target == &(g->u) ) {
+                    g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
+                }
                 // additional effect
                 target->add_effect( effect_went_heaven, 60_turns );
             }
@@ -6484,7 +6512,7 @@ bool mattack::tkiss( monster *z )
                 std::list<Creature *> creature_list = g->m.get_creatures_in_radius( z->pos(), 5 );
                 if( !creature_list.empty() ) {
                     Creature *tmp_target = *std::next( creature_list.begin(),  rng(0, creature_list.size() - 1) );
-                    if( tmp_target != nullptr && z->sees( *tmp_target ) && g->m.clear_path( z->pos(), tmp_target->pos(), range, 1, 100 ) ) {
+                    if( tmp_target != nullptr && tmp_target != z && z->sees( *tmp_target ) && g->m.clear_path( z->pos(), tmp_target->pos(), range, 1, 100 ) ) {
                         target = tmp_target;
                     }
                 }

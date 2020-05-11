@@ -2911,6 +2911,7 @@ bool game::save()
             add_msg( m_warning ,_( "Aborted saving game." ) );
             return false;
         }
+        is_debug_touched = false;
     }
 
     try {
@@ -5417,6 +5418,9 @@ void game::examine( const tripoint &examp )
             }
         } else if( u.is_mounted() ) {
             add_msg( m_warning, _( "You cannot do that while mounted." ) );
+        }
+        if( get_option<bool>("AUTO_SWAP_POSITION_WITH_NPC") && g->disable_robot( examp ) ) {
+            return;
         }
         npc *np = dynamic_cast<npc *>( c );
         if( np != nullptr && !u.is_mounted() ) {

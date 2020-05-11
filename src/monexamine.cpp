@@ -79,6 +79,14 @@ const efftype_id effect_comfortness( "comfortness" );
 const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
 
+// shoggoth maid cooking recipes control
+const efftype_id effect_shoggothmaid_ban_recipe_bread( "shoggothmaid_ban_recipe_bread" );
+const efftype_id effect_shoggothmaid_ban_recipe_scramble( "shoggothmaid_ban_recipe_scramble" );
+const efftype_id effect_shoggothmaid_ban_recipe_donuts( "shoggothmaid_ban_recipe_donuts" );
+const efftype_id effect_shoggothmaid_ban_recipe_pancake( "shoggothmaid_ban_recipe_pancake" );
+const efftype_id effect_shoggothmaid_ban_recipe_deluxe( "shoggothmaid_ban_recipe_deluxe" );
+const efftype_id effect_shoggothmaid_ban_recipe_cake( "shoggothmaid_ban_recipe_cake" );
+
 const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
 const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
 const efftype_id effect_cubi_allow_seduce_player( "cubi_allow_seduce_player" );
@@ -122,6 +130,7 @@ bool monexamine::pet_menu( monster &z )
         littlemaid_wipe_floor,
         littlemaid_toggle_pickup,
         shoggothmaid_toggle_cook,
+        shoggothmaid_cook_menu,
         shoggothmaid_hug,
         littlemaid_play,
         custom_activity_choice,
@@ -291,9 +300,10 @@ bool monexamine::pet_menu( monster &z )
         }
 
         if( z.has_effect( effect_shoggothmaid_allow_cook ) ){
-            amenu.addentry( shoggothmaid_toggle_cook, true, 'w', _( "Stop Cooking" ));
+            amenu.addentry( shoggothmaid_toggle_cook, true, 'c', _( "Stop Cooking" ));
+            amenu.addentry( shoggothmaid_cook_menu, true, 'm', _("Cooking recipes" ));
         } else {
-            amenu.addentry( shoggothmaid_toggle_cook, true, 'w', _( "Allow Cooking" ));
+            amenu.addentry( shoggothmaid_toggle_cook, true, 'c', _( "Allow Cooking" ));
         }
 
         amenu.addentry( shoggothmaid_hug, true, 'h', _( "Get hug" ));
@@ -421,6 +431,9 @@ bool monexamine::pet_menu( monster &z )
             break;
         case shoggothmaid_toggle_cook:
             shoggothmaid_toggle_cooking( z );
+            break;
+        case shoggothmaid_cook_menu:
+            shoggothmaid_toggle_cooking_menu( z );
             break;
         case shoggothmaid_hug:
             shoggothmaid_get_hug( z );
@@ -974,6 +987,124 @@ void monexamine::shoggothmaid_toggle_cooking( monster &z )
         z.add_effect( effect_shoggothmaid_allow_cook, 1_turns, num_bp, true );
     }
 }
+
+void monexamine::shoggothmaid_toggle_cooking_menu( monster &z )
+{
+    enum recipe_choices {
+        shoggothmaid_recipe_scramble_on = 0,
+        shoggothmaid_recipe_scramble_off,
+        shoggothmaid_recipe_bread_on,
+        shoggothmaid_recipe_bread_off,
+        shoggothmaid_recipe_deluxe_on,
+        shoggothmaid_recipe_deluxe_off,
+        shoggothmaid_recipe_pancake_on,
+        shoggothmaid_recipe_pancake_off,
+        shoggothmaid_recipe_donuts_on,
+        shoggothmaid_recipe_donuts_off,
+        shoggothmaid_recipe_cake_on,
+        shoggothmaid_recipe_cake_off,
+        shoggothmaid_recipe_menu_quit,
+    };
+
+    bool is_loop = true;
+    while( is_loop ) {
+        uilist amenu;
+        amenu.text = string_format( _( "Shoggoth maid cooking menu" ) );
+
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_scramble ) ) {
+            amenu.addentry( shoggothmaid_recipe_scramble_on, true, 's',
+                    _( "Scrambled eggs(         1 Powder egg          ): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_scramble_off, true, 's',
+                    _( "Scrambled eggs(         1 Powder egg          ): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_bread ) ) {
+            amenu.addentry( shoggothmaid_recipe_bread_on, true, 'b',
+                    _( "Bread         (1 Wheat                        ): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_bread_off, true, 'b',
+                    _( "Bread         (1 Wheat                        ): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_deluxe ) ) {
+            amenu.addentry( shoggothmaid_recipe_deluxe_on, true, 'd',
+                    _( "DX eggs       (         1 Powder egg, 10 Sugar): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_deluxe_off, true, 'd',
+                    _( "DX eggs       (         1 Powder egg, 10 Sugar): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_pancake ) ) {
+            amenu.addentry( shoggothmaid_recipe_pancake_on, true, 'p',
+                    _( "Pancakes      (1 Wheat, 1 Powder egg          ): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_pancake_off, true, 'p',
+                    _( "Pankaces      (1 Wheat, 1 Powder egg          ): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_donuts ) ) {
+            amenu.addentry( shoggothmaid_recipe_donuts_on, true, 'D',
+                    _( "Donuts        (1 Wheat,               10 Sugar): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_donuts_off, true, 'D',
+                    _( "Donuts        (1 Wheat,               10 Sugar): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_cake ) ) {
+            amenu.addentry( shoggothmaid_recipe_cake_on, true, 'c',
+                    _( "CAKE          (1 Wheat, 1 Powder egg, 10 Sugar): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_cake_off, true, 'c',
+                    _( "CAKE          (1 Wheat, 1 Powder egg, 10 Sugar): ON" ) );
+        }
+        amenu.addentry( shoggothmaid_recipe_menu_quit, true, 'q',
+                            _( "Quit recipes setting" ) );
+        amenu.query();
+        int choice = amenu.ret;
+
+        switch( choice ) {
+            case shoggothmaid_recipe_bread_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_bread );
+                break;
+            case shoggothmaid_recipe_bread_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_bread, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_scramble_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_scramble );
+                break;
+            case shoggothmaid_recipe_scramble_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_scramble, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_pancake_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_pancake );
+                break;
+            case shoggothmaid_recipe_pancake_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_pancake, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_donuts_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_donuts );
+                break;
+            case shoggothmaid_recipe_donuts_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_donuts, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_deluxe_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_deluxe );
+                break;
+            case shoggothmaid_recipe_deluxe_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_deluxe, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_cake_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_cake );
+                break;
+            case shoggothmaid_recipe_cake_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_cake, 1_turns, num_bp, true );
+                break;
+            case UILIST_CANCEL:
+                is_loop = false;
+                break;
+            case shoggothmaid_recipe_menu_quit:
+                is_loop = false;
+                break;
+        }
+    }
+}
+
 
 void monexamine::maid_play( monster &z )
 {

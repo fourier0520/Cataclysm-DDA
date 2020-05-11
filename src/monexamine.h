@@ -41,6 +41,7 @@ void maid_toggle_speak( monster &z );
 void maid_toggle_wipe_floor( monster &z );
 void maid_toggle_pickup( monster &z );
 void shoggothmaid_toggle_cooking( monster &z );
+void shoggothmaid_toggle_cooking_menu( monster &z );
 void maid_play( monster &z );
 void maid_change_costume( monster &z );
 void shoggothmaid_get_hug( monster &z );

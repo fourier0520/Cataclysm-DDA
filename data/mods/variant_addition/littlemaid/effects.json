@@ -35,6 +35,44 @@
     "name": [ "shoggothmaid_cook_cooldown" ],
     "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
   },
+
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_bread",
+    "name": [ "shoggothmaid_ban_recipe_bread" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_scramble",
+    "name": [ "shoggothmaid_ban_recipe_scramble" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_donuts",
+    "name": [ "shoggothmaid_ban_recipe_donuts" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_pancake",
+    "name": [ "shoggothmaid_ban_recipe_pancake" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_deluxe",
+    "name": [ "shoggothmaid_ban_recipe_deluxe" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_cake",
+    "name": [ "shoggothmaid_ban_recipe_cake" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+
   {
     "type": "effect_type",
     "id": "shoggothmaid_allow_cook",
