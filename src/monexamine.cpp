@@ -90,6 +90,9 @@ const efftype_id effect_shoggothmaid_ban_recipe_cake( "shoggothmaid_ban_recipe_c
 const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
 const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
 const efftype_id effect_cubi_allow_seduce_player( "cubi_allow_seduce_player" );
+const efftype_id effect_cubi_ban_love_flame( "cubi_ban_love_flame" );
+
+
 
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
@@ -134,6 +137,7 @@ bool monexamine::pet_menu( monster &z )
         shoggothmaid_hug,
         littlemaid_play,
         custom_activity_choice,
+        cubi_menu_love_fire,
         cubi_toggle_seduce_friend,
         cubi_toggle_seduce_player,
     };
@@ -325,6 +329,15 @@ bool monexamine::pet_menu( monster &z )
                 amenu.addentry( cubi_toggle_seduce_player, true, 's', _( "Seduce me" ));
             }
         }
+        // XXX hardcoding name of cubi who use LOVE_FRAME.
+        // special attacks is in z.special_attacks, have to make to finding LOVE_FLAME or something.
+        if( z.type->id == "mon_greater_succubi" || z.type->id == "mon_greater_incubi" ){
+            if( z.has_effect( effect_cubi_ban_love_flame ) ){
+                amenu.addentry( cubi_menu_love_fire, true, 'F', _( "Allow love fire magic" ));
+            } else {
+                amenu.addentry( cubi_menu_love_fire, true, 'F', _( "Ban love fire magic" ));
+            }
+        }
     }
 
     custom_activity *c_act = custom_activity_manager::find_pet_monster_activity( z.type->id );
@@ -437,6 +450,9 @@ bool monexamine::pet_menu( monster &z )
             break;
         case shoggothmaid_hug:
             shoggothmaid_get_hug( z );
+            break;
+        case cubi_menu_love_fire:
+            cubi_toggle_ban_love_flame( z );
             break;
 
         default:
@@ -1207,6 +1223,19 @@ void monexamine::cubi_allow_seduce_player( monster &z )
     } else {
         add_msg( _("Make %s to seduce you."), z.name() );
         z.add_effect( effect_cubi_allow_seduce_player, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::cubi_toggle_ban_love_flame( monster &z )
+{
+    if( z.has_effect( effect_cubi_ban_love_flame ) ) {
+        add_msg( _("You told %s to do burn everything by love."), z.name() );
+        z.enable_special( "LOVE_FLAME" );
+        z.remove_effect( effect_cubi_ban_love_flame );
+    } else {
+        add_msg( _("You told %s to do not burn everything by love."), z.name() );
+        z.disable_special( "LOVE_FLAME" );
+        z.add_effect( effect_cubi_ban_love_flame, 1_turns, num_bp, true );
     }
 }
 

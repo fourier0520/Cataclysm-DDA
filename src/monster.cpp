@@ -2059,6 +2059,11 @@ void monster::disable_special( const std::string &special_name )
     special_attacks.at( special_name ).enabled = false;
 }
 
+void monster::enable_special( const std::string &special_name )
+{
+    special_attacks.at( special_name ).enabled = true;
+}
+
 void monster::normalize_ammo( const int old_ammo )
 {
     int total_ammo = 0;
