@@ -19,35 +19,39 @@ enum item_enchant_type{
 
 };
 
-struct item_enchant {
-    item_enchant_id id;
-    std::string name;
-    std::string description;
+class item_enchant {
 
-    item_enchant_type enchant_type = enchant_null;
+    public:
+        void serialize( JsonOut &json ) const;
+        void deserialize( const JsonObject &jo );
+    public:
+        item_enchant_id id;
+        std::string name;
+        std::string description;
 
-    int weight_in_natural_spawn;
-    float effect_chance;
-    float effect_chance_min;
-    float effect_chance_max;
+        item_enchant_type enchant_type = enchant_null;
 
-    efftype_id effect_type_id_to_apply_target;
-    efftype_id effect_type_id_to_apply_self;
-    int effect_int;
-    int effect_duration_turn;
+        int weight_in_natural_spawn;
+        float effect_chance;
+        float effect_chance_min;
+        float effect_chance_max;
 
-    itype_id gun_type_id_to_fire;
-    int gun_target_num;
+        efftype_id effect_type_id_to_apply_target;
+        efftype_id effect_type_id_to_apply_self;
+        int effect_int;
+        int effect_duration_turn;
 
-    species_id specie_id_to_anti;
-    float anti_specie_multiplier;
+        itype_id gun_type_id_to_fire;
+        int gun_target_num;
 
-    emit_id emit_id_to_emit;
+        species_id specie_id_to_anti;
+        float anti_specie_multiplier;
 
-    std::string apply_message;
+        emit_id emit_id_to_emit;
+
+        std::string message_on_trigger;
 
 };
-
 
 class enchant_manager {
 
@@ -61,6 +65,10 @@ class enchant_manager {
         static void invoke_damage_modifier_enchantment( damage_instance dmg, item_enchant&, Creature&, item&, player& );
 
         static void invoke_enchantment_effect( item_enchant&, Creature&, item&, player& );
+
+        static void add_random_enchant_to_item( item& );
+        static void add_random_enchant_to_item( std::vector<item>& );
+        static void add_random_enchant_to_item( std::list<item>&  );
         // enchant balance things.
         // load by load_enchant_balance_options()
         // from external options
@@ -69,6 +77,7 @@ class enchant_manager {
 };
 
 void load_item_enchant( const JsonObject &jo, const std::string &src );
+
 
 
 #endif /* SRC_ITEM_ENCHANT_H_ */

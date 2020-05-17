@@ -2207,7 +2207,7 @@ class item : public visitable<item>
         const std::string &get_source_mod_id() const;
 
     public:
-        std::vector<item_enchant> item_enchant_list;
+        std::list<item_enchant> item_enchant_list;
 };
 
 bool item_compare_by_charges( const item &left, const item &right );

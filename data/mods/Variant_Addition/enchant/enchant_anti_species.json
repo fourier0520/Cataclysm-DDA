@@ -13,7 +13,7 @@
 
     "specie_id_to_anti": "fungus",
 
-    "message_at_trigger": "キノコを消毒しました！"
+    "message_on_trigger": "キノコを消毒しました！"
   }
 
 ]

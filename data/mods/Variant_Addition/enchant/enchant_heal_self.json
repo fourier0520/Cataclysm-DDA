@@ -13,7 +13,7 @@
 
     "heal_amount": 2,
 
-    "message_at_trigger": "%sによって治療されました！"
+    "message_on_trigger": "%sによって治療されました！"
   }
 
 ]

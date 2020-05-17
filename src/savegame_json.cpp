@@ -94,6 +94,7 @@
 #include "stats_tracker.h"
 #include "vpart_position.h"
 #include "ranged.h"
+#include "item_enchant.h"
 
 struct oter_type_t;
 struct mutation_branch;
@@ -2255,6 +2256,8 @@ void item::io( Archive &archive )
     archive.io( "light_dir", light.direction, nolight.direction );
 
     archive.io( "relic_data", relic_data );
+
+    archive.io( "item_enchant_list", item_enchant_list );
 
     item_controller->migrate_item( orig, *this );
 

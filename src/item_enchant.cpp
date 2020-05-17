@@ -71,7 +71,7 @@ void load_item_enchant( const JsonObject &jo, const std::string & ){
     new_item_enchant.effect_chance_min = jo.get_float( "effect_chance_min" , new_item_enchant.effect_chance);
     new_item_enchant.effect_chance_max = jo.get_float( "effect_chance_max" , new_item_enchant.effect_chance);
 
-    new_item_enchant.apply_message =  jo.get_string( "message_at_trigger" , "");
+    new_item_enchant.message_on_trigger =  jo.get_string( "message_on_trigger" , "");
 
     if( new_item_enchant.enchant_type == enchant_effect_to_target){
         new_item_enchant.effect_type_id_to_apply_target = efftype_id( jo.get_string( "effect_type_id_to_apply_target" ) );
@@ -210,7 +210,7 @@ void enchant_manager::invoke_damage_modifier_enchantment(damage_instance dmg,
             if( target.in_species( enchant.specie_id_to_anti ) ) {
                 dmg.mult_damage( enchant.anti_specie_multiplier );
 
-                if( enchant.apply_message == ""){
+                if( enchant.message_on_trigger == ""){
                     if ( 2.0 < enchant.anti_specie_multiplier ) {
                         add_msg(_("%s is super effective to %s!"), weapon.tname(), target.get_name());
                     } else if ( 1.0 < enchant.anti_specie_multiplier ) {
@@ -219,7 +219,7 @@ void enchant_manager::invoke_damage_modifier_enchantment(damage_instance dmg,
                         add_msg(_("%s is not effective to %s..."), weapon.tname(), target.get_name());
                     }
                 } else {
-                    add_msg( enchant.apply_message,  weapon.tname() );
+                    add_msg( enchant.message_on_trigger,  weapon.tname() );
                 }
             }
         }
@@ -236,31 +236,114 @@ void enchant_manager::invoke_enchantment_effect(item_enchant& enchant, Creature&
                     efftype_id( enchant.effect_type_id_to_apply_target ),
                     time_duration::from_turns(enchant.effect_duration_turn));
 
-            add_msg( enchant.apply_message,  weapon.tname(), target.get_name(), user.get_name());
+            add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
 
         } else if ( enchant.enchant_type == enchant_effect_to_self ) {
             user.add_effect(
                     efftype_id( enchant.effect_type_id_to_apply_self ),
                     time_duration::from_turns(enchant.effect_duration_turn) );
-            add_msg( enchant.apply_message,  weapon.tname(), target.get_name(), user.get_name());
+            add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
 
         } else if ( enchant.enchant_type == enchant_anti_specie ) {
             // anti specie is in damage modifire enchantment.
         } else if ( enchant.enchant_type == enchant_fire_gun ) {
             add_msg("teleport is not inplemented yet, sorry!");
-            add_msg( enchant.apply_message,  weapon.tname(), target.get_name(), user.get_name());
+            add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
         } else if ( enchant.enchant_type == enchant_emit_field ) {
             g->m.emit_field( target.pos(), emit_id( enchant.emit_id_to_emit ) , 1.0f );
-            add_msg( enchant.apply_message,  weapon.tname(), target.get_name(), user.get_name());
+            add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
 
         } else if ( enchant.enchant_type == enchant_heal_self ) {
             add_msg("teleport is not inplemented yet, sorry!");
-            add_msg( enchant.apply_message,  weapon.tname(), target.get_name(), user.get_name());
+            add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
         } else if ( enchant.enchant_type == enchant_teleport_target ) {
             add_msg("teleport is not inplemented yet, sorry!");
-            add_msg( enchant.apply_message,  weapon.tname(), target.get_name(), user.get_name());
+            add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
         }
     }
 
 }
 
+
+void enchant_manager::add_random_enchant_to_item( item& it ){
+
+    // make enchant
+    add_msg( "try enchant to %s", it.tname());
+
+    if( 0 < get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+
+        if ( it.is_melee( DT_CUT ) || it.is_melee( DT_STAB )  || it.is_melee( DT_BASH ) ){
+            if ( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+                // apply enchant
+                item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+                if( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+                    item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+                }
+            }
+        } else {
+            add_msg( "%s is not melee", it.tname());
+        }
+    }
+}
+
+void enchant_manager::add_random_enchant_to_item( std::vector<item> &it_list ){
+    add_msg( "called item vector");
+
+    for( item &it : it_list ) {
+        enchant_manager::add_random_enchant_to_item( it );
+    }
+}
+void enchant_manager::add_random_enchant_to_item( std::list<item> &it_list ){
+    add_msg( "called item list");
+
+    for( item &it : it_list ) {
+        enchant_manager::add_random_enchant_to_item( it );
+    }
+}
+
+void item_enchant::serialize(JsonOut &json) const {
+    json.start_object();
+
+    json.member("id" , id );
+    json.member("name" , name );
+    json.member("effect_chance" , effect_chance );
+
+    json.end_object();
+}
+void item_enchant::deserialize(const JsonObject &jo) {
+
+    id = item_enchant_id( jo.get_string( "id" ) );
+
+    effect_chance = jo.get_float( "effect_chance" );
+
+    item_enchant enchant_definition = id.obj();
+
+    if( enchant_definition.enchant_type == enchant_null ) {
+        // no enchant is not allowed
+        debugmsg( "enchant type is enchant_null :" , id.str() );
+        return;
+    }
+
+    name = enchant_definition.name;
+    description = enchant_definition.description;
+
+    enchant_type = enchant_definition.enchant_type;
+
+    effect_chance = enchant_definition.effect_chance;
+
+    effect_type_id_to_apply_target = enchant_definition.effect_type_id_to_apply_target;
+    effect_type_id_to_apply_self = enchant_definition.effect_type_id_to_apply_self;
+    effect_int = enchant_definition.effect_int;
+    effect_duration_turn = enchant_definition.effect_duration_turn;
+
+    gun_type_id_to_fire = enchant_definition.gun_type_id_to_fire;
+    gun_target_num = enchant_definition.gun_target_num;
+
+    specie_id_to_anti = enchant_definition.specie_id_to_anti;
+    anti_specie_multiplier = enchant_definition.anti_specie_multiplier;
+
+    emit_id_to_emit = enchant_definition.emit_id_to_emit;
+
+    message_on_trigger = enchant_definition.message_on_trigger;
+
+}

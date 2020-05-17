@@ -15,7 +15,7 @@
     "gun_type_id_to_fire": "mp5",
     "gun_target_num": 5,
 
-    "message_at_trigger": "%sから弾丸が発射されました！"
+    "message_on_trigger": "%sから弾丸が発射されました！"
   }
 
 ]

@@ -385,19 +385,6 @@ item::item( const itype *type, time_point turn, int qty ) : type( type ), bday( 
         relic_data = type->relic_data;
     }
 
-    // make enchant
-    if( 0 < get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
-        if ( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
-            // apply enchant
-            item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
-            if( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
-                item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
-            }
-
-        } else {
-            item_enchant_list.clear();
-        }
-    }
 }
 
 item::item( const itype_id &id, time_point turn, int qty )

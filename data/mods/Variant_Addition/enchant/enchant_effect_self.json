@@ -16,7 +16,7 @@
     "effect_int": 1,
     "effect_duration_turn": 5,
 
-    "message_at_trigger": "%sが炎を吹き、自分に燃え移りました！"
+    "message_on_trigger": "%sが炎を吹き、自分に燃え移りました！"
   }
 
 ]

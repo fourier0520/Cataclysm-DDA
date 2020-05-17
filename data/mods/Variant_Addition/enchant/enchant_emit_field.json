@@ -14,7 +14,7 @@
 
     "emit_id_to_emit": "emit_enchant_burning_terrain",
 
-    "message_at_trigger": "%1$sが炎を吹き上げ、%2$sの足元を燃やしました！"
+    "message_on_trigger": "%1$sが炎を吹き上げ、%2$sの足元を燃やしました！"
   },
 
   {
