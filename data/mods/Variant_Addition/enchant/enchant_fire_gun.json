@@ -1,0 +1,21 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "shot_on_attack",
+    "name": "追加銃撃",
+    "description": "攻撃時に、追加で射撃攻撃が行われます。",
+    "enchant_type": "enchant_fire_gun",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "gun_type_id_to_fire": "mp5",
+    "gun_target_num": 5,
+
+    "message_at_trigger": "%sから弾丸が発射されました！"
+  }
+
+]

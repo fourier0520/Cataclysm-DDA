@@ -1,0 +1,22 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "self_burning",
+    "name": "自己発火",
+    "description": "攻撃時に、自分が燃えます。",
+    "enchant_type": "enchant_effect_to_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "effect_type_id_to_apply_self": "onfire",
+    "effect_int": 1,
+    "effect_duration_turn": 5,
+
+    "message_at_trigger": "%sが炎を吹き、自分に燃え移りました！"
+  }
+
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "type": "item_action",
+    "id": "ENCHANT_CLEANER",
+    "name": { "str": "エンチャントを除去する" }
+  },
+
+  {
+    "id": "enchant_cleaner_tool",
+    "type": "TOOL",
+    "name": { "str": "エンチャントクリーナー" },
+    "description": "アイテムに秘められたエンチャントを全て除去する道具です。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": ["steel", "cotton"],
+    "symbol": ";",
+    "color": "light_gray",
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "use_action": "ENCHANT_CLEANER"
+  },
+
+
+  {
+    "result": "ftl_engine_item",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_PARTS",
+    "skill_used": "mechanics",
+    "skills_required": [ "fabrication", 4, "electronics", 6 ],
+    "difficulty": 8,
+    "time": "120 m",
+    "autolearn": true,
+    "using": [ [ "welding_standard", 20 ] ],
+    "qualities": [ { "id": "SCREW", "level": 1 }, { "id": "WRENCH", "level": 2 } ],
+    "components": [ [ [ "teleporter", 3 ] ], [ [ "minireactor", 1 ] ], [ [ "scrap", 20 ] ] ]
+  }
+
+
+]

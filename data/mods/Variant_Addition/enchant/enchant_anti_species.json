@@ -1,0 +1,19 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "anti_fungus",
+    "name": "キノコ特効",
+    "description": "真菌の敵に追加でダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "specie_id_to_anti": "fungus",
+
+    "message_at_trigger": "キノコを消毒しました！"
+  }
+
+]

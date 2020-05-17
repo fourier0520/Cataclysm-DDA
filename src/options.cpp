@@ -2154,6 +2154,13 @@ void options_manager::add_options_world_default()
 
     add_empty_line();
 
+    add( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN", "world_default", translate_marker( "Enchant rate" ),
+         translate_marker( "Set enchant rate to natural item spawn. If set zero, disable enchant to natural spawn, If set 100, all of enchantable item will be enchanted." ),
+         0, 100, 10
+       );
+
+    add_empty_line();
+
     add( "MAX_CRAFT_BATCH_SIZE", "world_default", translate_marker( "Maximum craft batch size" ),
          translate_marker( "Set maximum batch size of crafting." ),
          20, 1000, 20

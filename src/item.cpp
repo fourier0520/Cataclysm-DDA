@@ -384,6 +384,20 @@ item::item( const itype *type, time_point turn, int qty ) : type( type ), bday( 
     if( type->relic_data ) {
         relic_data = type->relic_data;
     }
+
+    // make enchant
+    if( 0 < get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+        if ( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+            // apply enchant
+            item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+            if( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+                item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+            }
+
+        } else {
+            item_enchant_list.clear();
+        }
+    }
 }
 
 item::item( const itype_id &id, time_point turn, int qty )
@@ -3441,14 +3455,20 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
                                                   0 ) ) ) );
     }
 
+    if ( !item_enchant_list.empty() ) {
+        insert_separation_line( info );
+        info.push_back( iteminfo( "DESCRIPTION", _( "Enchant info" ) ) );
+        for( item_enchant enchant : item_enchant_list ) {
+            info.push_back( iteminfo( "DESCRIPTION",
+              string_format( "* %s (%d%%)", _( enchant.description ), static_cast<int>(enchant.effect_chance * 100)  ) ) );
+        }
+    }
+
     if ( get_source_mod_id() != "dda" && get_source_mod_id() != "core" && get_source_mod_id() != "" ) {
         insert_separation_line( info );
         std::string mod_name = mod_id( get_source_mod_id() ).obj().name();
         info.push_back( iteminfo( "DESCRIPTION",
           string_format( _( "This item came from mod named: %s" ), mod_name ) ) );
-
-
-
     }
 
     // list recipes you could use it in

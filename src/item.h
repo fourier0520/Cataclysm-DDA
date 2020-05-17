@@ -32,6 +32,7 @@
 #include "units.h"
 #include "visitable.h"
 #include "gun_mode.h"
+#include "item_enchant.h"
 
 class item;
 class material_type;
@@ -2205,6 +2206,8 @@ class item : public visitable<item>
         int get_toiletpaper_morale() const;
         const std::string &get_source_mod_id() const;
 
+    public:
+        std::vector<item_enchant> item_enchant_list;
 };
 
 bool item_compare_by_charges( const item &left, const item &right );

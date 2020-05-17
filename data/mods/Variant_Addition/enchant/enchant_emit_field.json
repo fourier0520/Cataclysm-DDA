@@ -1,0 +1,27 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "burning_terrain",
+    "name": "放火",
+    "description": "攻撃時に、ターゲットの足元の地形を炎上させることがあります。",
+    "enchant_type": "enchant_emit_field",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "emit_id_to_emit": "emit_enchant_burning_terrain",
+
+    "message_at_trigger": "%1$sが炎を吹き上げ、%2$sの足元を燃やしました！"
+  },
+
+  {
+    "id": "emit_enchant_burning_terrain",
+    "type": "emit",
+    "field": "fd_fire",
+    "intensity": 2
+  }
+
+]

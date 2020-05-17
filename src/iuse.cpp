@@ -9943,6 +9943,21 @@ int iuse::horde_beacon_off( player *p, item *it, bool , const tripoint & )
     return it->type->charges_to_use();
 }
 
+int iuse::enchant_cleaner( player*, item* , bool, const tripoint & )
+{
+    item_location loc = game_menus::inv::titled_menu( g->u,  _( "cleaning enchant" ),
+                                        _( "You don't have any item." ) );
+    if( !loc ) {
+        add_msg( m_info, _( "Never mind." ) );
+        return 0;
+    }
+
+    if( query_yn( string_format( _("Really clean all %s's enchant?") , loc->tname() ) ) ) {
+        loc->item_enchant_list.clear();
+        add_msg( m_info, _("All %s's enchant cleaned.") , loc->tname()  );
+    }
+    return 0;
+}
 
 void use_function::dump_info( const item &it, std::vector<iteminfo> &dump ) const
 {

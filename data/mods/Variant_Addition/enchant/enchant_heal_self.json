@@ -1,0 +1,19 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "heal_on_attack",
+    "name": "吸収回復",
+    "description": "攻撃時に、自身のHPを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "heal_amount": 2,
+
+    "message_at_trigger": "%sによって治療されました！"
+  }
+
+]
