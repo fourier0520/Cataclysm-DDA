@@ -22,18 +22,15 @@
 
 
   {
-    "result": "ftl_engine_item",
+    "result": "enchant_cleaner_tool",
     "type": "recipe",
     "category": "CC_OTHER",
     "subcategory": "CSC_OTHER_PARTS",
-    "skill_used": "mechanics",
-    "skills_required": [ "fabrication", 4, "electronics", 6 ],
-    "difficulty": 8,
-    "time": "120 m",
+    "skill_used": "fabrication",
+    "difficulty": 4,
+    "time": "60 m",
     "autolearn": true,
-    "using": [ [ "welding_standard", 20 ] ],
-    "qualities": [ { "id": "SCREW", "level": 1 }, { "id": "WRENCH", "level": 2 } ],
-    "components": [ [ [ "teleporter", 3 ] ], [ [ "minireactor", 1 ] ], [ [ "scrap", 20 ] ] ]
+    "components": [ [ [ "scrap", 10 ] ], [ [ "rag", 10 ] ], [ [ "plastic_chunk", 10 ] ] ]
   }
 
 

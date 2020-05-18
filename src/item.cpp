@@ -877,6 +877,9 @@ bool item::stacks_with( const item &rhs, bool check_components ) const
     if( item_vars != rhs.item_vars ) {
         return false;
     }
+    if( !item_enchant_list.empty() || !rhs.item_enchant_list.empty() ) {
+        return false;
+    }
     if( goes_bad() && rhs.goes_bad() ) {
         // Stack items that fall into the same "bucket" of freshness.
         // Distant buckets are larger than near ones.
@@ -2803,6 +2806,15 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
         }
     }
 
+    if ( !item_enchant_list.empty() ) {
+        insert_separation_line( info );
+        info.push_back( iteminfo( "DESCRIPTION", _( "Enchant info" ) ) );
+        for( item_enchant enchant : item_enchant_list ) {
+            info.push_back( iteminfo( "DESCRIPTION",
+              string_format( "* %s (%d%%): %s ", _( enchant.name ) , static_cast<int>(enchant.effect_chance * 100), _( enchant.description ) ) ) );
+        }
+    }
+
     ///\EFFECT_MELEE >2 allows seeing melee damage stats on weapons
     if( debug_mode ||
         ( g->u.get_skill_level( skill_melee ) > 2 &&
@@ -3440,15 +3452,6 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
                                              "and has <info>%d</info> sides." ),
                                           static_cast<int>( this->get_var( "die_num_sides",
                                                   0 ) ) ) );
-    }
-
-    if ( !item_enchant_list.empty() ) {
-        insert_separation_line( info );
-        info.push_back( iteminfo( "DESCRIPTION", _( "Enchant info" ) ) );
-        for( item_enchant enchant : item_enchant_list ) {
-            info.push_back( iteminfo( "DESCRIPTION",
-              string_format( "* %s (%d%%)", _( enchant.description ), static_cast<int>(enchant.effect_chance * 100)  ) ) );
-        }
     }
 
     if ( get_source_mod_id() != "dda" && get_source_mod_id() != "core" && get_source_mod_id() != "" ) {

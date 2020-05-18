@@ -940,6 +940,7 @@ void Item_factory::init()
     add_iuse( "HORDE_BEACON_ON", &iuse::horde_beacon_on );
     add_iuse( "HORDE_BEACON_OFF", &iuse::horde_beacon_off );
     add_iuse( "ENCHANT_CLEANER", &iuse::enchant_cleaner );
+    add_iuse( "ITEM_ENCHANTER", &iuse::item_enchanter );
 
 
     add_actor( std::make_unique<ammobelt_actor>() );
