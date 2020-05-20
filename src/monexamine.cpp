@@ -92,6 +92,7 @@ const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_frien
 const efftype_id effect_cubi_allow_seduce_player( "cubi_allow_seduce_player" );
 const efftype_id effect_cubi_ban_love_flame( "cubi_ban_love_flame" );
 
+static const efftype_id effect_pet_stay_here( "pet_stay_here" );
 
 
 // littlemaid auto move things
@@ -140,6 +141,7 @@ bool monexamine::pet_menu( monster &z )
         cubi_menu_love_fire,
         cubi_toggle_seduce_friend,
         cubi_toggle_seduce_player,
+        pet_stay_here,
     };
 
     uilist amenu;
@@ -247,6 +249,13 @@ bool monexamine::pet_menu( monster &z )
             amenu.addentry( insert_bat, false, 'x', _( "You need a %s to power this mech" ), type.nname( 1 ) );
         }
     }
+    // variant botsu
+//
+//    if( z.has_effect( effect_pet_stay_here ) ){
+//        amenu.addentry( pet_stay_here, true, 'f', _( "Follow me" ));
+//    } else {
+//        amenu.addentry( pet_stay_here, true, 'f', _( "Stay here" ));
+//    }
 
     if( z.has_flag( MF_LITTLE_MAID ) ) {
         amenu.addentry( littlemaid_itemize, true, 'i', _( "Itemize littlemaid" ));
@@ -454,7 +463,8 @@ bool monexamine::pet_menu( monster &z )
         case cubi_menu_love_fire:
             cubi_toggle_ban_love_flame( z );
             break;
-
+        case pet_stay_here:
+            toggle_pet_stay( z );
         default:
             break;
     }
@@ -1236,6 +1246,19 @@ void monexamine::cubi_toggle_ban_love_flame( monster &z )
         add_msg( _("You told %s to do not burn everything by love."), z.name() );
         z.disable_special( "LOVE_FLAME" );
         z.add_effect( effect_cubi_ban_love_flame, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::toggle_pet_stay( monster &z )
+{
+    if( z.has_effect( effect_pet_stay_here ) ) {
+        add_msg( _("order %s to follow."), z.name() );
+        z.set_stay_place_to_here();
+        z.remove_effect( effect_pet_stay_here );
+    } else {
+        add_msg( _("order %s to stay."), z.name() );
+        z.set_stay_place_to_here();
+        z.add_effect( effect_pet_stay_here, 1_turns, num_bp, true );
     }
 }
 

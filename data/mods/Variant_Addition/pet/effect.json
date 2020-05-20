@@ -1,0 +1,8 @@
+[
+  {
+    "type": "effect_type",
+    "id": "pet_stay_here",
+    "name": [ "pet_stay_here" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  }
+]

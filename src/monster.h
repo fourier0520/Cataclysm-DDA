@@ -573,6 +573,11 @@ class monster : public Creature
 
         /** Processes monster-specific effects of an effect. */
         void process_one_effect( effect &it, bool is_new ) override;
+
+    private:
+        tripoint stay_place;
+    public:
+        void set_stay_place_to_here();
 };
 
 #endif

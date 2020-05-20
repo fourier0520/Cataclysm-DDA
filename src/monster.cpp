@@ -3029,3 +3029,7 @@ std::set<tripoint> monster::get_path_avoid() const
 {
     return std::set<tripoint>();
 }
+
+void monster::set_stay_place_to_here() {
+    stay_place = pos();
+}
