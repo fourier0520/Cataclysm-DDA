@@ -2154,9 +2154,9 @@ void options_manager::add_options_world_default()
 
     add_empty_line();
 
-    add( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN", "world_default", translate_marker( "Enchant rate" ),
+    add( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN", "world_default", translate_marker( "Experimental Enchant rate" ),
          translate_marker( "Set enchant rate to natural item spawn. If set zero, disable enchant to natural spawn, If set 100, all of enchantable item will be enchanted." ),
-         0, 100, 10
+         0, 100, 0
        );
 
     add_empty_line();
