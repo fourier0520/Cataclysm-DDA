@@ -225,6 +225,7 @@
   - 車両のすべてのマスに制御装置を取り付ければ、チャージ中に自由に移動できます。
 - FTLチャージが完了したときと、FTLドライブを実行したときの効果音を指定できます。
   - このファストトラベル機能のデザインのリスペクト先のゲームの、同効果音が入手できれば、実際に設定してみても、いい感じです。
+  - サウンド指定は、[data/sound/Basic/ftl_soundset.json](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/data/sound/Basic/ftl_soundset.json)にサンプルがあります。
 
 ### カスタムアクティビティ
 
