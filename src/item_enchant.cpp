@@ -387,14 +387,14 @@ void enchant_manager::add_random_enchant_to_item( item& it ){
 }
 
 void enchant_manager::add_random_enchant_to_item( std::vector<item> &it_list ){
-    add_msg( "called item vector");
+    add_msg( m_debug,  "called item vector");
 
     for( item &it : it_list ) {
         enchant_manager::add_random_enchant_to_item( it );
     }
 }
 void enchant_manager::add_random_enchant_to_item( std::list<item> &it_list ){
-    add_msg( "called item list");
+    add_msg( m_debug, "called item list");
 
     for( item &it : it_list ) {
         enchant_manager::add_random_enchant_to_item( it );
