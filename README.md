@@ -147,6 +147,14 @@ CDDA本家と同じ、クリエイティブコモンズの 表示 - 継承 3.0 �
 
 https://github.com/roloa/Cataclysm-DDA/blob/variant_sca/LICENSE.txt
 
+このヴァリアントの配布物には、以下の制作物を同梱・利用させて頂いております。
+
+- Cataclysm:DDA翻訳ファイル(C:DDAフォーラム内の色々なMOD翻訳文追加版)
+  - https://drive.google.com/drive/u/2/folders/1bEPMkwqzgxiqlzOWhdMckU9h-6pAaP7O
+  
+- (latest_experimentalビルドのみ) BattleMaidMod#10481開発版対応
+  - https://ux.getuploader.com/cataclysm_jp/download/47
+
 ## Discord
 
 [https://discord.gg/kGNU8Jg](https://discord.gg/kGNU8Jg)
