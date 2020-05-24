@@ -6481,6 +6481,10 @@ bool mattack::seduce( monster *z )
     target->add_effect( effect_lust, 4_turns );
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
+        // in HENTAI EXTEND, cubi heal self a little on hit seduce
+        z->heal( 1, false);
+
+        // seduce friendly fire thing
         if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) || z->has_effect( effect_cubi_allow_seduce_player )) {
             // if extend is on and succubus is allowed friendlyfire, check going heaven like in wife_u
             if( target->get_effect_int( effect_lust ) >= 100 ) {
