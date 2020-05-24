@@ -142,6 +142,7 @@ bool monexamine::pet_menu( monster &z )
         cubi_toggle_seduce_friend,
         cubi_toggle_seduce_player,
         pet_stay_here,
+        pet_healing,
     };
 
     uilist amenu;
@@ -256,6 +257,8 @@ bool monexamine::pet_menu( monster &z )
 //    } else {
 //        amenu.addentry( pet_stay_here, true, 'f', _( "Stay here" ));
 //    }
+
+    amenu.addentry( pet_healing, true, 'h', _( "Heal pet" ));
 
     if( z.has_flag( MF_LITTLE_MAID ) ) {
         amenu.addentry( littlemaid_itemize, true, 'i', _( "Itemize littlemaid" ));
@@ -465,6 +468,10 @@ bool monexamine::pet_menu( monster &z )
             break;
         case pet_stay_here:
             toggle_pet_stay( z );
+            break;
+        case pet_healing:
+            heal_pet( z );
+            break;
         default:
             break;
     }
@@ -1259,6 +1266,58 @@ void monexamine::toggle_pet_stay( monster &z )
         add_msg( _("order %s to stay."), z.name() );
         z.set_stay_place_to_here();
         z.add_effect( effect_pet_stay_here, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::heal_pet( monster &z )
+{
+    // FIXME code is copy pesta from using toilet paper code
+
+    // search paper
+    std::vector<const std::list<item> *> med_item_list;
+    // std::vector<const std::list<item> *>
+    const_invslice inventory = g->u.inv.const_slice();
+
+    for( const std::list<item> *itemstack : inventory ){
+        auto item = itemstack->front();
+        const cata::value_ptr<islot_comestible> &med_com = item.get_comestible();
+
+        if(med_com) {
+            if( med_com->comesttype == "MED" ) {
+                med_item_list.push_back( itemstack );
+            }
+        }
+    }
+
+    if( med_item_list.size() == 0) {
+        // dont have paper
+        popup( _("you have not any heal item.") );
+        return;
+    }
+    // paper select menu
+    uilist amenu;
+    const int SELECT_NOT_USE_PAPER = -99;
+    amenu.text = string_format( _( "healing pet" ) );
+    amenu.addentry( SELECT_NOT_USE_PAPER , true, '0', _( "cancel" ));
+
+    for(long long unsigned int i = 0 ; i < med_item_list.size() ; i++) {
+        item item = med_item_list.at(i)->front();
+        amenu.addentry( i , true, -1 , item.tname());
+    }
+    amenu.query();
+    int choice = amenu.ret;
+
+    if( 0 <= choice ){
+        const item *using_paper = &(med_item_list.at(choice)->front());
+        using_paper->typeId();
+        // fuel consume
+        std::vector<item_comp> consume_item;
+        consume_item.push_back( item_comp( using_paper->typeId() , 1 ) );
+        g->u.consume_items( consume_item, 1, is_crafting_component );
+
+        // FIXME HARDCORED MAGIC NUMBER!!
+        z.heal(5, false);
+        g->u.mod_moves( -999 );
     }
 }
 

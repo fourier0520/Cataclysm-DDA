@@ -50,5 +50,7 @@ void cubi_allow_seduce_friendlyfire( monster &z );
 void cubi_allow_seduce_player( monster &z );
 void cubi_toggle_ban_love_flame( monster &z );
 void toggle_pet_stay( monster &z );
+void heal_pet( monster &z );
+
 } // namespace monexamine
 #endif
