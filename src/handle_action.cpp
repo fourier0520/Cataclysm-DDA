@@ -2499,6 +2499,10 @@ bool game::handle_action()
             }
             u.mod_moves( -moves_elapsed );
         }
+
+        if( get_option<bool>( "PLAYER_MOVECOST_TO_ZERO" ) ){
+            u.moves = 1;
+        }
     }
     gamemode->post_action( act );
 
