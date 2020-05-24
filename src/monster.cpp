@@ -696,6 +696,9 @@ int monster::print_info( const catacurses::window &w, int vStart, int vLines, in
         mvwprintz( w, point( column, ++vStart ), c_white, _( "Rider: %s" ), mounted_player->disp_name() );
     }
 
+    // monster xp level
+    mvwprintz( w, point( column, ++vStart ), c_cyan, _( "Level: %d (xp:%d)" ), calc_xp_level(), total_xp );
+
     if( size_bonus > 0 ) {
         wprintz( w, c_light_gray, _( " It is %s." ), size_names.at( get_size() ) );
     }
@@ -1360,6 +1363,15 @@ void monster::absorb_hit( body_part, damage_instance &dam )
         elem.amount -= std::min( resistances( *this ).get_effective_resist( elem ) +
                                  get_worn_armor_val( elem.type ), elem.amount );
     }
+
+    int level = calc_xp_level();
+    if( 1 < level ) {
+        float damage_multiplier_by_xp = std::pow( type->reduce_damage_per_level , level );
+        add_msg( m_debug, "level:%d, reduce:%.2f", level, damage_multiplier_by_xp );
+        add_msg( m_debug, "before xp reduce: %.2f" , dam.total_damage());
+        dam.mult_damage( damage_multiplier_by_xp );
+        add_msg( m_debug, "after xp reduce: %.2f" , dam.total_damage());
+    }
 }
 
 void monster::melee_attack( Creature &target )
@@ -1396,6 +1408,15 @@ void monster::melee_attack( Creature &target, float accuracy )
     damage_instance damage = !is_hallucination() ? type->melee_damage : damage_instance();
     if( !is_hallucination() && type->melee_dice > 0 ) {
         damage.add_damage( DT_BASH, dice( type->melee_dice, type->melee_sides ) );
+    }
+
+    int level = calc_xp_level();
+    if( 1 < level ) {
+        float damage_multiplier_by_xp = std::pow( type->increase_damage_per_level , level );
+        add_msg( m_debug, "level:%d, increase:%.2f" ,level, damage_multiplier_by_xp );
+        add_msg( m_debug, "before xp increase: %.2f" , damage.total_damage());
+        damage.mult_damage( damage_multiplier_by_xp );
+        add_msg( m_debug, "after xp increase: %.2f" , damage.total_damage());
     }
 
     dealt_damage_instance dealt_dam;
@@ -1489,6 +1510,13 @@ void monster::melee_attack( Creature &target, float accuracy )
     }
 
     target.check_dead_state();
+
+    if( target.is_dead_state() ) {
+        const monster* target_as_monster = dynamic_cast<const monster *>( &target );
+        if( target_as_monster != nullptr) {
+            total_xp += std::max(1, ( target_as_monster->type->difficulty ) * 10);
+        }
+    }
 
     if( is_hallucination() ) {
         if( one_in( 7 ) ) {

@@ -1772,3 +1772,14 @@ void Creature::gain_corrupt( int, const time_duration &dur )
 {
     add_effect( effect_corrupt, dur );
 }
+
+int Creature::calc_xp_level() const {
+    int level = 1;
+    int xp = (total_xp >> 5); // 1 per 32
+    while( 1 < xp ) {
+        // xp half to half in loop
+        xp = xp >> 1;
+        level += 1;
+    }
+    return level;
+}
