@@ -933,6 +933,8 @@ int place_monster_iuse::use( player &p, item &it, bool, const tripoint & ) const
 
         if( is_pet ){
             newmon.add_effect( effect_pet, 1_turns, num_bp, true );
+        } else if( query_yn( _("place as pet?") ) ){
+            newmon.add_effect( effect_pet, 1_turns, num_bp, true );
         }
 
     }

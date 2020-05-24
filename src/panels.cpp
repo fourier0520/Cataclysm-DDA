@@ -2006,9 +2006,9 @@ static void draw_sidebar_memo( const avatar &, const catacurses::window &w )
     werase( w );
 
     // NOLINTNEXTLINE(cata-text-style): the question mark does not end a sentence
-    mvwprintz( w, point( 1, 0 ), c_light_gray, "#");
+    mvwprintz( w, point( 1, 0 ), c_white, "#");
     // NOLINTNEXTLINE(cata-text-style): the question mark does not end a sentence
-    mvwprintz( w, point( 3, 0 ), c_light_gray, g->sidebar_memo_text );
+    mvwprintz( w, point( 3, 0 ), c_white, g->sidebar_memo_text );
 
     wrefresh( w );
 }

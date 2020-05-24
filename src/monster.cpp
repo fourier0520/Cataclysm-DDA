@@ -1365,7 +1365,7 @@ void monster::absorb_hit( body_part, damage_instance &dam )
     }
 
     int level = calc_xp_level();
-    if( 1 < level ) {
+    if( 1 <= level ) {
         float damage_multiplier_by_xp = std::pow( type->reduce_damage_per_level , level );
         add_msg( m_debug, "level:%d, reduce:%.2f", level, damage_multiplier_by_xp );
         add_msg( m_debug, "before xp reduce: %.2f" , dam.total_damage());
@@ -1411,7 +1411,7 @@ void monster::melee_attack( Creature &target, float accuracy )
     }
 
     int level = calc_xp_level();
-    if( 1 < level ) {
+    if( 1 <= level ) {
         float damage_multiplier_by_xp = std::pow( type->increase_damage_per_level , level );
         add_msg( m_debug, "level:%d, increase:%.2f" ,level, damage_multiplier_by_xp );
         add_msg( m_debug, "before xp increase: %.2f" , damage.total_damage());
@@ -1514,7 +1514,10 @@ void monster::melee_attack( Creature &target, float accuracy )
     if( target.is_dead_state() ) {
         const monster* target_as_monster = dynamic_cast<const monster *>( &target );
         if( target_as_monster != nullptr) {
-            total_xp += std::max(1, ( target_as_monster->type->difficulty ) * 10);
+            // weaker myself, stronger enemy, gain more xp
+            int diff_base = std::max(1, this->type->difficulty_base);
+            int gain_xp = std::max(1, ( target_as_monster->type->difficulty * 10 ) / diff_base );
+            total_xp += gain_xp;
         }
     }
 

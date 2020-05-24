@@ -1284,7 +1284,10 @@ void monexamine::heal_pet( monster &z )
 
         if(med_com) {
             if( med_com->comesttype == "MED" ) {
-                med_item_list.push_back( itemstack );
+                std::string med_item_id = item.typeId();
+                if( med_item_id.find( "bandage" ) != std::string::npos ) {
+                    med_item_list.push_back( itemstack );
+                }
             }
         }
     }
