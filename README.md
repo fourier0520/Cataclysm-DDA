@@ -19,6 +19,9 @@ Cataclysm DDAを独自改造したバージョン、いわゆるヴァリアン�
 
 ## ダウンロードと遊び方
 
+- **[ダウンロードページ](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/DOWNLOAD.md)を作りました。**
+  - [https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/DOWNLOAD.md](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/DOWNLOAD.md)
+
 - ヴァリアント本体に同梱されているもの
 	- ヴァリアント本体
 		- [Googleドライブ](https://drive.google.com/drive/u/0/folders/1f6kz2fS5UWXGt9e1AZ6fnzigVi6Ligx7)で配布しています。
