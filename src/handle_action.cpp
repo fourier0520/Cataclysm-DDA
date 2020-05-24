@@ -2479,6 +2479,10 @@ bool game::handle_action()
                 avatar_action::autoattack( u, m );
                 break;
 
+            case ACTION_SIDEBAR_MEMO:
+                edit_sidebar_memo();
+                break;
+
             default:
                 break;
         }
