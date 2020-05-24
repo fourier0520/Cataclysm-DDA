@@ -143,6 +143,7 @@ bool monexamine::pet_menu( monster &z )
         cubi_toggle_seduce_player,
         pet_stay_here,
         pet_healing,
+        revert_to_item,
     };
 
     uilist amenu;
@@ -260,6 +261,11 @@ bool monexamine::pet_menu( monster &z )
 
     amenu.addentry( pet_healing, true, 'h', _( "Heal pet" ));
 
+    const auto mon_item_id = z.type->revert_to_itype;
+    if( !mon_item_id.empty() ) {
+        amenu.addentry( revert_to_item, true, 'R', _( "Revert to Item" ));
+
+    }
     if( z.has_flag( MF_LITTLE_MAID ) ) {
         amenu.addentry( littlemaid_itemize, true, 'i', _( "Itemize littlemaid" ));
 
@@ -472,6 +478,10 @@ bool monexamine::pet_menu( monster &z )
         case pet_healing:
             heal_pet( z );
             break;
+        case revert_to_item:
+            g->disable_robot( z.pos() );
+            break;
+
         default:
             break;
     }
