@@ -1232,10 +1232,15 @@ void options_manager::add_options_general()
          translate_marker( "If true, monsters will not take turn during opening inventory or other menu." ),
          false
        );
-    add( "PLAYER_MOVECOST_TO_ZERO", "general", translate_marker( "player movecost to zero" ),
+    add( "PLAYER_MOVECOST_REDUCE", "general", translate_marker( "player movecost reduce" ),
          translate_marker( "If true, all of player move cost is reduce to zero except timeout." ),
          false
        );
+    add( "PLAYER_MOVECOST_REDUCE_MULTIPLIER", "general", translate_marker( "player movecost reduce multiplier" ),
+         translate_marker( "multiplier of player move cost reduce." ),
+         0.0, 1.0, 0.1, 0.01
+       );
+
 
     add_empty_line();
 

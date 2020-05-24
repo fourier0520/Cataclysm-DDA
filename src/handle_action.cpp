@@ -2500,8 +2500,14 @@ bool game::handle_action()
             u.mod_moves( -moves_elapsed );
         }
 
-        if( get_option<bool>( "PLAYER_MOVECOST_TO_ZERO" ) ){
-            u.moves = 1;
+        if( get_option<bool>( "PLAYER_MOVECOST_REDUCE" ) ){
+
+            int consumed_move_point = before_action_moves - u.moves;
+            if( 0 < consumed_move_point ) {
+                float reduce_multi = (1.0 - get_option<float>( "PLAYER_MOVECOST_REDUCE_MULTIPLIER" ));
+
+                u.moves += (consumed_move_point * reduce_multi);
+            }
         }
     }
     gamemode->post_action( act );
