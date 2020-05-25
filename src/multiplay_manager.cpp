@@ -8,16 +8,22 @@
 #include <utility>
 #include <winerror.h>
 #include <unordered_map>
+#include <mutex>
 
 #include "output.h"
 #include "debug.h"
 #include "messages.h"
 #include "string_formatter.h"
 #include "game.h"
+#include "avatar.h"
+#include "monster.h"
+
+static const efftype_id effect_pet( "pet" );
 
 namespace
 {
     std::unordered_map<std::string, client_command> command_map;
+    std::mutex map_mtx;
 }
 
 int multiplay_manager::start_server(){
@@ -137,8 +143,23 @@ void multiplay_manager::server_thread_process(){
 int multiplay_manager::do_turn(){
 
     for(const auto iter : command_map ){
-        if( iter.second.c_type == client_command_msg ) {
+        if( iter.second.c_type == client_command_message ) {
             add_msg( iter.second.command_argument );
+
+            erase_command(iter.first);
+        } else if( iter.second.c_type == client_command_spawn ) {
+            // add_msg( iter.second.command_argument );
+
+            monster *mon = g->place_critter_around(
+                    mtype_id( iter.second.command_argument ), g->u.pos() , 3);
+            if( mon != nullptr ) {
+                mon->multiplay_client_name = iter.second.client_name;
+                mon->no_extra_death_drops = true;
+                mon->unique_name = iter.second.client_name;
+                mon->add_effect( effect_pet, 1_turns, num_bp, true );
+                mon->friendly = -1;
+            }
+            erase_command(iter.first);
         }
     }
 
@@ -179,22 +200,27 @@ int multiplay_manager::multiplay_menu() {
 
 
 void multiplay_manager::insert_command(std::string key, client_command c_command) {
+    std::lock_guard<std::mutex> lock(map_mtx);
     const auto iter = command_map.find( key );
     if( iter != command_map.end() ) {
-        command_map.erase(iter);
+        //command_map.erase(iter);
+        return;
     }
     command_map.emplace( key, c_command );
+    return;
 }
 
 client_command multiplay_manager::find_command(std::string key) {
+    std::lock_guard<std::mutex> lock(map_mtx);
     const auto iter = command_map.find( key );
     if( iter == command_map.end() ) {
-        client_command nop( 0, client_command_nop ,"nop" );
+        client_command nop( "_noname_", client_command_nop ,"nop" );
         return nop;
     }
     return iter->second;
 }
 
 void multiplay_manager::erase_command(std::string key) {
+    std::lock_guard<std::mutex> lock(map_mtx);
     command_map.erase(key);
 }

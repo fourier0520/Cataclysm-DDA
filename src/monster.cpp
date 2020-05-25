@@ -571,7 +571,7 @@ std::string monster::name( unsigned int quantity ) const
         return std::string();
     }
     if( !unique_name.empty() ) {
-        return string_format( "%s: %s", type->nname( quantity ), unique_name );
+        return string_format( "%s: %s", unique_name, type->nname( quantity ));
     }
     return type->nname( quantity );
 }

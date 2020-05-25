@@ -41,6 +41,7 @@
 #include "string_id.h"
 #include "pimpl.h"
 #include "string_formatter.h"
+#include "multiplay_manager.h"
 
 static const efftype_id effect_bouldering( "bouldering" );
 static const efftype_id effect_countdown( "countdown" );
@@ -316,6 +317,10 @@ void monster::plan()
     bool group_morale = has_flag( MF_GROUP_MORALE ) && morale < type->morale;
     bool swarms = has_flag( MF_SWARMS );
     auto mood = attitude();
+
+//    if ( !multiplay_client_name.empty() ) {
+//        return;
+//    }
 
     // If we can see the player, move toward them or flee, simpleminded animals are too dumb to follow the player.
     if( friendly == 0 && sees( g->u ) && !has_flag( MF_PET_WONT_FOLLOW ) ) {
@@ -632,6 +637,13 @@ void monster::move()
         return;
     }
 
+    // find multiplayer command for this monster
+    client_command cmd;
+    if ( !multiplay_client_name.empty() ) {
+        cmd = g->multiplay_manager_ref.find_command( multiplay_client_name );
+    }
+
+
     //The monster can consume objects it stands on. Check if there are any.
     //If there are. Consume them.
     if( !is_hallucination() && ( has_flag( MF_ABSORBS ) || has_flag( MF_ABSORBS_SPLITS ) ) &&
@@ -682,6 +694,13 @@ void monster::move()
         }
 
         // Cooldowns are decremented in monster::process_turn
+        if ( !multiplay_client_name.empty() ) {
+            if( cmd.c_type == client_command_special_attack ){
+                g->multiplay_manager_ref.erase_command( multiplay_client_name );
+            } else {
+                continue;
+            }
+        }
 
         if( local_attack_data.cooldown == 0 && !pacified && !is_hallucination() ) {
             if( !sp_type.second->call( *this ) ) {
@@ -946,6 +965,40 @@ void monster::move()
             }
         }
     }
+
+    // multiplayer control section.
+    if( !multiplay_client_name.empty() ) {
+
+        // find move command from command map
+        add_msg( m_debug, _("move_command :%s"), cmd.command_argument);
+        if( cmd.c_type == client_command_move ){
+            moved = true;
+            if( cmd.command_argument == "N") {
+                next_step = pos() + tripoint(0,-1, 0);
+            } else if( cmd.command_argument == "E") {
+                next_step = pos() + tripoint(1,0, 0);
+            } else if( cmd.command_argument == "S") {
+                next_step = pos() + tripoint(0,1, 0);
+            } else if( cmd.command_argument == "W") {
+                next_step = pos() + tripoint(-1,0, 0);
+            } else if( cmd.command_argument == "NE") {
+                next_step = pos() + tripoint(1,-1, 0);
+            } else if( cmd.command_argument == "NW") {
+                next_step = pos() + tripoint(-1,-1, 0);
+            } else if( cmd.command_argument == "SE") {
+                next_step = pos() + tripoint(1,1, 0);
+            } else if( cmd.command_argument == "SW") {
+                next_step = pos() + tripoint(-1,1, 0);
+            } else {
+
+            }
+            g->multiplay_manager_ref.erase_command( multiplay_client_name );
+        } else {
+            moved = false;
+        }
+
+    }
+
     const bool can_open_doors = has_flag( MF_CAN_OPEN_DOORS );
     // Finished logic section.  By this point, we should have chosen a square to
     //  move to (moved = true).

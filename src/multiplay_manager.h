@@ -19,7 +19,6 @@
 
 class multiplay_client {
 
-    // std::mutex client_mtx;
 
     public:
         multiplay_client( );
@@ -38,22 +37,32 @@ class multiplay_client {
 
 };
 
+enum client_mode {
+    mode_default = 0,
+    mode_quit,
+    mode_message,
+    mode_spawn,
+    mode_despawn,
+};
+
 enum command_type {
     client_command_nop = 0,
-    client_command_msg,
-    client_command_cry,
+    client_command_message,
     client_command_spawn,
-    client_command_sueside,
+    client_command_despawn,
     client_command_move,
+    client_command_special_attack,
 };
 
 class client_command {
     public:
+        std::string client_name;
         command_type c_type;
         std::string command_argument;
-        int client_id;
-        client_command( int new_client_id, command_type new_c_type, std::string new_command_argument ) {
-            client_id = new_client_id;
+        client_command( ){};
+
+        client_command( std::string new_client_id, command_type new_c_type, std::string new_command_argument ) {
+            client_name = new_client_id;
             c_type = new_c_type;
             command_argument = new_command_argument;
         }
