@@ -42,6 +42,7 @@
 #include "pimpl.h"
 #include "string_formatter.h"
 #include "multiplay_manager.h"
+#include "sounds.h"
 
 static const efftype_id effect_bouldering( "bouldering" );
 static const efftype_id effect_countdown( "countdown" );
@@ -318,9 +319,10 @@ void monster::plan()
     bool swarms = has_flag( MF_SWARMS );
     auto mood = attitude();
 
-//    if ( !multiplay_client_name.empty() ) {
-//        return;
-//    }
+    if ( !multiplay_client_name.empty() ) {
+        unset_dest();
+        return;
+    }
 
     // If we can see the player, move toward them or flee, simpleminded animals are too dumb to follow the player.
     if( friendly == 0 && sees( g->u ) && !has_flag( MF_PET_WONT_FOLLOW ) ) {
@@ -974,24 +976,31 @@ void monster::move()
         if( cmd.c_type == client_command_move ){
             moved = true;
             if( cmd.command_argument == "N") {
-                next_step = pos() + tripoint(0,-1, 0);
+                next_step = g->m.getabs(pos() + tripoint(0,-1, 0));
             } else if( cmd.command_argument == "E") {
-                next_step = pos() + tripoint(1,0, 0);
+                next_step = g->m.getabs(pos() + tripoint(1,0, 0));
             } else if( cmd.command_argument == "S") {
-                next_step = pos() + tripoint(0,1, 0);
+                next_step = g->m.getabs(pos() + tripoint(0,1, 0));
             } else if( cmd.command_argument == "W") {
-                next_step = pos() + tripoint(-1,0, 0);
+                next_step = g->m.getabs(pos() + tripoint(-1,0, 0));
             } else if( cmd.command_argument == "NE") {
-                next_step = pos() + tripoint(1,-1, 0);
+                next_step = g->m.getabs(pos() + tripoint(1,-1, 0));
             } else if( cmd.command_argument == "NW") {
-                next_step = pos() + tripoint(-1,-1, 0);
+                next_step = g->m.getabs(pos() + tripoint(-1,-1, 0));
             } else if( cmd.command_argument == "SE") {
-                next_step = pos() + tripoint(1,1, 0);
+                next_step = g->m.getabs(pos() + tripoint(1,1, 0));
             } else if( cmd.command_argument == "SW") {
-                next_step = pos() + tripoint(-1,1, 0);
+                next_step = g->m.getabs( pos() + tripoint(-1,1, 0) );
             } else {
-
+                moved = false;
             }
+            g->multiplay_manager_ref.erase_command( multiplay_client_name );
+        } else if ( cmd.c_type == client_command_message ) {
+            sounds::sound( pos(), 20, sounds::sound_t::speech, cmd.command_argument,
+                           false, "speech", type->id.str() );
+            g->multiplay_manager_ref.erase_command( multiplay_client_name );
+        } else if ( cmd.c_type == client_command_despawn ) {
+            hp = 0;
             g->multiplay_manager_ref.erase_command( multiplay_client_name );
         } else {
             moved = false;
@@ -1026,7 +1035,11 @@ void monster::move()
         }
     } else {
         moves -= 100;
-        stumble();
+        if( !multiplay_client_name.empty() ) {
+            moves += 50;
+        } else {
+            stumble();
+        }
         path.clear();
     }
 }

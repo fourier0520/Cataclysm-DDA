@@ -55,7 +55,7 @@ void multiplay_client::client_thread_process(){
     send_msg_string = string_format( "Player name is '%s'.\r\n" , g->u.name );
     send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
 
-    send_msg_string = "Enter your name! ( Text cannot delete, please input carefully. )\r\n >";
+    send_msg_string = "Enter your name! ( Text cannot delete, please input carefully. )\r\n > ";
     send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
 
     std::string client_name = "";
@@ -97,6 +97,7 @@ void multiplay_client::client_thread_process(){
     send_msg_string = "\r\nHit [?] to help.\r\n";
     send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
 
+    add_msg("%s joined to multiplayer.", client_name);
 
     memset(recv_buffer, 0, sizeof(recv_buffer));
 
@@ -120,6 +121,8 @@ void multiplay_client::client_thread_process(){
         }
         recv_buffer[ sizeof(recv_buffer) - 1 ] = 0;
 
+        send(sock, recv_buffer, sizeof(recv_buffer), 0);
+
         if( mode == mode_quit ) {
             if( recv_buffer[0] == 'y' ) {
                 send_msg_string = "\r\nbye!\r\n";
@@ -127,47 +130,90 @@ void multiplay_client::client_thread_process(){
                 break;
             } else {
                 mode = mode_default;
+                send_msg_string = "\r\nquit cancel\r\n > ";
+                send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+
             }
+        } else if( mode == mode_despawn ) {
+            if( recv_buffer[0] == 'y' ) {
+                send_msg_string = "\r\nYour monster will die!\r\n > ";
+                send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+
+                client_command new_cmd( client_name, client_command_despawn , input_str );
+                g->multiplay_manager_ref.insert_command( client_name, new_cmd );
+            }
+            mode = mode_default;
         } else if( mode == mode_spawn ) {
             if( recv_buffer[0] == '\x0a' || recv_buffer[0] == '\x0d' ) {
-                if( input_str == "" ) {
-                    input_str = "mon_multiplayer";
-                }
-                mtype_id new_mtype_id(input_str);
-                if ( new_mtype_id.is_valid() ) {
-                    send_msg_string = string_format("\r\n'%s' will be spawn, you can control them with number key.\r\n >", input_str);
+                if( input_str == "." ) {
+                    send_msg_string = string_format("\r\nmonster spawn canceled.\r\n > " );
                     send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
-
-                    std::string message_string( string_format( "%s: %s", client_name ,recv_buffer) );
-
-                    client_command new_cmd( client_name, client_command_spawn , input_str );
-
-                    g->multiplay_manager_ref.insert_command( client_name, new_cmd );
-
                 } else {
-                    send_msg_string = string_format("\r\n'%s' is no valid monster id.\r\n >", input_str);
-                    send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+                    if( input_str == "" ) {
+                        input_str = "mon_multiplayer";
+                    }
+                    mtype_id new_mtype_id(input_str);
+                    if ( new_mtype_id.is_valid() ) {
+                        send_msg_string = string_format("\r\n'%s' will be spawn, you can control it by number key.\r\n > ", input_str);
+                        send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+                        std::string message_string( string_format( "%s: %s", client_name ,recv_buffer) );
+                        client_command new_cmd( client_name, client_command_spawn , input_str );
+                        g->multiplay_manager_ref.insert_command( client_name, new_cmd );
+                    } else {
+                        send_msg_string = string_format("\r\n'%s' is no valid monster id.\r\n > ", input_str);
+                        send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+                    }
                 }
                 mode = mode_default;
             } else {
                 std::string recv_str = recv_buffer;
                 input_str.append( recv_str );
-                send(sock, recv_buffer, sizeof(recv_buffer), 0);
             }
         } else if ( mode == mode_message ){
+            if( recv_buffer[0] == '\x0a' || recv_buffer[0] == '\x0d' ) {
+                if( input_str == "" || input_str == "." ) {
+                    send_msg_string = string_format("\r\nSaying something canceled.\r\n > " );
+                    send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+                } else {
+                    send_msg_string = string_format("\r\nYour monster will say '%s'.\r\n > ", input_str);
+                    send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+
+                    client_command new_cmd( client_name, client_command_message , input_str );
+                    g->multiplay_manager_ref.insert_command( client_name, new_cmd );
+                }
+                mode = mode_default;
+            } else {
+                std::string recv_str = recv_buffer;
+                input_str.append( recv_str );
+            }
 
         } else {
             // default
+
+            send_msg_string = "\b";
+            send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+
+
             if( recv_buffer[0] == 'q' ) {
-                send_msg_string = "\r\nreally quit? (y)\r\n";
+                send_msg_string = "\r\nreally quit? (y)\r\n > ";
                 send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
 
                 mode = mode_quit;
+            } else if( recv_buffer[0] == 'k' ) {
+                send_msg_string = "\r\nreally kill your monster? (y)\r\n > ";
+                send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+
+                mode = mode_despawn;
             } else if( recv_buffer[0] == 's' ) {
-                send_msg_string = "\r\nEnter monster id to spawn as you, blank is default monster, '.'(period) to cancel. \r\n >";
+                send_msg_string = "\r\nEnter monster id to spawn as you, blank is default monster, '.'(period) to cancel. \r\n > ";
                 send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
                 input_str = "";
                 mode = mode_spawn;
+            } else if( recv_buffer[0] == 'm' ) {
+                send_msg_string = "\r\nWhat you want say?, blank or '.'(period) to cancel. \r\n > ";
+                send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
+                input_str = "";
+                mode = mode_message;
             } else if( recv_buffer[0] == '2' ) {
                 add_msg( m_debug, "two");
                 client_command new_cmd( client_name, client_command_move , "S" );
@@ -196,7 +242,7 @@ void multiplay_client::client_thread_process(){
                 client_command new_cmd( client_name, client_command_move , "NE" );
                 g->multiplay_manager_ref.insert_command( client_name, new_cmd );
             } else if( recv_buffer[0] == '?' ) {
-                send_msg_string = "\r\n-[1-9]: Move your monster.\r\n-[s]: Spawn monster as you.\r\n-[m]: Say message from your monster.\r\n-[k]: Kill your monster .\r\n-[q]: quit. \r\n >";
+                send_msg_string = "\r\n-[1-9]: Move your monster.\r\n-[s]: Spawn monster as you.\r\n     (You can spawn multiple monster, but you cannot control all of them)\r\n-[m]: Say message from your monster.\r\n     (maybe player cannot hear it)\r\n-[k]: Kill your monster.\r\n-[q]: quit. \r\n > ";
                 send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
             }
         }
