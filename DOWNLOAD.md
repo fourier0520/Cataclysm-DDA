@@ -1,6 +1,9 @@
 
 # JPヴァリアント ダウンロードページ
 
+- **[READMEはこちらです](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/README.md)**
+- パッチノートは、安定版ベースのダウンロードURL先に置いてあります
+
 ## [0.E安定版ベース_r14](https://drive.google.com/drive/u/0/folders/1lo8fSu3NPypsU3yZyKzANj6I_jJFxI-p)
 
 安定版ベースの最新版です、初めての方にオススメです。
