@@ -705,7 +705,7 @@ endif
 
 # Global settings for Windows targets (at end)
 ifeq ($(TARGETSYSTEM),WINDOWS)
-  LDFLAGS += -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion
+  LDFLAGS += -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion -lws2_32
   ifeq ($(BACKTRACE),1)
     LDFLAGS += -ldbghelp
     ifeq ($(LIBBACKTRACE),1)

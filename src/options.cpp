@@ -2012,6 +2012,10 @@ void options_manager::add_options_debug()
          translate_marker( "If true, appear warning at saving after you touched debug menu." ),
          true
        );
+    add( "DEBUG_MENU_IN_ESC_MENU", "debug", translate_marker( "debug menu in esc menu [JPV]" ),
+         translate_marker( "If true, add debug menu item in game menu that appears you hit esc key in game." ),
+         true
+       );
 
 
 

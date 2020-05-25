@@ -31,6 +31,7 @@
 #include "weather.h"
 #include "point.h"
 #include "memory_fast.h"
+#include  "multiplay_manager.h"
 
 class item;
 
@@ -1059,11 +1060,14 @@ class game
 
         // called on map shifting
         void shift_destination_preview( const point &delta );
-
+    private:
+        pimpl<multiplay_manager> multiplay_manager_ptr;
     public:
         bool is_debug_touched = false;
         std::string sidebar_memo_text = "sidebar memo.";
         void edit_sidebar_memo();
+
+        multiplay_manager &multiplay_manager_ref;
 };
 
 // Returns temperature modifier from direct heat radiation of nearby sources

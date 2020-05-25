@@ -2483,6 +2483,10 @@ bool game::handle_action()
                 edit_sidebar_memo();
                 break;
 
+            case ACTION_MULTIPLAY_MENU:
+                g->multiplay_manager_ref.multiplay_menu();
+                break;
+
             default:
                 break;
         }

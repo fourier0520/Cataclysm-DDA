@@ -143,6 +143,7 @@
 #include "string_id.h"
 #include "colony.h"
 #include "item.h"
+#include "multiplay_manager.h"
 
 class inventory;
 
@@ -265,7 +266,8 @@ game::game() :
     user_action_counter( 0 ),
     tileset_zoom( DEFAULT_TILESET_ZOOM ),
     seed( 0 ),
-    last_mouse_edge_scroll( std::chrono::steady_clock::now() )
+    last_mouse_edge_scroll( std::chrono::steady_clock::now() ),
+    multiplay_manager_ref( *multiplay_manager_ptr )
 {
     player_was_sleeping = false;
     reset_light_level();
@@ -1537,6 +1539,8 @@ bool game::do_turn()
             }
         }
     }
+    multiplay_manager_ref.do_turn();
+
     update_stair_monsters();
     mon_info_update();
     u.process_turn();

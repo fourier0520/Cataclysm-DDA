@@ -1005,7 +1005,12 @@ action_id handle_main_menu()
     REGISTER_ACTION( ACTION_ACTIONMENU );
     REGISTER_ACTION( ACTION_QUICKSAVE );
     REGISTER_ACTION( ACTION_SAVE );
-    REGISTER_ACTION( ACTION_DEBUG );
+
+    REGISTER_ACTION( ACTION_MULTIPLAY_MENU );
+
+    if( get_option<bool>("DEBUG_MENU_IN_ESC_MENU") ) {
+        REGISTER_ACTION( ACTION_DEBUG );
+    }
 
     int width = 0;
     for( auto &entry : entries ) {
