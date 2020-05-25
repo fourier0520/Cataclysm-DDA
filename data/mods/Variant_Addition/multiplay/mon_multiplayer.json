@@ -10,7 +10,7 @@
     "volume": "50000 ml",
     "weight": "50000 g",
     "hp": 100,
-    "speed": 300,
+    "speed": 150,
     "material": [ "flesh" ],
     "symbol": "@",
     "color": "light_gray",
