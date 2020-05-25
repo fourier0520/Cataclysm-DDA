@@ -390,6 +390,8 @@ std::string action_ident( action_id act )
             return "open_world_mods";
         case ACTION_SIDEBAR_MEMO:
             return "sidebar_memo";
+        case ACTION_MULTIPLAY_MENU:
+            return "multiplay menu";
         case ACTION_NULL:
             return "null";
         default:

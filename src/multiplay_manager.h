@@ -18,26 +18,31 @@
 
 class multiplay_client {
 
-    std::mutex client_mtx;
+    // std::mutex client_mtx;
 
     public:
-        multiplay_client();
+        multiplay_client( );
+        // ~multiplay_client() = delete;
 
     private:
         std::thread client_thread;
-        int sock;
-        char recv_buffer[50];
+        SOCKET sock;
+        char recv_buffer[8];
+        bool is_working_value = false;
     public:
-        void start_client(int);
-
+        void start_client_thread( SOCKET );
+        void client_work_finish_cleanup();
         void client_thread_process();
+        bool is_working();
 
 };
 
 class multiplay_manager {
+
     private:
         std::thread server_thread;
-        std::vector<multiplay_client> client_list;
+        // std::vector<multiplay_client> client_list;
+
         bool is_server_active = false;
     public:
         int start_server();
