@@ -10,6 +10,7 @@
 #include <thread>
 #include <vector>
 #include <mutex>
+#include <unordered_map>
 
 #include "type_id.h"
 #include "itype.h"
@@ -37,6 +38,27 @@ class multiplay_client {
 
 };
 
+enum command_type {
+    client_command_nop = 0,
+    client_command_msg,
+    client_command_cry,
+    client_command_spawn,
+    client_command_sueside,
+    client_command_move,
+};
+
+class client_command {
+    public:
+        command_type c_type;
+        std::string command_argument;
+        int client_id;
+        client_command( int new_client_id, command_type new_c_type, std::string new_command_argument ) {
+            client_id = new_client_id;
+            c_type = new_c_type;
+            command_argument = new_command_argument;
+        }
+};
+
 class multiplay_manager {
 
     private:
@@ -53,6 +75,10 @@ class multiplay_manager {
         void server_thread_process();
 
         int do_turn();
+
+        void insert_command(std::string, client_command);
+        client_command find_command(std::string);
+        void erase_command(std::string);
 
 };
 

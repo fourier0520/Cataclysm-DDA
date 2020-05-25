@@ -7,12 +7,18 @@
 #include <thread>
 #include <utility>
 #include <winerror.h>
+#include <unordered_map>
 
 #include "output.h"
 #include "debug.h"
 #include "messages.h"
 #include "string_formatter.h"
+#include "game.h"
 
+namespace
+{
+    std::unordered_map<std::string, client_command> command_map;
+}
 
 int multiplay_manager::start_server(){
 
@@ -25,6 +31,9 @@ int multiplay_manager::start_server(){
     if( is_server_active ) {
         popup( _("server is already started."));
     } else {
+
+        //command_map.emplace( 42 ,"n_ope" );
+
         static const int WSA_VERSION_MAJOR = 2;
         static const int WSA_VERSION_MINOR = 0;
         WSADATA wsaData;
@@ -123,93 +132,16 @@ void multiplay_manager::server_thread_process(){
     return;
 }
 
-multiplay_client::multiplay_client() {
-    client_thread = std::thread();
-    is_working_value = false;
-}
 
-void multiplay_client::start_client_thread( SOCKET connected_socket ) {
-    is_working_value = true;
-    sock = connected_socket;
-    client_thread = std::thread([this]() { this->client_thread_process(); } );
-
-}
-
-void multiplay_client::client_work_finish_cleanup(){
-    closesocket(sock);
-    client_thread.detach();
-    is_working_value = false;
-}
-
-void multiplay_client::client_thread_process(){
-
-    // const char telnet_command_iac_do_echo[] = {'\xFF','\xFD','\x01','\x00' };
-    // send( sock, telnet_command_iac_do_echo, sizeof(telnet_command_iac_do_echo), 0);
-    int recv_result = 0;
-
-    std::string welcome_msg = "Welcome to cdda!\r\n";
-    send( sock, welcome_msg.c_str(), welcome_msg.length(), 0);
-
-    welcome_msg = "Enter your name! ( Text cannot delete, please input carefully. )\r\n > ";
-    send( sock, welcome_msg.c_str(), welcome_msg.length(), 0);
-
-    std::string client_name = "";
-
-    memset(recv_buffer, 0, sizeof(recv_buffer));
-    while( true ) {
-        // loop until hit enter key
-        recv_result = recv(sock, recv_buffer, sizeof(recv_buffer), 0);
-
-        if( recv_result < 0 ){
-            client_work_finish_cleanup();
-            return;
-        }
-
-        recv_buffer[ sizeof(recv_buffer) - 1 ] = 0;
-        send(sock, recv_buffer, sizeof(recv_buffer), 0);
-
-        if( recv_buffer[0] == '\x0a' || recv_buffer[0] == '\x0d' ) {
-            break;
-        }
-
-        std::string input_str = recv_buffer;
-        client_name.append( ( input_str ));
-
-        memset(recv_buffer, 0, sizeof(recv_buffer));
-    }
-
-    if( client_name == "") {
-        client_name = "Tom";
-    }
-
-    memset(recv_buffer, 0, sizeof(recv_buffer));
-    while( recv_buffer[0] != 'q' ) {
-        recv_result = recv(sock, recv_buffer, sizeof(recv_buffer), 0);
-        if( recv_result < 0) {
-            int errorCode = WSAGetLastError();
-            static const int ERROR_DISCONNECT = 10053;
-            if ( errorCode == ERROR_DISCONNECT){
-
-            } else {
-                debugmsg("socket recv error! : %d", errorCode);
-            }
-            client_work_finish_cleanup();
-            return;
-        }
-        recv_buffer[ sizeof(recv_buffer) - 1 ] = 0;
-        send(sock, recv_buffer, sizeof(recv_buffer), 0);
-
-        std::string message_string( string_format( "%s: %s", client_name ,recv_buffer) );
-        add_msg( message_string );
-
-        memset(recv_buffer, 0, sizeof(recv_buffer));
-    }
-
-    client_work_finish_cleanup();
-    return;
-}
 
 int multiplay_manager::do_turn(){
+
+    for(const auto iter : command_map ){
+        if( iter.second.c_type == client_command_msg ) {
+            add_msg( iter.second.command_argument );
+        }
+    }
+
     return 0;
 }
 
@@ -245,6 +177,24 @@ int multiplay_manager::multiplay_menu() {
     return 0;
 }
 
-bool multiplay_client::is_working() {
-    return is_working_value;
+
+void multiplay_manager::insert_command(std::string key, client_command c_command) {
+    const auto iter = command_map.find( key );
+    if( iter != command_map.end() ) {
+        command_map.erase(iter);
+    }
+    command_map.emplace( key, c_command );
+}
+
+client_command multiplay_manager::find_command(std::string key) {
+    const auto iter = command_map.find( key );
+    if( iter == command_map.end() ) {
+        client_command nop( 0, client_command_nop ,"nop" );
+        return nop;
+    }
+    return iter->second;
+}
+
+void multiplay_manager::erase_command(std::string key) {
+    command_map.erase(key);
 }
