@@ -1,67 +1,47 @@
 // Monster movement code; essentially, the AI
 
-#include <corecrt.h>
-#include <algorithm>
-#include <cfloat>
-#include <climits>
-#include <cmath>
 #include <cstdlib>
-#include <iterator>
-#include <map>
+#include <cmath>
+#include <algorithm>
 #include <memory>
 #include <ostream>
-#include <set>
-#include <string>
-#include <unordered_map>
-#include <utility>
-#include <vector>
+#include <list>
+#include <cfloat>
 
 #include "avatar.h"
 #include "bionics.h"
-#include "bodypart.h"
-#include "calendar.h"
-#include "cata_utility.h"
-#include "character.h"
-#include "character_id.h"
-#include "creature.h"
-#include "creature_tracker.h"
-#include "damage.h"
 #include "debug.h"
-#include "enums.h"
 #include "field.h"
-#include "field_type.h"
 #include "game.h"
-#include "game_constants.h"
-#include "int_id.h"
-#include "item.h"
 #include "line.h"
 #include "map.h"
 #include "map_iterator.h"
 #include "mapdata.h"
-#include "mattack_common.h"
-#include "memory_fast.h"
 #include "messages.h"
 #include "monfaction.h"
-#include "monster.h" // IWYU pragma: associated
 #include "mtype.h"
-#include "multiplay_manager.h"
+#include "creature_tracker.h"
 #include "npc.h"
-#include "options.h"
-#include "pathfinding.h"
-#include "point.h"
 #include "rng.h"
 #include "scent_map.h"
 #include "sounds.h"
-#include "string_formatter.h"
-#include "string_id.h"
-#include "tileray.h"
 #include "translations.h"
 #include "trap.h"
-#include "type_id.h"
-#include "units.h"
-#include "veh_type.h"
-#include "vehicle.h"
 #include "vpart_position.h"
+#include "tileray.h"
+#include "vehicle.h"
+#include "cata_utility.h"
+#include "game_constants.h"
+#include "mattack_common.h"
+#include "pathfinding.h"
+#include "player.h"
+#include "int_id.h"
+#include "string_id.h"
+#include "pimpl.h"
+#include "string_formatter.h"
+#include "multiplay_manager.h"
+#include "sounds.h"
+#include "options.h"
 
 static const efftype_id effect_bouldering( "bouldering" );
 static const efftype_id effect_countdown( "countdown" );
