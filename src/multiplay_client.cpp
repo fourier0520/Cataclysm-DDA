@@ -263,7 +263,7 @@ void multiplay_client::client_thread_process(){
                 g->multiplay_manager_ref.insert_command( client_name, new_cmd );
 
                 mode = mode_auto;
-            } else if( recv_buffer[0] == '-' ) {
+            } else if( recv_buffer[0] == 'g' || recv_buffer[0] == 'G' ) {
                 send_msg_string = string_format("\r\nDash direction? (1-9), other is cancel.\r\n > ", input_str);
                 send( sock, send_msg_string.c_str(), send_msg_string.length(), 0);
 
