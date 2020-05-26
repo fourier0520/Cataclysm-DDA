@@ -16,6 +16,7 @@
 #include "itype.h"
 #include "output.h"
 #include "debug.h"
+#include "options.h"
 
 class multiplay_client {
 
@@ -43,6 +44,8 @@ enum client_mode {
     mode_message,
     mode_spawn,
     mode_despawn,
+    mode_dash,
+    mode_auto,
 };
 
 enum command_type {
@@ -51,7 +54,9 @@ enum command_type {
     client_command_spawn,
     client_command_despawn,
     client_command_move,
+    client_command_move_repeatly,
     client_command_special_attack,
+    client_command_auto_move,
 };
 
 class client_command {

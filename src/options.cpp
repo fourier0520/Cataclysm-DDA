@@ -1233,13 +1233,16 @@ void options_manager::add_options_general()
          false
        );
     add( "PLAYER_MOVECOST_REDUCE", "general", translate_marker( "player movecost reduce" ),
-         translate_marker( "If true, all of player move cost is reduce to zero except timeout." ),
+         translate_marker( "If true, all of player move cost is reduce except timeout." ),
          false
        );
+
     add( "PLAYER_MOVECOST_REDUCE_MULTIPLIER", "general", translate_marker( "player movecost reduce multiplier" ),
          translate_marker( "multiplier of player move cost reduce." ),
          0.0, 1.0, 0.1, 0.01
        );
+
+    get_option( "PLAYER_MOVECOST_REDUCE_MULTIPLIER" ).setPrerequisite( "PLAYER_MOVECOST_REDUCE" );
 
 
     add_empty_line();
@@ -1308,6 +1311,23 @@ void options_manager::add_options_general()
     add( "AUTO_SWAP_POSITION_WITH_NPC", "general", translate_marker( "Auto swap position with NPC" ),
          translate_marker( "If true, when you move toward not hostile npc or friendly robot, automatically swap position without open menu." ),
          false
+       );
+
+    add_empty_line();
+
+    add( "DISALLOW_CLIENT_ATTACK_PLAYER", "general", translate_marker( "DISALLOW_CLIENT_ATTACK_PLAYER" ),
+         translate_marker( "If true, multiplayer clients can NOT attack you in game." ),
+         true
+       );
+
+    add( "MULTIPLAY_SERVER_PORT_NUMBER",  "general", translate_marker( "MULTIPLAY_SERVER_PORT_NUMBER" ),
+            translate_marker("MULTIPLAY_SERVER_PORT_NUMBER" ),
+         0, 65535, 4454
+       );
+
+    add( "MAX_CONNECTED_CLIENT_NUM",  "general", translate_marker( "MAX_CONNECTED_CLIENT_NUM" ),
+            translate_marker("MAX_CONNECTED_CLIENT_NUM" ),
+         0, 100, 10
        );
 
     add_empty_line();

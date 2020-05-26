@@ -17,6 +17,7 @@
 #include "game.h"
 #include "avatar.h"
 #include "monster.h"
+#include "options.h"
 
 static const efftype_id effect_pet( "pet" );
 
@@ -79,10 +80,11 @@ void multiplay_manager::server_thread_process(){
         return;
     }
 
+    int port_num = get_option<int>("MULTIPLAY_SERVER_PORT_NUMBER");
     sockaddr_in addr_in;
     memset(&addr_in, 0, sizeof(struct sockaddr_in));
     addr_in.sin_family = AF_INET;
-    addr_in.sin_port = htons(4454);
+    addr_in.sin_port = htons( port_num );
     addr_in.sin_addr.s_addr = inet_addr("127.0.0.1");
     addr_in.sin_addr.s_addr = INADDR_ANY;
 
@@ -94,8 +96,8 @@ void multiplay_manager::server_thread_process(){
         return;
     }
 
-    static const int CLIENT_ARY_LENGTH = 10;
-    multiplay_client client_ary[CLIENT_ARY_LENGTH];
+    int max_client_num = get_option<int>("MAX_CONNECTED_CLIENT_NUM");
+    multiplay_client client_ary[ 110 ];
 
     while( is_server_active ){
         static const int SOCKET_QUEUE_MAX = 5;
@@ -119,7 +121,7 @@ void multiplay_manager::server_thread_process(){
 
 
         bool started = false;
-        for( int i = 0 ; i < CLIENT_ARY_LENGTH ; i++){
+        for( int i = 0 ; i < max_client_num ; i++){
             if ( !client_ary[ i ].is_working() ) {
                 client_ary[ i ].start_client_thread( connected_socket );
                 started = true;

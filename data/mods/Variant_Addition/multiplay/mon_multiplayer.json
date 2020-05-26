@@ -21,7 +21,23 @@
     "melee_dice_sides": 3,
     "melee_cut": 3,
     "vision_night": 3,
+    "regenerates": 1,
     "death_function": [ "NORMAL" ],
+    
+    "special_attacks": [
+     {
+        "type": "gun",
+        "cooldown": 20,
+        "move_cost": 300,
+        "gun_type": "v29",
+        "fake_skills": [ [ "gun", 1 ], [ "pistol", 1 ] ],
+        "fake_dex": 8,
+        "ranges": [ [ 0, 10, "DEFAULT" ] ],
+        "description": "v29を撃ちました！",
+        "no_ammo_sound": "v29が弾切れだ！"
+      }
+    ],
+    
     "flags": [
       "SEES",
       "HEARS",

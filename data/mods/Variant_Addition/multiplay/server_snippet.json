@@ -1,0 +1,21 @@
+[
+  {
+    "type": "snippet",
+    "category": "multiplay",
+    "text": [
+      {
+        "id": "multiplay_server_help_en",
+        "text": "\r\n\r\n --- Command Help --- \r\n\r\n UPPERCASE command is Case Sensitive. use your Shift key.\r\n\r\n# Manage Your Monster \r\n- [s]: Spawn monster as you.\r\n     (You can spawn multiple monster, but you can control Only one monster at the same time.)\r\n- [D]: Make your monster Dead. (with y/n)\r\n\r\n# Move Command\r\n- [1-9]: Move your monster.\r\n     (If there is monster or player at the direction, attack it)\r\n\- [hjklyubn]: Another Move command. for make legacy rogue-like player happy.\r\n- [-]: Move Repeatly (or Dash in other word) for selected direction.\r\n     (be careful to your monster runs far away)\r\n- [m]: Say message from your monster.\r\n     (maybe player cannot hear it)\r\n- [a]: Enable Auto moving mode.\r\n     (In Auto moving mode, Your monster moves like as normal friendly monster.)\r\n\- [f]: Special Attack.\r\n     (If monster have special, and, Cooltime of Special Attack had completed.)\r\n\r\n# Others\r\n- [/]: Show this help. (You seeing this just now)\r\n- [?]: 日本語のヘルプを表示します。  \r\n     ( ^ maybe not display correctly depend your environment. )\r\n- [Q]: Quit. (with y/n) \r\n > "
+      },
+      {
+        "id": "multiplay_server_help_google_ja",
+        "text": "\r\n\r\n ---コマンドヘルプ--- \r\n\r\n 大文字のコマンドでは大文字と小文字が区別されます。 Shiftキーを使用します。\r\n\r\n# モンスターの管理 \r\n- [s]: 自分と同じようにモンスターをスポーンします。 \r\n     （複数のモンスターをスポーンできますが、コントロールできるのは1つのモンスターだけです同時に）\r\n- [D]: モンスターを死にます。 （y / n付き）\r\n\r\n# 移動コマンド \r\n- [1-9]: モンスターを移動します。\r\n     （その方向にモンスターやプレイヤーがいたら、攻撃する）\r\n\- [hjklyubn]: 別の移動コマンド。従来のローグライクなプレイヤーを幸せにするため。\r\n- [-]: 選択した方向に繰り返し移動（または別の言葉でダッシュ）してください。 \r\n     （モンスターが遠くに走るように注意してください） \r\n- [m]:モンスターからのメッセージを言います。 \r\n     （おそらくプレイヤーはそれを聞くことができません） \r\n- [a]: 自動移動モードを有効にします。\r\n     （自動移動モードでは、モンスターは通常の友好的なモンスターと同じように移動します。） \r\n\- [f]:特殊攻撃。 \r\n     （特殊攻撃があり、特殊攻撃のクールタイムが完了した場合）\r\n\r\n# その他 \r\n-[/]: このヘルプを表示します。 （これは今表示されています） \r\n- [?]: 日本語のヘルプを表示します。\r\n     （^正しく表示されない場合があります。）\r\n- [Q]: 終了。 （y / n付き） \r\n > "
+      },
+      {
+        "id": "multiplay_server_help_ja",
+        "text": "\r\n\r\n --- コマンドヘルプ --- \r\n\r\n *大文字*のコマンドは、大小文字を区別します。 \r\n\r\n# モンスター管理 \r\n- [s]: あなたのモンスターを召喚します。 \r\n     (何体でも召喚できますが、一度に操作できるのは視界内のランダムな1体だけです)\r\n- [D]: あなたのモンスターを死亡させます。(y/n)\r\n\r\n# 移動コマンド \r\n- [1-9]: モンスターを移動させます。\r\n     (移動する方向にモンスターや＠がいる場合は、それに攻撃します) \r\n\- [hjklyubn]: HJKL移動も対応してます。昔ながらの操作方法です。 \r\n- [-]: 指定方向に移動し続けます。 \r\n     (モンスターが画面外に飛び出して行方不明にならないよう注意しましょう)\r\n- [m]: モンスターが指定したセリフを言います。 \r\n     (状況によってはプレイヤーが聞き取れない事もあります) \r\n- [a]: 自動移動モードをオンにします。 \r\n     (自動移動モードでは、操作モンスターは通常の友好ペットと同様に動きます) \r\n\- [f]: 特殊攻撃を発動します。 \r\n     (モンスターが特殊攻撃を持っており、クールタイムが終わっている場合。)\r\n     (友好ペットなので、おそらく＠は標的にしませんが、必要な標的がいない場合も不発です)\r\n\r\n# その他\r\n- [/]: Display help in 'Engrish'. \r\n- [?]: 日本語のヘルプを表示します。(いま読んでるやつです)\r\n     ( 環境によっては、正しく表示されないかもしれません )\r\n-[Q]: 終了します。(y/n) \r\n > "
+      }
+    ]
+  }
+]
+
