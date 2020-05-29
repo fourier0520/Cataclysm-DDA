@@ -2422,6 +2422,7 @@ void Item_factory::load_basic_info( const JsonObject &jo, itype &def, const std:
 
     def.toiletpaper_message = jo.get_string( "toiletpaper_message", "" );
     def.toiletpaper_morale = jo.get_int( "toiletpaper_morale", 0 );
+    def.toiletpaper_hurt_flag = jo.get_bool( "toiletpaper_hurt_flag", false );
 
     def.source_mod_id = src;
 

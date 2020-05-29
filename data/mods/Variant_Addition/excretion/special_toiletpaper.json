@@ -9,6 +9,7 @@
     "description": "大昔のトイレでは木の薄いヘラで拭いていたらしいので、わざわざ紙を使う必要はありません。",
     "//": "96日目の>>549がそう言ってた",
     "toiletpaper_message": "木べらでおしりを拭くのはちょっと痛いです。",
+    "toiletpaper_hurt_flag": true,
     "toiletpaper_morale": -10,
     "price": 100,
     "material": "wood",
@@ -115,9 +116,10 @@
     "id": "money_bundle",
     "name": "money bundle",
     "copy-from": "money_bundle",
-    "//": "札束にメッセージと意欲バフを追加するサンプルです。おしりを拭いたときの意欲は10+99で合計109上昇するはずです",
+    "//": "札束にメッセージと意欲バフを追加するサンプルです。おしりを拭いたときの意欲は10+89で合計99上昇するはずです",
     "toiletpaper_message": "今ならケツを拭く紙ぐらいにゃなる！！！",
-    "toiletpaper_morale": 99
+    "toiletpaper_hurt_flag": true,
+    "toiletpaper_morale": 89
   },
   {
     "type": "GENERIC",

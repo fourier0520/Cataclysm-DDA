@@ -5008,6 +5008,12 @@ int activity_handlers::use_toilet_paper( player *p ) {
         }
         p->add_morale( MORALE_USE_TOILETPAPER, paper_morale, paper_morale * 2, 180_minutes );
 
+        if( using_paper->type->toiletpaper_hurt_flag && one_in( 3 ) ) {
+            // Ouch! in 1/3 chance.
+            p->add_msg_if_player( m_bad, _( "Ouch, my ass!" ));
+            p->mod_pain( 7 );
+        }
+
         item used_paper = g->u.inv.remove_item(using_paper);
         used_paper.set_flag( flag_FILTHY );
         put_into_vehicle_or_drop(*p, item_drop_reason::tumbling, { used_paper });
