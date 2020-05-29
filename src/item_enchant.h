@@ -3,6 +3,7 @@
 #define ITEM_ENCHANT_H
 
 #include <string>
+#include <vector>
 
 #include "type_id.h"
 #include "itype.h"
@@ -38,7 +39,13 @@ class item_enchant {
 
         item_enchant_type enchant_type = enchant_null;
 
-        int weight_in_natural_spawn;
+        bool obsolete;
+        int spawn_weight_in_natural;
+        int spawn_weight_in_crafting;
+        int allowed_attack_sum_min;
+        int allowed_attack_sum_max;
+        std::vector<std::string> exclude_group;
+
         float effect_chance;
         float effect_chance_min;
         float effect_chance_max;

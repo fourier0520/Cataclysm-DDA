@@ -84,7 +84,32 @@ void load_item_enchant( const JsonObject &jo, const std::string & ){
 
     new_item_enchant.enchant_type = enchant_manager::item_enchant_type_string_to_enum( jo.get_string( "enchant_type" ) );
 
-    new_item_enchant.weight_in_natural_spawn = jo.get_int( "weight_in_natural_spawn" , 0);
+    new_item_enchant.obsolete = jo.get_bool( "obsolete" , false);
+
+    new_item_enchant.spawn_weight_in_natural = jo.get_int( "spawn_weight_in_natural" , 0);
+    new_item_enchant.spawn_weight_in_crafting = jo.get_int( "spawn_weight_in_crafting" , 0);
+    if( jo.has_member( "spawn_weight" ) ) {
+        // new format, it's overwrites old format data (if it there)
+        JsonObject spawn_weight_jo = jo.get_object( "spawn_weight" );
+        new_item_enchant.spawn_weight_in_natural = spawn_weight_jo.get_int( "natural" , 0);
+        new_item_enchant.spawn_weight_in_crafting = spawn_weight_jo.get_int( "crafting" , 0);
+    }
+
+    new_item_enchant.allowed_attack_sum_min = jo.get_int( "allowed_attack_sum_min" , -1);
+    new_item_enchant.allowed_attack_sum_max = jo.get_int( "allowed_attack_sum_max" , -1);
+    if( jo.has_member( "allowed_attack_sum" ) ) {
+        // new format, it's overwrites old format data (if it there)
+        JsonObject allowed_attack_sum_jo = jo.get_object( "allowed_attack_sum" );
+        new_item_enchant.allowed_attack_sum_min = allowed_attack_sum_jo.get_int( "min" , -1);
+        new_item_enchant.allowed_attack_sum_max = allowed_attack_sum_jo.get_int( "max" , -1);
+    }
+
+    new_item_enchant.exclude_group.clear();
+    if( jo.has_member( "exclude_group" ) ) {
+        for( const std::string &group_name : jo.get_tags<std::string>( "exclude_group" ) ) {
+            new_item_enchant.exclude_group.push_back( group_name );
+        }
+    }
 
     new_item_enchant.effect_chance = jo.get_float( "effect_chance" , 1.0);
     new_item_enchant.effect_chance_min = jo.get_float( "effect_chance_min" , new_item_enchant.effect_chance);
@@ -131,12 +156,12 @@ static item_enchant get_random_enchant_with_weight( const std::vector<item_encha
     int weight_sum = 0;
 
     for( item_enchant enchant : enchant_list ){
-        weight_sum += enchant.weight_in_natural_spawn;
+        weight_sum += enchant.spawn_weight_in_natural;
     }
 
     int weight_iterating_sum = rng( 0, weight_sum );
     for( item_enchant enchant : enchant_list ){
-        weight_iterating_sum -= enchant.weight_in_natural_spawn;
+        weight_iterating_sum -= enchant.spawn_weight_in_natural;
         if( weight_iterating_sum <= 0 ) {
             add_msg( m_debug, "choosen enchant: %s", enchant.name );
             return enchant;
@@ -427,6 +452,8 @@ void item_enchant::deserialize(const JsonObject &jo) {
     enchant_type = enchant_definition.enchant_type;
 
     // effect_chance = enchant_definition.effect_chance;
+    obsolete = enchant_definition.obsolete;;
+    exclude_group = enchant_definition.exclude_group;
 
     effect_type_id_to_apply_target = enchant_definition.effect_type_id_to_apply_target;
     effect_type_id_to_apply_self = enchant_definition.effect_type_id_to_apply_self;
@@ -445,6 +472,8 @@ void item_enchant::deserialize(const JsonObject &jo) {
 
     emit_id_to_emit = enchant_definition.emit_id_to_emit;
 
+    heal_amount = enchant_definition.heal_amount;
+    heal_type = enchant_definition.heal_type;
 
     message_on_trigger = enchant_definition.message_on_trigger;
 
