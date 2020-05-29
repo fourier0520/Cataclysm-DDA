@@ -2,11 +2,22 @@
   {
     "type": "furniture",
     "id": "f_toilet",
-    "copy-from": "f_toilet",
+    "//": "this is override all toilet difinition without copy-from. if toilet change in mainstream, this file must change."
     "name": "toilet",
     "symbol": "&",
     "color": "white",
+    "description": "A porcelain throne.  Emergency water source, from the tank, and provider of relief.",
+    "move_cost_mod": 2,
+    "coverage": 30,
+    "required_str": -1,
     "flags": [ "TRANSPARENT", "FLAMMABLE_HARD", "MOUNTABLE", "LIQUIDCONT", "TOILET" ],
-    "//": "i can not understand copy-from of furniture definition fuck this fucking volatile overriding"
+    "examine_action": "toilet",
+    "bash": {
+      "str_min": 8,
+      "str_max": 30,
+      "sound": "porcelain breaking!",
+      "sound_fail": "whunk!",
+      "items": [ { "item": "cu_pipe", "prob": 50 }, { "item": "ceramic_shard", "count": [ 2, 8 ] } ]
+    }
   }
 ]
