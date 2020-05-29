@@ -86,13 +86,13 @@ void load_item_enchant( const JsonObject &jo, const std::string & ){
 
     new_item_enchant.obsolete = jo.get_bool( "obsolete" , false);
 
-    new_item_enchant.spawn_weight_in_natural = jo.get_int( "spawn_weight_in_natural" , 0);
-    new_item_enchant.spawn_weight_in_crafting = jo.get_int( "spawn_weight_in_crafting" , 0);
+    new_item_enchant.spawn_weight_in_natural = jo.get_int( "spawn_weight_in_natural", 0);
+    new_item_enchant.spawn_weight_in_crafting = jo.get_int( "spawn_weight_in_crafting" ,new_item_enchant.spawn_weight_in_natural);
     if( jo.has_member( "spawn_weight" ) ) {
         // new format, it's overwrites old format data (if it there)
         JsonObject spawn_weight_jo = jo.get_object( "spawn_weight" );
         new_item_enchant.spawn_weight_in_natural = spawn_weight_jo.get_int( "natural" , 0);
-        new_item_enchant.spawn_weight_in_crafting = spawn_weight_jo.get_int( "crafting" , 0);
+        new_item_enchant.spawn_weight_in_crafting = spawn_weight_jo.get_int( "crafting" , new_item_enchant.spawn_weight_in_natural);
     }
 
     new_item_enchant.allowed_attack_sum_min = jo.get_int( "allowed_attack_sum_min" , -1);
