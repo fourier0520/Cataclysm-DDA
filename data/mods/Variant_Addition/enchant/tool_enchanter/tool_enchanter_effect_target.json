@@ -1,0 +1,10 @@
+[
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_burning",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(炎上攻撃)" },
+    "description": "アイテムに攻撃時に、ターゲットを炎上させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "burning" ], [ "enchant_effect_chance", "0.38" ] ]
+  }
+]

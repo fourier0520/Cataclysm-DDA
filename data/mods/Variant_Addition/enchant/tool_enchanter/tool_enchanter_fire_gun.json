@@ -1,0 +1,42 @@
+[
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_shot_on_attack",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(追加銃撃 mp5sd)" },
+    "description": "アイテムに攻撃時に、追加で射撃するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "shot_on_attack" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_shot_on_attack_burst",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(追加銃撃 mp5sd・バースト)" },
+    "description": "アイテムに攻撃時に、追加で射撃するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "shot_on_attack_burst" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_shot_on_attack_auto",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(追加銃撃 mp5sd・オート)" },
+    "description": "アイテムに攻撃時に、追加で射撃するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "shot_on_attack_auto" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_shot_on_attack_v29",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(追加銃撃 v29)" },
+    "description": "アイテムに攻撃時に、追加でレーザー射撃するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "shot_on_attack_v29" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_shot_on_attack_v29_triple",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(追加銃撃 v29・トリプル)" },
+    "description": "アイテムに攻撃時に、追加でレーザー射撃するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "shot_on_attack_v29_triple" ], [ "enchant_effect_chance", "0.38" ] ]
+  }
+]

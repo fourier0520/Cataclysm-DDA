@@ -1200,7 +1200,7 @@ void player::complete_craft( item &craft, const tripoint &loc )
             }
         }
 
-        enchant_manager::add_random_enchant_to_item( newit );
+        enchant_manager::add_random_enchant_to_item( newit , true);
 
         newit.set_owner( get_faction()->id );
         // If these aren't equal, newit is a container, so finalize its contents too.

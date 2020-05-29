@@ -1,0 +1,100 @@
+[
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_fungus_125",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(真菌特効・弱)" },
+    "description": "アイテムにゾンビ類へのダメージを1.25倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_fungus_125" ], [ "enchant_effect_chance", "0.76" ] ],
+    "//": "damage mult average 118.8% per hit. 現在effect chanceが0.01低い値で生成されるみたいなので補正込みの値で記述。"
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_fungus_150",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(真菌特効)" },
+    "description": "アイテムに真菌類へのダメージを1.5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_fungus_150" ], [ "enchant_effect_chance", "0.69" ] ],
+    "//": "damage mult average 134.0% per hit."
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_human_125",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(人間特効・弱)" },
+    "description": "アイテムに人類へのダメージを1.25倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_human_125" ], [ "enchant_effect_chance", "0.76" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_human_150",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(人間特効)" },
+    "description": "アイテムに人類へのダメージを1.5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_human_150" ], [ "enchant_effect_chance", "0.69" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_insect_125",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(昆虫特効・弱)" },
+    "description": "アイテムに昆虫類へのダメージを1.25倍するエンチャントを付加します。クモは昆虫に含まれません。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_insect_125" ], [ "enchant_effect_chance", "0.76" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_insect_150",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(昆虫特効)" },
+    "description": "アイテムに昆虫類へのダメージを1.5倍するエンチャントを付加します。クモは昆虫に含まれません。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_insect_150" ], [ "enchant_effect_chance", "0.69" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_mech_125",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(機械特効・弱)" },
+    "description": "アイテムに機械類へのダメージを1.25倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_mech_125" ], [ "enchant_effect_chance", "0.76" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_mech_150",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(機械特効)" },
+    "description": "アイテムに機械類へのダメージを1.5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_mech_150" ], [ "enchant_effect_chance", "0.69" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_nether_125",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(異界特効・弱)" },
+    "description": "アイテムに異界生物へのダメージを1.25倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_nether_125" ], [ "enchant_effect_chance", "0.76" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_nether_150",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(異界特効)" },
+    "description": "アイテムに異界生物へのダメージを1.5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_nether_150" ], [ "enchant_effect_chance", "0.69" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_zombie_125",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(ゾンビ特効・弱)" },
+    "description": "アイテムにゾンビ類へのダメージを1.25倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_zombie_125" ], [ "enchant_effect_chance", "0.76" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_anti_zombie_150",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(ゾンビ特効)" },
+    "description": "アイテムにゾンビ類へのダメージを1.5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "anti_zombie_150" ], [ "enchant_effect_chance", "0.69" ] ]
+  }
+]

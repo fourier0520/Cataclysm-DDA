@@ -549,7 +549,7 @@ void debug_menu::wishitem( player *p, int x, int y, int z )
                 canceled = popup.canceled();
             }
 
-            enchant_manager::add_random_enchant_to_item( granted );
+            enchant_manager::add_random_enchant_to_item( granted, false );
 
             if( !canceled ) {
                 if( p != nullptr ) {

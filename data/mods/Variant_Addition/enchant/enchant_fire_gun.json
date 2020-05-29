@@ -5,101 +5,78 @@
     "name": "追加銃撃(mp5sd)",
     "description": "攻撃時に、追加で射撃攻撃が行われます。",
     "enchant_type": "enchant_fire_gun",
-
-    "weight_in_natural_spawn": 100,
-
-    "effect_chance_min": 0.05,
-    "effect_chance_max": 0.50,
-
     "gun_type_id_to_fire": "hk_mp5sd",
-    "gun_target_num": 2,
-    "gun_max_range": 8,
     "gun_ammo": "9mm",
-
-    "message_on_trigger": "%sから弾丸が発射されました！"
+    "gun_fire_mode": "DEFAULT",
+    "message_on_trigger": "%sから弾丸が発射されました！",
+    "gun_target_num": 1,
+    "gun_max_range": 8,
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.5,
+    "spawn_weight_in_natural": 100
   },
-
   {
     "type": "item_enchant",
-    "id": "shot_on_attack",
+    "id": "shot_on_attack_burst",
     "name": "追加銃撃(mp5sd)(バースト)",
     "description": "攻撃時に、追加で射撃攻撃が行われます。",
     "enchant_type": "enchant_fire_gun",
-
-    "weight_in_natural_spawn": 20,
-
-    "effect_chance_min": 0.05,
-    "effect_chance_max": 0.50,
-
     "gun_type_id_to_fire": "hk_mp5sd",
-    "gun_target_num": 2,
-    "gun_max_range": 8,
     "gun_ammo": "9mm",
     "gun_fire_mode": "BURST",
-
-    "message_on_trigger": "%sから弾丸が発射されました！"
+    "message_on_trigger": "%sから弾丸が発射されました！",
+    "gun_target_num": 3,
+    "gun_max_range": 8,
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.5,
+    "spawn_weight_in_natural": 0,
+    "//": "射撃モード未実装？"
   },
-
-
   {
     "type": "item_enchant",
-    "id": "shot_on_attack",
-    "name": "追加銃撃(mp5sd)(ダブル)",
+    "id": "shot_on_attack_auto",
+    "name": "追加銃撃(mp5sd)(オート)",
     "description": "攻撃時に、追加で射撃攻撃が行われます。",
     "enchant_type": "enchant_fire_gun",
-
-    "weight_in_natural_spawn": 20,
-
-    "effect_chance_min": 0.05,
-    "effect_chance_max": 0.50,
-
     "gun_type_id_to_fire": "hk_mp5sd",
-    "gun_target_num": 2,
-    "gun_max_range": 8,
     "gun_ammo": "9mm",
-
-    "message_on_trigger": "%sから弾丸が発射されました！"
+    "gun_fire_mode": "AUTO",
+    "message_on_trigger": "%sから弾丸が発射されました！",
+    "gun_target_num": 4,
+    "gun_max_range": 8,
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.5,
+    "spawn_weight_in_natural": 0
   },
-
-
   {
     "type": "item_enchant",
-    "id": "shot_on_attack",
+    "id": "shot_on_attack_v29",
     "name": "追加銃撃(v29)",
     "description": "攻撃時に、追加で射撃攻撃が行われます。",
     "enchant_type": "enchant_fire_gun",
-
-    "weight_in_natural_spawn": 100,
-
-    "effect_chance_min": 0.05,
-    "effect_chance_max": 0.50,
-
     "gun_type_id_to_fire": "v29",
+    "gun_ammo": "v29",
+    "message_on_trigger": "%sからレーザーが発射されました！",
     "gun_target_num": 1,
     "gun_max_range": 8,
-    "gun_ammo": "v29",
-
-    "message_on_trigger": "%sからレーザーが発射されました！"
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.5,
+    "spawn_weight_in_natural": 100
   },
-
   {
     "type": "item_enchant",
-    "id": "shot_on_attack",
+    "id": "shot_on_attack_v29_triple",
     "name": "追加銃撃(v29)(トリプル)",
     "description": "攻撃時に、追加で射撃攻撃が行われます。",
     "enchant_type": "enchant_fire_gun",
-
-    "weight_in_natural_spawn": 20,
-
-    "effect_chance_min": 0.05,
-    "effect_chance_max": 0.50,
-
     "gun_type_id_to_fire": "v29",
+    "gun_ammo": "v29",
+    "message_on_trigger": "%sからレーザーが発射されました！",
     "gun_target_num": 3,
     "gun_max_range": 8,
-    "gun_ammo": "v29",
-
-    "message_on_trigger": "%sからレーザーが発射されました！"
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.5,
+    "spawn_weight_in_natural": 0,
+    "//": "本来存在しないモード"
   }
-
 ]

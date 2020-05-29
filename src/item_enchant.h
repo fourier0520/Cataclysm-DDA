@@ -64,6 +64,7 @@ class item_enchant {
 
         species_id specie_id_to_anti;
         float anti_specie_multiplier;
+        int anti_specie_constant_damage;
 
         emit_id emit_id_to_emit;
 
@@ -82,16 +83,21 @@ class enchant_manager {
 
         static void load_enchant_balance_options();
 
-        static item_enchant generate_natual_enchant();
+        static bool check_enchant_allows_item( item_enchant, item& );
+
+        static item_enchant get_random_enchant_with_weight( item&, bool );
+
+        // static item_enchant generate_natual_enchant(item&, bool);
 
         static void invoke_damage_modifier_enchantment( damage_instance &dmg, item_enchant&, Creature&, item&, player& );
 
         static void invoke_enchantment_effect( item_enchant&, Creature&, item&, player& );
 
 
-        static void add_random_enchant_to_item( item& );
-        static void add_random_enchant_to_item( std::vector<item>& );
-        static void add_random_enchant_to_item( std::list<item>&  );
+        static void add_random_enchant_to_item( item& , bool );
+        static void add_random_enchant_to_item( std::vector<item>& , bool );
+        static void add_random_enchant_to_item( std::list<item>& , bool );
+
         // enchant balance things.
         // load by load_enchant_balance_options()
         // from external options

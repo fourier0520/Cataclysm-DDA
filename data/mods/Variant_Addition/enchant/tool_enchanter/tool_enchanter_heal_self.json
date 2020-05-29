@@ -1,0 +1,34 @@
+[
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_heal_hp_on_attack",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(吸収回復)" },
+    "description": "アイテムに攻撃時に、自身のHPを回復させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "heal_hp_on_attack" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_heal_stamina_on_attack",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(スタミナ回復)" },
+    "description": "アイテムに攻撃時に、自身のスタミナを回復させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "heal_stamina_on_attack" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_heal_mana_on_attack",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(マナ回復)" },
+    "description": "アイテムに攻撃時に、自身のマナを回復させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "heal_mana_on_attack" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_heal_fatigue_on_attack",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(疲労回復)" },
+    "description": "アイテムに攻撃時に、自身の疲労を回復させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "heal_fatigue_on_attack" ], [ "enchant_effect_chance", "0.38" ] ]
+  }
+]

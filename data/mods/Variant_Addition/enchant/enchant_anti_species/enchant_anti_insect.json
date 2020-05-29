@@ -1,0 +1,93 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_50",
+    "name": "ローチの恨み",
+    "description": "昆虫類へのダメージが半減してしまいます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 0.5,
+    "effect_chance_max": 0.8,
+    "effect_chance_min": 0.2,
+    "//": "damage mult average 60.0-90.0% per hit.",
+    "spawn_weight_in_natural": 20
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_125",
+    "name": "昆虫特効(弱)",
+    "description": "昆虫類に1.25倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 1.25,
+    "effect_chance_min": 0.48,
+    "effect_chance_max": 1.0,
+    "//": "damage mult average 112.0-125.0% per hit.クモは昆虫に含まれません。",
+    "spawn_weight_in_natural": 88
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_150",
+    "name": "昆虫特効",
+    "description": "昆虫類に1.5倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 1.5,
+    "effect_chance_min": 0.45,
+    "effect_chance_max": 0.91,
+    "//": "damage mult average 122.5-145.5% per hit.",
+    "spawn_weight_in_natural": 55
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_200",
+    "name": "ムシキラー",
+    "description": "昆虫類に2倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 2.0,
+    "effect_chance_min": 0.42,
+    "effect_chance_max": 0.79,
+    "//": "damage mult average 142.0-179.0% per hit.",
+    "spawn_weight_in_natural": 33
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_300",
+    "name": "ムシキラー・改",
+    "description": "昆虫類に3倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 3.0,
+    "effect_chance_min": 0.37,
+    "effect_chance_max": 0.64,
+    "//": "damage mult average 174.0-228.0% per hit.",
+    "spawn_weight_in_natural": 21
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_500",
+    "name": "Ｇスレイヤー",
+    "description": "ゴブリｎ・・・ではなく昆虫類に5倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 5.0,
+    "effect_chance_min": 0.31,
+    "effect_chance_max": 0.5,
+    "//": "damage mult average 224.0-300.0% per hit.",
+    "spawn_weight_in_natural": 13
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_1000",
+    "name": "真・Ｇスレイヤー",
+    "description": "ゴブリｎ・・・ではなく昆虫類に10倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+    "specie_id_to_anti": "INSECT",
+    "anti_specie_multiplier": 10.0,
+    "effect_chance_min": 0.25,
+    "effect_chance_max": 0.35,
+    "//": "damage mult average 325.0-415.0% per hit.",
+    "spawn_weight_in_natural": 8
+  }
+]

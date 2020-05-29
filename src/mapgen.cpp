@@ -1095,7 +1095,7 @@ class jmapgen_loot : public jmapgen_piece
             if( rng( 0, 99 ) < chance ) {
                 const Item_spawn_data *const isd = &result_group;
                 std::vector<item> spawn = isd->create( calendar::start_of_cataclysm );
-                enchant_manager::add_random_enchant_to_item( spawn );
+                enchant_manager::add_random_enchant_to_item( spawn , false );
                 dat.m.spawn_items( tripoint( rng( x.val, x.valmax ), rng( y.val, y.valmax ),
                                              dat.m.get_abs_sub().z ), spawn );
             }
@@ -5940,7 +5940,7 @@ std::vector<item *> map::place_items( const items_location &loc, const int chanc
             }
         }
         if( e != nullptr ){
-            enchant_manager::add_random_enchant_to_item( *e );
+            enchant_manager::add_random_enchant_to_item( *e , false);
         }
 
     }

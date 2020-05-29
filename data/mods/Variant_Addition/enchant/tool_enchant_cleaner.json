@@ -4,7 +4,6 @@
     "id": "ENCHANT_CLEANER",
     "name": { "str": "エンチャントを除去する" }
   },
-
   {
     "id": "enchant_cleaner_tool",
     "type": "TOOL",
@@ -13,14 +12,12 @@
     "weight": "1000 g",
     "volume": "1000 ml",
     "price": 1000,
-    "material": ["steel", "cotton"],
+    "material": [ "steel", "cotton" ],
     "symbol": ";",
     "color": "light_gray",
     "flags": [ "ALLOWS_REMOTE_USE" ],
     "use_action": "ENCHANT_CLEANER"
   },
-
-
   {
     "result": "enchant_cleaner_tool",
     "type": "recipe",
@@ -32,6 +29,4 @@
     "autolearn": true,
     "components": [ [ [ "scrap", 10 ] ], [ [ "rag", 10 ] ], [ [ "plastic_chunk", 10 ] ] ]
   }
-
-
 ]

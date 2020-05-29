@@ -9969,6 +9969,11 @@ int iuse::item_enchanter( player*, item *it, bool, const tripoint & )
         return 0;
     }
 
+    if ( loc->type == it->type ) {
+        add_msg( m_bad, _( "You cannot enchant enchanter itself!" ) );
+        return 0;
+    }
+
     if( query_yn( string_format( _("Really enchant to %s?") , loc->tname() ) ) ) {
 
         if( it->has_property( "enchant_id" ) ) {
@@ -9980,12 +9985,19 @@ int iuse::item_enchanter( player*, item *it, bool, const tripoint & )
                 enchant.effect_chance = atof( it->get_property_string( "enchant_effect_chance" ).c_str() );
             }
 
-            loc->item_enchant_list.push_back( enchant );
-            add_msg( m_info, _("Enchanted %s to %s.") , enchant.name , loc->tname() );
+            if ( enchant_manager::check_enchant_allows_item( enchant, *loc ) ){
+                loc->item_enchant_list.push_back( enchant );
+                add_msg( m_info, _("Enchanted %s to %s.") , enchant.name , loc->tname() );
+
+                // Enchanter consumed.
+                return 1;
+
+            } else {
+                add_msg( m_bad, _("You cannot enchant %s to %s.") , enchant.name , loc->tname() );
+            }
         } else {
             debugmsg( "no property enchant_id");
         }
-        return 1;
     }
     return 0;
 }

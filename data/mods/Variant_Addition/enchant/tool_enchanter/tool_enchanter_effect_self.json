@@ -1,0 +1,34 @@
+[
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_bless_of_lulwy",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(風の祝福)" },
+    "description": "アイテムに攻撃時に、自身の速度を一時的に上昇させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "bless_of_lulwy" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_bless_of_macho",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(筋肉の祝福)" },
+    "description": "アイテムに攻撃時に、自身の筋力を一時的に上昇させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "bless_of_macho" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_bless_of_the_wild",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(野生の祝福)" },
+    "description": "アイテムに攻撃時に、自身の器用と間隔を一時的に上昇させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "bless_of_the_wild" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_incredible_idea",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(圧倒的閃き)" },
+    "description": "アイテムに攻撃時に、自身の知性を一時的に上昇させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "incredible_idea" ], [ "enchant_effect_chance", "0.38" ] ]
+  }
+]

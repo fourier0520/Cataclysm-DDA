@@ -1,0 +1,26 @@
+[
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_burning_terrain",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(放火)" },
+    "description": "アイテムに攻撃時に、ターゲットの足元の地形を炎上させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "burning_terrain" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_acid_splash",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(酸溜まり)" },
+    "description": "アイテムに攻撃時に、ターゲットの足元に酸溜まりを発生させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "acid_splash" ], [ "enchant_effect_chance", "0.38" ] ]
+  },
+  {
+    "type": "TOOL",
+    "id": "vjp_enchanter_electric_cloud",
+    "copy-from": "vjp_enchanter_tool",
+    "name": { "str": "エンチャンター(電撃雲)" },
+    "description": "アイテムに攻撃時に、ターゲットの位置に電撃雲を発生させるエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "properties": [ [ "enchant_id", "electric_cloud" ], [ "enchant_effect_chance", "0.38" ] ]
+  }
+]

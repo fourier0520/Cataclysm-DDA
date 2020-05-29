@@ -21,8 +21,11 @@
 
 namespace
 {
+/** all of enchant map */
 std::map<item_enchant_id, item_enchant> item_enchant_map;
+/** enchant list that actually picked up for random enchant, (in other word, it is not contain obsolete enchant) */
 std::vector<item_enchant> item_enchant_list;
+/** probable this list of map is no use in now */
 std::map<item_enchant_type, std::vector<item_enchant>> item_enchant_list_map_by_type;
 } // namespace
 
@@ -138,6 +141,7 @@ void load_item_enchant( const JsonObject &jo, const std::string & ){
     } else if( new_item_enchant.enchant_type == enchant_anti_specie ){
         new_item_enchant.specie_id_to_anti = species_id( jo.get_string( "specie_id_to_anti" ) );
         new_item_enchant.anti_specie_multiplier =  jo.get_float( "anti_specie_multiplier" , 2.0);
+        new_item_enchant.anti_specie_constant_damage =  jo.get_int( "anti_specie_constant_damage" , 0);
 
     } else if( new_item_enchant.enchant_type == enchant_emit_field ){
         new_item_enchant.emit_id_to_emit = emit_id( jo.get_string( "emit_id_to_emit" ) );
@@ -147,127 +151,192 @@ void load_item_enchant( const JsonObject &jo, const std::string & ){
     }
 
     item_enchant_map[new_item_enchant.id] = new_item_enchant;
-    item_enchant_list.push_back( new_item_enchant );
-    item_enchant_list_map_by_type[ new_item_enchant.enchant_type ].push_back( new_item_enchant );
+
+    if ( !new_item_enchant.obsolete ) {
+        item_enchant_list.push_back( new_item_enchant );
+    }
 }
 
-static item_enchant get_random_enchant_with_weight( const std::vector<item_enchant> &enchant_list) {
+item_enchant enchant_manager::get_random_enchant_with_weight(
+        item &it, bool is_crafting ) {
+
+
+    std::vector<item_enchant> probablity_enchant_list;
+
+    for( item_enchant enchant : item_enchant_list ) {
+        if( check_enchant_allows_item( enchant, it ) ) {
+            probablity_enchant_list.push_back( enchant );
+        }
+    }
+
+    if ( probablity_enchant_list.empty() ) {
+        return item_enchant();
+    }
 
     int weight_sum = 0;
 
-    for( item_enchant enchant : enchant_list ){
-        weight_sum += enchant.spawn_weight_in_natural;
+    for( item_enchant enchant : probablity_enchant_list ){
+        if( is_crafting ) {
+            weight_sum += enchant.spawn_weight_in_crafting;
+        } else {
+            weight_sum += enchant.spawn_weight_in_natural;
+        }
     }
 
     int weight_iterating_sum = rng( 0, weight_sum );
-    for( item_enchant enchant : enchant_list ){
-        weight_iterating_sum -= enchant.spawn_weight_in_natural;
+    for( item_enchant enchant : probablity_enchant_list ){
+
+        if( is_crafting ) {
+            weight_iterating_sum -= enchant.spawn_weight_in_crafting;
+        } else {
+            weight_iterating_sum -= enchant.spawn_weight_in_natural;
+        }
+
         if( weight_iterating_sum <= 0 ) {
             add_msg( m_debug, "choosen enchant: %s", enchant.name );
+            enchant.effect_chance = rng_float( enchant.effect_chance_min, enchant.effect_chance_max );
+
             return enchant;
         }
     }
-    debugmsg( "choosen enchant weight is out bound! check weight_in_natural_spawn at item_enchant json" );
+    debugmsg( "choosen enchant weight is out bound! check spawn_weight_in_natural at item_enchant json" );
     return item_enchant();
+}
+
+bool enchant_manager::check_enchant_allows_item( item_enchant enc, item &it ) {
+
+    // check attack damage
+    int item_attack_sum =
+            it.damage_melee( DT_BASH ) +
+            it.damage_melee( DT_CUT ) +
+            it.damage_melee( DT_STAB );
+
+    if( 0 <= enc.allowed_attack_sum_min ) {
+        if( item_attack_sum < enc.allowed_attack_sum_min ){
+            return false;
+        }
+    }
+    if( 0 <= enc.allowed_attack_sum_max ) {
+        if ( enc.allowed_attack_sum_max < item_attack_sum ) {
+            return false;
+        }
+    }
+    // check already have same group enchant
+    for( item_enchant already_enchant : it.item_enchant_list ) {
+        for ( std::string already_enchant_group : already_enchant.exclude_group ) {
+            for ( std::string new_enchant_group : enc.exclude_group ) {
+                 if ( already_enchant_group == new_enchant_group ) {
+                     return false;
+                 }
+            }
+        }
+    }
+
+    return true;
 }
 
 /**
  * return random whole enchant data at natural generation
  */
-item_enchant enchant_manager::generate_natual_enchant() {
-
-    item_enchant new_item_enchant;
-
-    int weight_effect_self     = get_option<int>("ENCHANT_WEIGHT_EFFECT_SELF");
-    int weight_effect_target   = get_option<int>("ENCHANT_WEIGHT_EFFECT_TARGET");
-    int weight_anti_specie     = get_option<int>("ENCHANT_WEIGHT_EFFECT_ANTI_SPECIE");
-    int weight_fire_gun        = get_option<int>("ENCHANT_WEIGHT_EFFECT_FIRE_GUN");
-    int weight_emit_field      = get_option<int>("ENCHANT_WEIGHT_EFFECT_EMIT_FIELD");
-    int weight_heal_self       = get_option<int>("ENCHANT_WEIGHT_EFFECT_HEAL_SELF");
-    // int weight_teleport_target = get_option<int>("ENCHANT_WEIGHT_EFFECT_TELEPORT_TARGET");
-
-    int weight_sum =
-        weight_effect_self      +
-        weight_effect_target    +
-        weight_anti_specie      +
-        weight_fire_gun         +
-        weight_emit_field       +
-        weight_heal_self        +
-    //    weight_teleport_target  +
-        0;
-
-    int weight_iterating_sum = rng( 0, weight_sum );
-
-    if( ( weight_iterating_sum -= weight_effect_self) <= 0 ) {
-        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_effect_to_self ] );
-
-        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
-            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
-        }
-
-    } else if( ( weight_iterating_sum -= weight_effect_target ) <= 0 ) {
-        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_effect_to_target ] );
-
-        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
-            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
-        }
-
-    } else if( ( weight_iterating_sum -= weight_anti_specie ) <= 0 ) {
-        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_anti_specie ] );
-
-        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
-            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
-        }
-
-    } else if( ( weight_iterating_sum -= weight_fire_gun ) <= 0 ) {
-        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_fire_gun ] );
-
-        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
-            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
-        }
-
-    } else if( ( weight_iterating_sum -= weight_emit_field ) <= 0 ) {
-        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_emit_field ] );
-
-        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
-            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
-        }
-
-    } else if( ( weight_iterating_sum -= weight_heal_self ) <= 0 ) {
-        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_heal_self ] );
-
-        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
-            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
-        }
-
-    } else {
-        debugmsg( "choosen enchant weight is out bound! check external option named ENCHANT_WEIGHT_EFFECT_xxx" );
-    }
-
-    return new_item_enchant;
-
-}
+// item_enchant enchant_manager::generate_natual_enchant( item &it ) {
+//    item_enchant new_item_enchant;
+//
+//    int weight_effect_self     = get_option<int>("ENCHANT_WEIGHT_EFFECT_SELF");
+//    int weight_effect_target   = get_option<int>("ENCHANT_WEIGHT_EFFECT_TARGET");
+//    int weight_anti_specie     = get_option<int>("ENCHANT_WEIGHT_EFFECT_ANTI_SPECIE");
+//    int weight_fire_gun        = get_option<int>("ENCHANT_WEIGHT_EFFECT_FIRE_GUN");
+//    int weight_emit_field      = get_option<int>("ENCHANT_WEIGHT_EFFECT_EMIT_FIELD");
+//    int weight_heal_self       = get_option<int>("ENCHANT_WEIGHT_EFFECT_HEAL_SELF");
+//    // int weight_teleport_target = get_option<int>("ENCHANT_WEIGHT_EFFECT_TELEPORT_TARGET");
+//
+//    int weight_sum =
+//        weight_effect_self      +
+//        weight_effect_target    +
+//        weight_anti_specie      +
+//        weight_fire_gun         +
+//        weight_emit_field       +
+//        weight_heal_self        +
+//    //    weight_teleport_target  +
+//        0;
+//
+//    int weight_iterating_sum = rng( 0, weight_sum );
+//
+//    if( ( weight_iterating_sum -= weight_effect_self) <= 0 ) {
+//        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_effect_to_self ] );
+//
+//        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
+//            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
+//        }
+//
+//    } else if( ( weight_iterating_sum -= weight_effect_target ) <= 0 ) {
+//        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_effect_to_target ] );
+//
+//        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
+//            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
+//        }
+//
+//    } else if( ( weight_iterating_sum -= weight_anti_specie ) <= 0 ) {
+//        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_anti_specie ] );
+//
+//        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
+//            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
+//        }
+//
+//    } else if( ( weight_iterating_sum -= weight_fire_gun ) <= 0 ) {
+//        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_fire_gun ] );
+//
+//        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
+//            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
+//        }
+//
+//    } else if( ( weight_iterating_sum -= weight_emit_field ) <= 0 ) {
+//        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_emit_field ] );
+//
+//        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
+//            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
+//        }
+//
+//    } else if( ( weight_iterating_sum -= weight_heal_self ) <= 0 ) {
+//        new_item_enchant = get_random_enchant_with_weight( item_enchant_list_map_by_type[ enchant_heal_self ] );
+//
+//        if( new_item_enchant.effect_chance_min != new_item_enchant.effect_chance_max ) {
+//            new_item_enchant.effect_chance = rng_float( new_item_enchant.effect_chance_min, new_item_enchant.effect_chance_max );
+//        }
+//
+//    } else {
+//        debugmsg( "choosen enchant weight is out bound! check external option named ENCHANT_WEIGHT_EFFECT_xxx" );
+//    }
+//    return new_item_enchant;
+//
+//}
 
 void enchant_manager::invoke_damage_modifier_enchantment(damage_instance &dmg,
         item_enchant &enchant, Creature &target, item &weapon, player& user) {
     if( enchant.enchant_type == enchant_anti_specie ) {
         if ( rng_float( 0.0, 1.0 ) < enchant.effect_chance ) {
             if( target.in_species( enchant.specie_id_to_anti ) ) {
+
+                float before_total = dmg.total_damage();
+
                 add_msg( m_debug, _("Bash: %.2f, Cut: %.2f, Stub: %.2f"),
                         dmg.type_damage( DT_BASH ), dmg.type_damage( DT_CUT ), dmg.type_damage( DT_STAB ));
                 add_msg( m_debug, _("anti_specie_multiplier: %f"), enchant.anti_specie_multiplier );
 
                 dmg.mult_damage( enchant.anti_specie_multiplier );
 
+                dmg.add_damage( DT_TRUE, enchant.anti_specie_constant_damage, 0.0f, 1.0f, 1.0f );
+
                 add_msg( m_debug, _("Bash: %.2f, Cut: %.2f, Stub: %.2f"),
                         dmg.type_damage( DT_BASH ), dmg.type_damage( DT_CUT ), dmg.type_damage( DT_STAB ));
 
+                float after_total = dmg.total_damage();
+
                 if( enchant.message_on_trigger == ""){
-                    if ( 2.0 < enchant.anti_specie_multiplier ) {
+                    if ( before_total * 2.0 <= after_total ) {
                         add_msg(_("%s is super effective to %s!"), weapon.tname(), target.get_name());
-                    } else if ( 1.0 < enchant.anti_specie_multiplier ) {
+                    } else if ( before_total * 1.5 <= after_total ) {
                         add_msg(_("%s is very effective to %s!"), weapon.tname(), target.get_name());
-                    } else {
+                    } else if ( after_total <= before_total * 0.5 ) {
                         add_msg(_("%s is not effective to %s..."), weapon.tname(), target.get_name());
                     }
 
@@ -335,7 +404,6 @@ void enchant_manager::invoke_enchantment_effect(item_enchant& enchant, Creature&
             efftype_id efid = efftype_id( enchant.effect_type_id_to_apply_self);
             time_duration timed = time_duration::from_turns(enchant.effect_duration_turn) ;
             int intencity = enchant.effect_int;
-//            user.add_effect( efid, timed , num_bp, false, intencity, false, true);
             user.add_effect( efid, timed , num_bp, false, intencity, false, false);
             add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
 
@@ -374,55 +442,80 @@ void enchant_manager::invoke_enchantment_effect(item_enchant& enchant, Creature&
 }
 
 
-void enchant_manager::add_random_enchant_to_item( item& it ){
+void enchant_manager::add_random_enchant_to_item( item& it, bool is_crafting ){
 
     // make enchant
+    add_msg( m_debug,  "called enchant item");
 
     if( 0 < get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
         add_msg( m_debug, "try enchant to %s", it.tname());
 
-        if ( it.is_melee( DT_CUT ) || it.is_melee( DT_STAB )  || it.is_melee( DT_BASH ) ){
-            if ( rng(0, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
+        int threshold = get_option<int>( "ENCHANT_THRESHOLD_ATTACK_POWER" );
+        int item_attack_sum = it.damage_melee( DT_CUT ) + it.damage_melee( DT_STAB ) + it.damage_melee( DT_BASH );
+
+        if ( threshold <= item_attack_sum ) {
+
+            if ( rng(1, 100) <= get_option<int>( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN" ) ) {
                 // apply enchant
-                it.item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+
+                item_enchant new_enchant = enchant_manager::get_random_enchant_with_weight(
+                                                it, is_crafting );
+                if ( new_enchant.enchant_type != enchant_null ) {
+                    it.item_enchant_list.push_back( new_enchant );
+                }
                 // FUCKIN HARDCODED!!!
-                if( rng(0, 100) <= 50 ) {
-                    it.item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+                if( rng(1, 100) <= 50 ) {
+                    item_enchant new_enchant_1 = enchant_manager::get_random_enchant_with_weight(
+                                                    it, is_crafting );
+                    if ( new_enchant.enchant_type != enchant_null ) {
+                        it.item_enchant_list.push_back( new_enchant_1 );
+                    }
                 }
-                if( rng(0, 100) <= 25 ) {
-                    it.item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+                if( rng(1, 100) <= 25 ) {
+                    item_enchant new_enchant_1 = enchant_manager::get_random_enchant_with_weight(
+                                                    it, is_crafting );
+                    if ( new_enchant.enchant_type != enchant_null ) {
+                        it.item_enchant_list.push_back( new_enchant_1 );
+                    }
                 }
-                if( rng(0, 100) <= 10 ) {
-                    it.item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+                if( rng(1, 100) <= 10 ) {
+                    item_enchant new_enchant_1 = enchant_manager::get_random_enchant_with_weight(
+                                                    it, is_crafting );
+                    if ( new_enchant.enchant_type != enchant_null ) {
+                        it.item_enchant_list.push_back( new_enchant_1 );
+                    }
                 }
-                if( rng(0, 100) <= 5 ) {
-                    it.item_enchant_list.push_back( enchant_manager::generate_natual_enchant() );
+                if( rng(1, 100) <= 5 ) {
+                    item_enchant new_enchant_1 = enchant_manager::get_random_enchant_with_weight(
+                                                    it, is_crafting );
+                    if ( new_enchant.enchant_type != enchant_null ) {
+                        it.item_enchant_list.push_back( new_enchant_1 );
+                    }
                 }
             } else {
-
+                add_msg( m_debug, "bad luck, RNG was low than ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN");
             }
-        } else {
-            add_msg( m_debug, "%s is not have enough melee damage.", it.tname());
-        }
-        add_msg( m_debug, "current enchant list");
-        for(item_enchant enc : it.item_enchant_list){
-            add_msg( m_debug,  enc.name );
+
+            add_msg( m_debug, "current enchant list");
+            for(item_enchant enc : it.item_enchant_list){
+                add_msg( m_debug,  enc.name );
+            }
         }
     }
 }
 
-void enchant_manager::add_random_enchant_to_item( std::vector<item> &it_list ){
-    add_msg( m_debug,  "called item vector");
+void enchant_manager::add_random_enchant_to_item( std::vector<item> &it_list, bool is_crafting ){
+    add_msg( m_debug,  "called enchant item to vector");
 
     for( item &it : it_list ) {
-        enchant_manager::add_random_enchant_to_item( it );
+        enchant_manager::add_random_enchant_to_item( it , is_crafting );
     }
 }
-void enchant_manager::add_random_enchant_to_item( std::list<item> &it_list ){
-    add_msg( m_debug, "called item list");
+void enchant_manager::add_random_enchant_to_item( std::list<item> &it_list, bool is_crafting ){
+    add_msg( m_debug, "called enchant item to list");
 
     for( item &it : it_list ) {
-        enchant_manager::add_random_enchant_to_item( it );
+        enchant_manager::add_random_enchant_to_item( it , is_crafting );
     }
 }
 
@@ -469,6 +562,7 @@ void item_enchant::deserialize(const JsonObject &jo) {
 
     specie_id_to_anti = enchant_definition.specie_id_to_anti;
     anti_specie_multiplier = enchant_definition.anti_specie_multiplier;
+    anti_specie_constant_damage = enchant_definition.anti_specie_constant_damage;
 
     emit_id_to_emit = enchant_definition.emit_id_to_emit;
 
