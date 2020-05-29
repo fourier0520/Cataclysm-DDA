@@ -134,13 +134,14 @@ FTLとは、Fast TraveLの略語です、光る？
 ## 主な共同開発者について
 
   - lispcoc < https://github.com/lispcoc >
+  - Ezsk < https://github.com/Ezsk >
+  - m_kw
+  - T5idr3
   - roloa (リポジトリオーナー) < https://github.com/roloa >
 
 (敬称略)
 
-このヴァリアントには以上の開発者によってつくられました。
-
-みなさまのご協力に大変感謝します。
+このヴァリアントには以上の開発者によってつくられました。みなさまのご協力に大変感謝します。
 
 ## ライセンスについて
 
