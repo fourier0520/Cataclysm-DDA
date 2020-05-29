@@ -2,7 +2,7 @@
   {
     "type": "furniture",
     "id": "f_toilet",
-    "//": "this is override all toilet difinition without copy-from. if toilet change in mainstream, this file must change."
+    "//": "this is override all toilet difinition without copy-from. if toilet change in mainstream, this file must change.",
     "name": "toilet",
     "symbol": "&",
     "color": "white",
