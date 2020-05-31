@@ -14,7 +14,7 @@
 
 プレイの前に[無効になっている機能のissue](https://github.com/roloa/Cataclysm-DDA_variant/issues/50)をご確認をお願いします
 
-## [#10611開発版ベース_r13](https://drive.google.com/drive/u/0/folders/1IPU2jqv-jtrvd-3SHSvZZ5OeY6-kVwYp)
+## [#10611開発版ベース_r1](https://drive.google.com/drive/u/0/folders/1PhY2isdglSsSP5K0qkxSJdnAuzrlSTed)
 
 開発版ベースです。開発版が好きな方にオススメです。
 
