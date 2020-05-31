@@ -137,6 +137,7 @@ FTLとは、Fast TraveLの略語です、光る？
   - Ezsk < https://github.com/Ezsk >
   - m_kw
   - T5idr3
+  - まだ温かい
   - roloa (リポジトリオーナー) < https://github.com/roloa >
 
 (敬称略)
