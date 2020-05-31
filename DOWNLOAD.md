@@ -2,6 +2,8 @@
 # JPヴァリアント ダウンロードページ
 
 - **[READMEはこちらです](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/README.md)**
+- **[要素詳細はこちらです](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/doc/VARIANT_FEATURE.md)**
+
 - パッチノートは、安定版ベースのダウンロードURL先に置いてあります
 
 ## [0.E安定版ベース_r16](https://drive.google.com/drive/u/0/folders/12SujnAuBS1sQxM7hW3Yjn1RRAIYPQMQO)
