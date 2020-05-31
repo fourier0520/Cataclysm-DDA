@@ -8,6 +8,12 @@
 
 安定版ベースの最新版です、初めての方にオススメです。
 
+## [#10713開発版ベース_r16](https://drive.google.com/drive/u/0/folders/1rz7lh-A3ox86JHyQw8r-jre0-zXPTlPJ)
+
+さらに新しい開発版ベースです。より新しい開発版が好きな方にオススメです。
+
+プレイの前に[無効になっている機能のissue](https://github.com/roloa/Cataclysm-DDA_variant/issues/50)をご確認をお願いします
+
 ## [#10611開発版ベース_r13](https://drive.google.com/drive/u/0/folders/1IPU2jqv-jtrvd-3SHSvZZ5OeY6-kVwYp)
 
 開発版ベースです。開発版が好きな方にオススメです。
