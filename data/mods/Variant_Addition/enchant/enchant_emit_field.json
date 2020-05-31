@@ -9,7 +9,8 @@
     "message_on_trigger": "%1$sが炎を吹き上げ、%2$sの足元を燃やしました！",
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 20
+    "exclude_group": [ "group_burning", "emit_field" ],
+    "spawn_weight": { "natural": 20, "crafting": 6 }
   },
   {
     "id": "emit_enchant_burning_terrain",
@@ -27,7 +28,8 @@
     "message_on_trigger": "%1$sから酸が噴き出しました！",
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 50
+    "exclude_group": [ "emit_field" ],
+    "spawn_weight": { "natural": 40, "crafting": 12 }
   },
   {
     "id": "emit_enchant_acid",
@@ -45,7 +47,8 @@
     "message_on_trigger": "%1$sから電撃雲が発生しました！",
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "exclude_group": [ "emit_field" ],
+    "spawn_weight": { "natural": 80, "crafting": 18 }
   },
   {
     "id": "emit_enchant_elec",

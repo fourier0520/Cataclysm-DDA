@@ -7,10 +7,13 @@
     "enchant_type": "enchant_anti_specie",
     "specie_id_to_anti": "INSECT",
     "anti_specie_multiplier": 0.5,
+    "anti_specie_constant_damage": 3,
     "effect_chance_max": 0.8,
     "effect_chance_min": 0.2,
-    "//": "damage mult average 60.0-90.0% per hit.",
-    "spawn_weight_in_natural": 20
+    "//": "damage mult average 60.0-90.0% per hit. If weak enough, less effective.",
+    "exclude_group": [ "antiInsect" ],
+    "allowed_attack_sum": { "min": 6 },
+    "spawn_weight": { "natural": 20, "crafting": 0 }
   },
   {
     "type": "item_enchant",
@@ -22,8 +25,9 @@
     "anti_specie_multiplier": 1.25,
     "effect_chance_min": 0.48,
     "effect_chance_max": 1.0,
-    "//": "damage mult average 112.0-125.0% per hit.クモは昆虫に含まれません。",
-    "spawn_weight_in_natural": 88
+    "//": "damage mult average 112.0-125.0% per hit.",
+    "exclude_group": [ "antiInsect" ],
+    "spawn_weight": { "natural": 4, "crafting": 100 }
   },
   {
     "type": "item_enchant",
@@ -36,7 +40,9 @@
     "effect_chance_min": 0.45,
     "effect_chance_max": 0.91,
     "//": "damage mult average 122.5-145.5% per hit.",
-    "spawn_weight_in_natural": 55
+    "exclude_group": [ "antiInsect" ],
+    "allowed_attack_sum": { "max": 41 },
+    "spawn_weight": { "natural": 27, "crafting": 86 }
   },
   {
     "type": "item_enchant",
@@ -49,7 +55,9 @@
     "effect_chance_min": 0.42,
     "effect_chance_max": 0.79,
     "//": "damage mult average 142.0-179.0% per hit.",
-    "spawn_weight_in_natural": 33
+    "exclude_group": [ "antiInsect", "u_killer" ],
+    "allowed_attack_sum": { "max": 34 },
+    "spawn_weight": { "natural": 100, "crafting": 70 }
   },
   {
     "type": "item_enchant",
@@ -62,32 +70,38 @@
     "effect_chance_min": 0.37,
     "effect_chance_max": 0.64,
     "//": "damage mult average 174.0-228.0% per hit.",
-    "spawn_weight_in_natural": 21
+    "exclude_group": [ "antiInsect", "u_killer" ],
+    "allowed_attack_sum": { "max": 26 },
+    "spawn_weight": { "natural": 88, "crafting": 54 }
   },
   {
     "type": "item_enchant",
     "id": "anti_insect_500",
     "name": "Ｇスレイヤー",
-    "description": "ゴブリｎ・・・ではなく昆虫類に5倍のダメージを与えます。クモは昆虫に含まれません。",
+    "description": "ゴブリn・・・ではなく昆虫類に5倍のダメージを与えます。クモは昆虫に含まれません。",
     "enchant_type": "enchant_anti_specie",
     "specie_id_to_anti": "INSECT",
     "anti_specie_multiplier": 5.0,
     "effect_chance_min": 0.31,
     "effect_chance_max": 0.5,
     "//": "damage mult average 224.0-300.0% per hit.",
-    "spawn_weight_in_natural": 13
+    "exclude_group": [ "antiInsect", "u_killer", "u_slayer" ],
+    "allowed_attack_sum": { "max": 20 },
+    "spawn_weight": { "natural": 67, "crafting": 0 }
   },
   {
     "type": "item_enchant",
     "id": "anti_insect_1000",
     "name": "真・Ｇスレイヤー",
-    "description": "ゴブリｎ・・・ではなく昆虫類に10倍のダメージを与えます。クモは昆虫に含まれません。",
+    "description": "ゴブリn・・・ではなく昆虫類に10倍のダメージを与えます。クモは昆虫に含まれません。",
     "enchant_type": "enchant_anti_specie",
     "specie_id_to_anti": "INSECT",
     "anti_specie_multiplier": 10.0,
     "effect_chance_min": 0.25,
     "effect_chance_max": 0.35,
     "//": "damage mult average 325.0-415.0% per hit.",
-    "spawn_weight_in_natural": 8
+    "exclude_group": [ "antiInsect", "u_killer", "u_slayer" ],
+    "allowed_attack_sum": { "max": 14 },
+    "spawn_weight": { "natural": 48, "crafting": 0 }
   }
 ]

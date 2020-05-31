@@ -5,7 +5,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(キノコキラー)" },
     "description": "アイテムに真菌へのダメージを2倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_fungus_200" ], [ "enchant_effect_chance", "0.60" ] ],
+    "properties": [ [ "enchant_id", "anti_fungus_200" ], [ "enchant_effect_chance", "0.59" ] ],
     "//": "damage mult average 159.0% per hit."
   },
   {
@@ -14,7 +14,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(キノコキラー・改)" },
     "description": "アイテムに真菌へのダメージを3倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_fungus_300" ], [ "enchant_effect_chance", "0.49" ] ],
+    "properties": [ [ "enchant_id", "anti_fungus_300" ], [ "enchant_effect_chance", "0.48" ] ],
     "//": "damage mult average 196.0% per hit."
   },
   {
@@ -23,7 +23,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(キノコスレイヤー)" },
     "description": "アイテムに真菌へのダメージを5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_fungus_500" ], [ "enchant_effect_chance", "0.38" ] ],
+    "properties": [ [ "enchant_id", "anti_fungus_500" ], [ "enchant_effect_chance", "0.37" ] ],
     "//": "damage mult average 248.0% per hit."
   },
   {
@@ -32,7 +32,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(真・キノコスレイヤー)" },
     "description": "アイテムに真菌へのダメージを10倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_fungus_1000" ], [ "enchant_effect_chance", "0.27" ] ],
+    "properties": [ [ "enchant_id", "anti_fungus_1000" ], [ "enchant_effect_chance", "0.26" ] ],
     "//": "damage mult average 334.0% per hit."
   },
   {
@@ -41,7 +41,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(凶器)" },
     "description": "アイテムに人類へのダメージを2倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_human_200" ], [ "enchant_effect_chance", "0.60" ] ],
+    "properties": [ [ "enchant_id", "anti_human_200" ], [ "enchant_effect_chance", "0.59" ] ],
     "//": "damage mult average 159.0% per hit."
   },
   {
@@ -50,7 +50,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(凶器・改)" },
     "description": "アイテムに人類へのダメージを3倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_human_300" ], [ "enchant_effect_chance", "0.49" ] ],
+    "properties": [ [ "enchant_id", "anti_human_300" ], [ "enchant_effect_chance", "0.48" ] ],
     "//": "damage mult average 196.0% per hit."
   },
   {
@@ -59,7 +59,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(エクセキューショナー)" },
     "description": "アイテムに人類へのダメージを5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_human_500" ], [ "enchant_effect_chance", "0.38" ] ],
+    "properties": [ [ "enchant_id", "anti_human_500" ], [ "enchant_effect_chance", "0.37" ] ],
     "//": "damage mult average 248.0% per hit."
   },
   {
@@ -68,7 +68,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(真・エクセキューショナー)" },
     "description": "アイテムに人類へのダメージを10倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_human_1000" ], [ "enchant_effect_chance", "0.27" ] ],
+    "properties": [ [ "enchant_id", "anti_human_1000" ], [ "enchant_effect_chance", "0.26" ] ],
     "//": "damage mult average 334.0% per hit."
   },
   {
@@ -77,7 +77,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ムシキラー)" },
     "description": "アイテムに昆虫類へのダメージを2倍するエンチャントを付加します。クモは昆虫に含まれません。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_insect_200" ], [ "enchant_effect_chance", "0.60" ] ],
+    "properties": [ [ "enchant_id", "anti_insect_200" ], [ "enchant_effect_chance", "0.59" ] ],
     "//": "damage mult average 159.0% per hit."
   },
   {
@@ -86,7 +86,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ムシキラー・改)" },
     "description": "アイテムに昆虫類へのダメージを3倍するエンチャントを付加します。クモは昆虫に含まれません。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_insect_300" ], [ "enchant_effect_chance", "0.49" ] ],
+    "properties": [ [ "enchant_id", "anti_insect_300" ], [ "enchant_effect_chance", "0.48" ] ],
     "//": "damage mult average 196.0% per hit."
   },
   {
@@ -95,7 +95,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(Ｇスレイヤー)" },
     "description": "アイテムに昆虫類へのダメージを5倍するエンチャントを付加します。クモは昆虫に含まれません。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_insect_500" ], [ "enchant_effect_chance", "0.38" ] ],
+    "properties": [ [ "enchant_id", "anti_insect_500" ], [ "enchant_effect_chance", "0.37" ] ],
     "//": "damage mult average 248.0% per hit."
   },
   {
@@ -104,7 +104,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(真・Ｇスレイヤー)" },
     "description": "アイテムに昆虫類へのダメージを10倍するエンチャントを付加します。クモは昆虫に含まれません。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_insect_1000" ], [ "enchant_effect_chance", "0.27" ] ],
+    "properties": [ [ "enchant_id", "anti_insect_1000" ], [ "enchant_effect_chance", "0.26" ] ],
     "//": "damage mult average 334.0% per hit."
   },
   {
@@ -113,7 +113,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(マシーネクラッシャー)" },
     "description": "アイテムに機械類へのダメージを2倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_mech_200" ], [ "enchant_effect_chance", "0.60" ] ],
+    "properties": [ [ "enchant_id", "anti_mech_200" ], [ "enchant_effect_chance", "0.59" ] ],
     "//": "damage mult average 159.0% per hit."
   },
   {
@@ -122,7 +122,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(マシーネクラッシャー・改)" },
     "description": "アイテムに機械類へのダメージを3倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_mech_300" ], [ "enchant_effect_chance", "0.49" ] ],
+    "properties": [ [ "enchant_id", "anti_mech_300" ], [ "enchant_effect_chance", "0.48" ] ],
     "//": "damage mult average 196.0% per hit."
   },
   {
@@ -131,7 +131,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(メカデストロイヤー)" },
     "description": "アイテムに機械類へのダメージを5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_mech_500" ], [ "enchant_effect_chance", "0.38" ] ],
+    "properties": [ [ "enchant_id", "anti_mech_500" ], [ "enchant_effect_chance", "0.37" ] ],
     "//": "damage mult average 248.0% per hit."
   },
   {
@@ -140,7 +140,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(真・メカデストロイヤー)" },
     "description": "アイテムに機械類へのダメージを10倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_mech_1000" ], [ "enchant_effect_chance", "0.27" ] ],
+    "properties": [ [ "enchant_id", "anti_mech_1000" ], [ "enchant_effect_chance", "0.26" ] ],
     "//": "damage mult average 334.0% per hit."
   },
   {
@@ -149,7 +149,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ミ＝ゴキラー)" },
     "description": "アイテムに異界生物へのダメージを2倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_nether_200" ], [ "enchant_effect_chance", "0.60" ] ],
+    "properties": [ [ "enchant_id", "anti_nether_200" ], [ "enchant_effect_chance", "0.59" ] ],
     "//": "damage mult average 159.0% per hit."
   },
   {
@@ -158,7 +158,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ミ＝ゴキラー・改)" },
     "description": "アイテムに異界生物へのダメージを3倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_nether_300" ], [ "enchant_effect_chance", "0.49" ] ],
+    "properties": [ [ "enchant_id", "anti_nether_300" ], [ "enchant_effect_chance", "0.48" ] ],
     "//": "damage mult average 196.0% per hit."
   },
   {
@@ -167,7 +167,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ミ＝ゴスレイヤー)" },
     "description": "アイテムに異界生物へのダメージを5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_nether_500" ], [ "enchant_effect_chance", "0.38" ] ],
+    "properties": [ [ "enchant_id", "anti_nether_500" ], [ "enchant_effect_chance", "0.37" ] ],
     "//": "damage mult average 248.0% per hit."
   },
   {
@@ -176,7 +176,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(真・ミ＝ゴスレイヤー)" },
     "description": "アイテムに異界生物へのダメージを10倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_nether_1000" ], [ "enchant_effect_chance", "0.27" ] ],
+    "properties": [ [ "enchant_id", "anti_nether_1000" ], [ "enchant_effect_chance", "0.26" ] ],
     "//": "damage mult average 334.0% per hit."
   },
   {
@@ -193,7 +193,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ゾンビキラー)" },
     "description": "アイテムにゾンビ類へのダメージを2倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_zombie_200" ], [ "enchant_effect_chance", "0.60" ] ],
+    "properties": [ [ "enchant_id", "anti_zombie_200" ], [ "enchant_effect_chance", "0.59" ] ],
     "//": "damage mult average 159.0% per hit."
   },
   {
@@ -202,7 +202,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ゾンビキラー・改)" },
     "description": "アイテムにゾンビ類へのダメージを3倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_zombie_300" ], [ "enchant_effect_chance", "0.49" ] ],
+    "properties": [ [ "enchant_id", "anti_zombie_300" ], [ "enchant_effect_chance", "0.48" ] ],
     "//": "damage mult average 196.0% per hit."
   },
   {
@@ -211,7 +211,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(ゾンビスレイヤー)" },
     "description": "アイテムにゾンビ類へのダメージを5倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_zombie_500" ], [ "enchant_effect_chance", "0.38" ] ],
+    "properties": [ [ "enchant_id", "anti_zombie_500" ], [ "enchant_effect_chance", "0.37" ] ],
     "//": "damage mult average 248.0% per hit."
   },
   {
@@ -220,7 +220,7 @@
     "copy-from": "vjp_enchanter_tool",
     "name": { "str": "エンチャンター(真・ゾンビスレイヤー)" },
     "description": "アイテムにゾンビ類へのダメージを10倍するエンチャントを付加します。このアイテムで付与される効果は最大性能の75%になります。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
-    "properties": [ [ "enchant_id", "anti_zombie_1000" ], [ "enchant_effect_chance", "0.27" ] ],
+    "properties": [ [ "enchant_id", "anti_zombie_1000" ], [ "enchant_effect_chance", "0.26" ] ],
     "//": "damage mult average 334.0% per hit."
   }
 ]

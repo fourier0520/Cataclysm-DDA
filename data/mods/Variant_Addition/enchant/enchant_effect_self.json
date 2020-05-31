@@ -11,7 +11,7 @@
     "effect_duration_turn": 10,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 20, "crafting": 0 }
   },
   {
     "type": "effect_type",
@@ -34,7 +34,7 @@
     "effect_duration_turn": 10,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 30, "crafting": 15 }
   },
   {
     "type": "effect_type",
@@ -57,7 +57,7 @@
     "effect_duration_turn": 10,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 50, "crafting": 25 }
   },
   {
     "type": "effect_type",
@@ -80,7 +80,7 @@
     "effect_duration_turn": 10,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 40, "crafting": 20 }
   },
   {
     "type": "effect_type",

@@ -13,7 +13,8 @@
     "gun_max_range": 8,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "exclude_group": [ "fire_gun" ],
+    "spawn_weight": { "natural": 60, "crafting": 36 }
   },
   {
     "type": "item_enchant",
@@ -29,8 +30,9 @@
     "gun_max_range": 8,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 0,
-    "//": "射撃モード未実装？"
+    "exclude_group": [ "fire_gun" ],
+    "spawn_weight": { "natural": 20, "crafting": 12 },
+    "obsolete": true
   },
   {
     "type": "item_enchant",
@@ -46,7 +48,9 @@
     "gun_max_range": 8,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 0
+    "exclude_group": [ "fire_gun" ],
+    "spawn_weight": { "natural": 15, "crafting": 9 },
+    "obsolete": true
   },
   {
     "type": "item_enchant",
@@ -61,7 +65,8 @@
     "gun_max_range": 8,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "exclude_group": [ "fire_gun" ],
+    "spawn_weight": { "natural": 51, "crafting": 30 }
   },
   {
     "type": "item_enchant",
@@ -76,7 +81,8 @@
     "gun_max_range": 8,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 0,
-    "//": "本来存在しないモード"
+    "exclude_group": [ "fire_gun" ],
+    "spawn_weight": { "natural": 17, "crafting": 10 },
+    "obsolete": true
   }
 ]

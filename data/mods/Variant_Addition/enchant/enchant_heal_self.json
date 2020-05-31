@@ -10,7 +10,21 @@
     "heal_amount": 2,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 30, "crafting": 12 }
+  },
+  {
+    "type": "item_enchant",
+    "id": "heal_hp_on_attack_high",
+    "name": "吸収回復",
+    "description": "攻撃時に、自身のHPを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+    "heal_type": "heal_hp",
+    "message_on_trigger": "%sから放たれた治療の光があなたを包みました。",
+    "//": "通常バージョンと銘や説明が同じなので使ってみないと分からない",
+    "heal_amount": 6,
+    "effect_chance_min": 0.25,
+    "effect_chance_max": 0.5,
+    "spawn_weight": { "natural": 6, "crafting": 0 }
   },
   {
     "type": "item_enchant",
@@ -23,7 +37,20 @@
     "heal_amount": 150,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 20, "crafting": 6 }
+  },
+  {
+    "type": "item_enchant",
+    "id": "heal_stamina_on_attack_high",
+    "name": "スタミナ回復",
+    "description": "攻撃時に、自身のスタミナを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+    "heal_type": "heal_stamina",
+    "message_on_trigger": "%sから放たれた安寧の息吹があなたを包みました。",
+    "heal_amount": 450,
+    "effect_chance_min": 0.25,
+    "effect_chance_max": 0.5,
+    "spawn_weight": { "natural": 3, "crafting": 0 }
   },
   {
     "type": "item_enchant",
@@ -36,7 +63,20 @@
     "heal_amount": 50,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 30, "crafting": 12 }
+  },
+  {
+    "type": "item_enchant",
+    "id": "heal_mana_on_attack_high",
+    "name": "マナ回復",
+    "description": "攻撃時に、自身のマナを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+    "heal_type": "heal_mana",
+    "message_on_trigger": "%sから放たれた魔の本流があなたの体に満ちていく。",
+    "heal_amount": 150,
+    "effect_chance_min": 0.25,
+    "effect_chance_max": 0.5,
+    "spawn_weight": { "natural": 6, "crafting": 0 }
   },
   {
     "type": "item_enchant",
@@ -49,6 +89,6 @@
     "heal_amount": 25,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "spawn_weight": { "natural": 40, "crafting": 18 }
   }
 ]

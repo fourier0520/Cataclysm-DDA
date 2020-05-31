@@ -9,6 +9,6 @@
     "anti_specie_multiplier": 99.0,
     "effect_chance_min": 0.44,
     "effect_chance_max": 0.99,
-    "spawn_weight_in_natural": 1
+    "spawn_weight": { "natural": 1, "crafting": 0 }
   }
 ]

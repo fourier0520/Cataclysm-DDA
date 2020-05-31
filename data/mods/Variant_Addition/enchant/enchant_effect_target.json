@@ -11,6 +11,8 @@
     "effect_duration_turn": 5,
     "effect_chance_min": 0.05,
     "effect_chance_max": 0.5,
-    "spawn_weight_in_natural": 100
+    "exclude_group": [ "group_burning" ],
+    "spawn_weight": { "natural": 2 },
+    "obsolete": true
   }
 ]
