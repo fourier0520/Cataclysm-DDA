@@ -22,7 +22,7 @@
 
 プレイの前に[無効になっている機能のissue](https://github.com/roloa/Cataclysm-DDA_variant/issues/50)をご確認をお願いします
 
-## [0.E安定版ベース_r15_pre2_32bit版](https://drive.google.com/drive/u/0/folders/1dTDfAretZ7dUWsuJ9iEXcsfbMFcHix74)
+## [0.E安定版ベース_r16_32bit版](https://drive.google.com/drive/u/0/folders/1GQPUJAYoZP-vF024ksdSBHzptYKdqhje)
 
 32bit版です。32bitOSを使っている方にオススメです。
 
