@@ -4,15 +4,9 @@
 - **[READMEはこちらです](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/README.md)**
 - パッチノートは、安定版ベースのダウンロードURL先に置いてあります
 
-## [0.E安定版ベース_r14](https://drive.google.com/drive/u/0/folders/1lo8fSu3NPypsU3yZyKzANj6I_jJFxI-p)
+## [0.E安定版ベース_r16](https://drive.google.com/drive/u/0/folders/12SujnAuBS1sQxM7hW3Yjn1RRAIYPQMQO)
 
 安定版ベースの最新版です、初めての方にオススメです。
-
-## [0.E安定版ベース_r15_pre2](https://drive.google.com/drive/u/0/folders/1IDCnIa8-XbuqLcdk2YO5tRA7t0TlNRcK)
-
-安定版ベースの、試験的バージョンです。配信しながらみんなで遊びたい方にオススメです。
-
-まだバグ出しが十分ではない、リアルタイムもどきやマルチプレイもどき等の新機能を含んでいます。
 
 ## [#10611開発版ベース_r13](https://drive.google.com/drive/u/0/folders/1IPU2jqv-jtrvd-3SHSvZZ5OeY6-kVwYp)
 
