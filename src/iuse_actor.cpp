@@ -4964,7 +4964,8 @@ int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
     int device = p.get_item_position( &it );
     std::string act_name;
     const std::function<bool( const tripoint & )> f = [&]( const tripoint & pnt ) {
-        return g->critter_at<npc>( pnt ) != nullptr || g->critter_at<player>( pnt ) != nullptr;
+        return ( g->critter_at<npc>( pnt ) != nullptr ) || ( g->critter_at<player>( pnt ) != nullptr ) ||
+               ( g->critter_at<monster>( pnt ) != nullptr );
     };
     const std::function<std::string( const std::string & )> get_text =[&]( const std::string & id ) {
         return snippet_id( id )->translated();
@@ -5028,6 +5029,9 @@ int yiff_actor::use( player &p, item &it, bool, const tripoint & ) const
         monster &mon = *mon_;
         if( !query_yn( string_format( get_text( "hentai_yiff_query_monster" ), mon.name() ) ) ) {
             return 0;
+        }
+        if( mon.friendly > -1 ) {
+            add_msg( m_info, _( "This creature is not friendly!" ) );
         }
         if( get_option<bool>( "HENTAI_EXTEND" ) ) {
             if( query_yn( string_format( get_text( "hentai_yiff_query_no_dev_monster" ), mon.name(), it.display_name() ) ) ) {
